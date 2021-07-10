@@ -1,0 +1,24 @@
+.logo {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+    padding-left: 10%;
+    #font-family: Rubik;
+}
+
+.logo p {
+    width: 5%;
+    display: inline-block;
+    float: left;
+    margin-left: 20%;
+    font-size: 20pt;
+}
+
+.logo a {
+    width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    display: block;
+}
+

@@ -1,0 +1,38 @@
+.record_layout {
+    width:70%;
+    display:inline-block;
+    float:left;
+}
+
+.record_layout li {
+    display:inline-block;
+}
+
+.notes {
+    width:30%;
+    display:inline-block;
+}
+
+.notes p{
+    width:10%;
+    margin-right: auto;
+    margin-left: auto;
+}
+
+.record_date {
+    float:left;
+    width:10%;
+}
+
+.record_title {
+    width:10%;
+}
+
+.record_issue_category {
+    width:10%;
+}
+
+.record_text {
+    width:70%;
+    float:right;
+}

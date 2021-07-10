@@ -1,0 +1,15 @@
+{% extends 'base.html' %}
+
+{% block title %}
+    <title>Журнал 360</title>
+{% endblock %}
+
+
+{% block content  %}
+
+{% for rt in record_text %}
+
+    {{ rt.text }}
+{% endfor %}
+
+{% endblock %}

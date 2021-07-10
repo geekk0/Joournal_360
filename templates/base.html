@@ -1,0 +1,34 @@
+<meta charset="UTF-8">
+<!DOCTYPE html>
+{% load static %}
+
+<html>
+
+    <head>
+        {% block title %}
+        <title>Журнал 360</title>
+        {% endblock %}
+
+    <link rel="stylesheet" href="{% static 'css/base.css' %}">
+    <link rel="stylesheet" href="{% static 'css/rec_list.css' %}">
+
+    <style>
+
+    </style>
+
+    </head>
+    <body>
+
+    <div class="logo">
+
+    <p style=> Журнал</p>
+
+    <a href={{ BASE_DIR }}"/"><img class='logo' src="{% static 'images/360logoblack.png'%}"></a>
+
+    </div>
+
+    </body>
+{% block content %}
+{% endblock %}
+
+</html>
