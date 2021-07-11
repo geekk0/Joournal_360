@@ -11,7 +11,7 @@
 {%  for recs in records_list %}
     <div class="record_layout">
     <ul>
-         <li class="record_date">{{ recs.created_date }}</li>
+         <li class="record_date">{{ recs.report_date }}</li>
          <li class="record_title">{{ recs.title }}</li>
          <li class="record_issue_category">{{ recs.issue_category }}</li>
          <li class="record_text">{{recs.text|truncatechars:300 }}

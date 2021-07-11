@@ -9,7 +9,13 @@
 
 {% for rt in record_text %}
 
+    {{ rt.report_date }}
+
+    {{ rt.tags }}
+
     {{ rt.text }}
+
+    {{ rt.created_date }}
 {% endfor %}
 
 {% endblock %}

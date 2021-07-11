@@ -11,7 +11,7 @@ from itertools import *
 from operator import *
 
 from .models import EngRec, DirRec
-from .forms import LoginForm, RegistrationForm
+from .forms import LoginForm, RegistrationForm, SendReport
 
 
 def rec_list(request):
@@ -33,14 +33,15 @@ def rec_list(request):
             role = roles[0]
 
             if role == 'Техдирекция':
-                records_list = EngRec.objects.order_by('-created_date')
+                records_list = EngRec.objects.order_by('-report_date')
 
             elif role == 'Режиссеры':
-                records_list = DirRec.objects.order_by('-created_date')
+                records_list = DirRec.objects.order_by('-report_date')
 
             elif role == 'Все отчеты':
                 records_list = list(chain(EngRec.objects.all(), DirRec.objects.all()))
-                records_list.sort(key=attrgetter('created_date'), reverse=True)
+                records_list.sort(key=attrgetter('report_date'), reverse=True)
+
 
         context = {'records_list': records_list, 'role': role}
         return render(request, 'rec_list.html', context)
@@ -112,5 +113,28 @@ class RegistrationView(View):
             return HttpResponseRedirect('/')
         context = {'form': form}
         return render(request, 'registration.html', context)
+
+
+class SendReportView(View):
+
+    def get(self, request, *args, **kwargs):
+        form = SendReport(request.POST or None)
+        context = {'form': form}
+
+        return render(request, 'add_rec.html', context)
+
+    def post(self, request, *args, **kwargs):
+        form = SendReport(request.POST or None)
+
+        if form.is_valid():
+
+            report = form.save(commit=False)
+
+            report.author = request.user
+            report.created_date = timezone.now()
+            report.tags = form.cleaned_data['tags']
+            report.save()
+
+            return HttpResponseRedirect('/')
 
 

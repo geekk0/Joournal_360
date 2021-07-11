@@ -4,17 +4,22 @@ from django.utils import timezone
 
 
 class Record(models.Model):
-    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    title = models.CharField(max_length=200)
-    created_date = models.DateTimeField(default=timezone.now)
-    text = models.TextField(default='')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                               verbose_name='Отчет от')
+    created_date = models.DateTimeField(default=timezone.now, verbose_name='Дата отправки')
+    text = models.TextField(default='', verbose_name='')
+    report_date = models.DateField(default=timezone.now,  verbose_name='За какое число')
+
+
+
+
 
     def publish(self):
         self.created_date = timezone.now()
         self.save()
 
     def __str__(self):
-        return self.title
+        return str(self.report_date)+' '+str(self.author)
 
     class Meta:
         verbose_name = 'Запись'
@@ -22,7 +27,9 @@ class Record(models.Model):
 
 
 class EngRec(Record):
-    issue_category = models.TextField(default='')
+    tag_list = [('Без замечаний', 'Без замечаний'), ('Прямой эфир', 'Прямой эфир'),
+                ('Запись', 'Запись')]
+    tags = models.TextField(default='Без замечаний', max_length=20, choices=tag_list, verbose_name='Теги')
 
 
     def publish(self):
@@ -30,7 +37,7 @@ class EngRec(Record):
         self.save()
 
     def __str__(self):
-        return self.title
+        return str(self.report_date)+' '+str(self.author)
 
     class Meta:
         verbose_name = 'Запись в журнал инженеров'
@@ -38,7 +45,9 @@ class EngRec(Record):
 
 
 class DirRec(Record):
-    issue_category = models.TextField(default='', verbose_name='проблемы с записью\эфиром')
+    tag_list = [('Без замечаний', 'Без замечаний'), ('Прямой эфир', 'Прямой эфир'),
+                ('Запись', 'Запись')]
+    tags = models.TextField(default='Без замечаний', max_length=20, choices=tag_list, verbose_name='Теги')
 
 
     def publish(self):
@@ -46,8 +55,19 @@ class DirRec(Record):
         self.save()
 
     def __str__(self):
-        return self.title
+        return self.str(self.report_date)+' '+str(self.author)
 
     class Meta:
         verbose_name = 'Запись в журнал режиссеров'
         verbose_name_plural = 'Записи в журнале режиссеров'
+
+
+class EngNotes(models.Model):
+    message = models.TextField(default='', verbose_name='Текст заметки')
+    created_date = models.DateField(default=timezone.now, verbose_name='Дата')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                               verbose_name='от')
+
+    class Meta:
+        verbose_name = 'Заметка'
+        verbose_name_plural = 'Заметки'

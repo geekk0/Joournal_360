@@ -7,13 +7,14 @@
 .blank_left {
     width:20%;
     display: inline-block;
-    #font-family: Rubik;
-    float:left;
     text-align: right;
-    margin-top: auto;
-    margin-bottom: auto;
-
 }
+
+#id_report_text {
+ width: 130%;
+ height: 50%;
+}
+
 
 .logo {
     width: 60%;

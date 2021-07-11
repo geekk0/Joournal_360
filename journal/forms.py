@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.admin.widgets import AdminDateWidget
+from .models import Record, EngRec, DirRec
 
 
 class RegistrationForm(forms.ModelForm):
@@ -75,10 +77,19 @@ class LoginForm(forms.ModelForm):
 
 class SendReport(forms.ModelForm):
 
+    text = forms.Textarea()
+
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['created_date'].label = 'Отчет за'
-        self.fields['tags'].label = 'Теги'
+        self.fields['text'].label = 'Текст отчета'
+        self.fields['report_date'].label = 'Отчет за'
+
+    def clean(self):
+        return self.cleaned_data
+
+    class Meta:
+        model = EngRec
+        fields = ['report_date', 'tags', 'text']
 
 
 
