@@ -1,24 +1,46 @@
-.logo {
-    width: 50%;
-    margin-left: auto;
-    margin-right: auto;
+.header {
+    width: 100%;
     display: block;
-    padding-left: 10%;
-    #font-family: Rubik;
+    padding-top: 20px;
 }
 
-.logo p {
-    width: 5%;
+.blank_left {
+    width:20%;
     display: inline-block;
-    float: left;
-    margin-left: 20%;
-    font-size: 20pt;
+    #font-family: Rubik;
+    float:left;
+    text-align: right;
+    margin-top: auto;
+    margin-bottom: auto;
+
 }
 
-.logo a {
-    width: 50%;
+.logo {
+    width: 60%;
+    display: inline-block;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+}
+
+.logo img {
+    width: 30%;
     margin-left: auto;
     margin-right: auto;
-    display: block;
 }
 
+.username {
+    display:inline-block;
+
+}
+
+.register {
+    display: inline-block;
+    padding-bottom: 20px;
+}
+
+
+.logout {
+    display: inline-block;
+    padding-left: 30px;
+}

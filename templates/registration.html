@@ -1,0 +1,28 @@
+{%  extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
+{% block title %}
+
+    <title>Регистрация</title>
+
+{% endblock %}
+
+{% block content %}
+
+<div class='row' style="margin-top:100px">
+
+    <div class="col-md-6 offset-md-3" style="text-align:center">
+
+        <form action="." method="POST">
+            {{ user_form.as_p }}
+            {% csrf_token %}
+            {{ form|crispy }}
+                <input type="submit" class="btn btn-success" value="Создать учетную запись">
+        </form>
+
+    </div>
+
+</div>
+
+{% endblock %}
