@@ -10,8 +10,8 @@ from django.contrib.auth.models import User, Group
 from itertools import *
 from operator import *
 
-from .models import EngRec, DirRec
-from .forms import LoginForm, RegistrationForm, SendReport
+from .models import EngRec, DirRec, EngNotes, DirNotes, Notes
+from .forms import LoginForm, RegistrationForm, SendEngReport, SendDirReport, AddEngNote
 
 
 def rec_list(request):
@@ -20,6 +20,7 @@ def rec_list(request):
         roles = []
         role = ''
         records_list = None
+        notes = None
 
         for g in request.user.groups.all():
             roles.append(g.name)
@@ -34,16 +35,19 @@ def rec_list(request):
 
             if role == 'Техдирекция':
                 records_list = EngRec.objects.order_by('-report_date')
+                notes = EngNotes.objects.order_by('-created_date')
 
             elif role == 'Режиссеры':
                 records_list = DirRec.objects.order_by('-report_date')
+                notes = DirNotes.objects.order_by('-created_date')
 
             elif role == 'Все отчеты':
                 records_list = list(chain(EngRec.objects.all(), DirRec.objects.all()))
                 records_list.sort(key=attrgetter('report_date'), reverse=True)
+                notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
+                notes.sort(key=attrgetter('created_date'), reverse=True)
 
-
-        context = {'records_list': records_list, 'role': role}
+        context = {'records_list': records_list, 'notes': notes, 'role': role}
         return render(request, 'rec_list.html', context)
 
     else:
@@ -97,6 +101,7 @@ class RegistrationView(View):
         return render(request, 'registration.html', context)
 
     def post(self, request, *args, **kwargs):
+
         form = RegistrationForm(request.POST or None)
         if form.is_valid():
             new_user = form.save(commit=False)
@@ -115,19 +120,21 @@ class RegistrationView(View):
         return render(request, 'registration.html', context)
 
 
-class SendReportView(View):
+
+
+class SendEngReportView(View):
 
     def get(self, request, *args, **kwargs):
-        form = SendReport(request.POST or None)
+        form = SendEngReport(request.POST or None)
         context = {'form': form}
 
         return render(request, 'add_rec.html', context)
 
     def post(self, request, *args, **kwargs):
-        form = SendReport(request.POST or None)
+
+        form = SendEngReport(request.POST or None)
 
         if form.is_valid():
-
             report = form.save(commit=False)
 
             report.author = request.user
@@ -138,3 +145,53 @@ class SendReportView(View):
             return HttpResponseRedirect('/')
 
 
+class SendDirReportView(SendEngReportView):
+
+    def get(self, request, *args, **kwargs):
+        form = SendDirReport(request.POST or None)
+        context = {'form': form}
+
+        return render(request, 'add_rec.html', context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = SendDirReport(request.POST or None)
+
+        if form.is_valid():
+            report = form.save(commit=False)
+
+            report.author = request.user
+            report.created_date = timezone.now()
+            report.tags.set(form['tags'])
+                #= form.cleaned_data['tags']
+            report.save()
+
+            return HttpResponseRedirect('/')
+
+
+def delete_note(request, note_id):
+
+    Notes.objects.filter(id=note_id).delete()
+    return HttpResponseRedirect('/')
+
+
+class AddEngNoteView(View):
+
+    def get(self, request, *args, **kwargs):
+        form = AddEngNote(request.POST or None)
+        context = {'form': form}
+
+        return render(request, 'add_note.html', context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = AddEngNote(request.POST or None)
+
+        if form.is_valid():
+            report = form.save(commit=False)
+
+            report.author = request.user
+            report.created_date = timezone.now()
+            report.save()
+
+            return HttpResponseRedirect('/')

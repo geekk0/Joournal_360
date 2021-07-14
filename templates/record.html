@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% load static %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
 {% block title %}
     <title>Журнал 360</title>
 {% endblock %}
@@ -7,15 +11,36 @@
 
 {% block content  %}
 
-{% for rt in record_text %}
+    <div class="record">
 
-    {{ rt.report_date }}
+        {% for rt in record_text %}
 
-    {{ rt.tags }}
+            <div class="record_label">
 
-    {{ rt.text }}
+                <ul>
+                    <li>Отчет за: {{ rt.report_date }}</li>
+                    <li>Отправил: {{ rt.author }}</li>
+                </ul>
 
-    {{ rt.created_date }}
-{% endfor %}
+            </div>
+
+            <div class='record_meta'>
+
+                <ul>
+                    <li>{{ rt.tags }}</li>
+                    <br>
+                    <br>
+                    <li>Отправлено: <br> {{ rt.created_date }}</li>
+                </ul>
+
+                <div class="record_fulltext">
+                    {{ rt.text }}
+                </div>
+
+            </div>
+
+        {% endfor %}
+
+    </div>
 
 {% endblock %}

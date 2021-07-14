@@ -1,4 +1,6 @@
 {% extends 'base.html' %}
+{% load static %}
+
 
 {% block title %}
     <title>Журнал 360</title>
@@ -12,11 +14,13 @@
     <div class="record_layout">
     <ul>
          <li class="record_date">{{ recs.report_date }}</li>
-         <li class="record_title">{{ recs.title }}</li>
-         <li class="record_issue_category">{{ recs.issue_category }}</li>
-         <li class="record_text">{{recs.text|truncatechars:300 }}
-             <a href="{% url 'запись' role recs.id  %}">Читать полностью</a>
-
+         <li class="record_issue_category">{{ recs.tags }}</li>
+         {% if recs.text|length > 70 %}
+                <li class="record_text">{{recs.text|truncatechars:300 }}
+                <a href="{% url 'запись' role recs.id  %}">Читать полностью</a>
+         {% else %}
+                 <li class="record_text">{{recs.text }}
+         {% endif %}
 
     </ul>
     </div>
@@ -24,10 +28,30 @@
 
 {%  endfor %}
 
-    <div class="notes">
+<div class="notes_layout">
 
-    <p>Заметки:</p>
+    <div>
+        {% if role == 'Техдирекция' %}
 
+            <a class="authorization" href="{% url 'добавить заметку инженеров' %}">+</a>
+        {% endif %}
     </div>
+
+    <p style="text-align: center">Заметки:</p>
+
+    {%  for ns in notes %}
+        <ul>
+         <li class="notes_meta">{{ ns.created_date }}    {{ ns.author }} <a href="{% url 'удалить заметку' ns.id %}"
+         >Удалить</a></li>
+         <li class="notes_text">{{ns.message }}</li>
+        </ul>
+
+    {%  endfor %}
+
+
+</div>
+
+
+
 
 {% endblock %}

@@ -1,7 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
 from django.contrib.admin.widgets import AdminDateWidget
-from .models import Record, EngRec, DirRec
+from .models import Record, EngRec, DirRec, EngNotes, DirNotes
 
 
 class RegistrationForm(forms.ModelForm):
@@ -71,11 +71,15 @@ class LoginForm(forms.ModelForm):
         return self.cleaned_data
 
     class Meta:
+
         model = User
         fields = ['username', 'password']
 
 
-class SendReport(forms.ModelForm):
+class SendEngReport(forms.ModelForm):
+
+    tag_list = [('Без замечаний', 'Без замечаний'), ('Прямой эфир', 'Прямой эфир'),
+                ('Запись', 'Запись')]
 
     text = forms.Textarea()
 
@@ -90,6 +94,40 @@ class SendReport(forms.ModelForm):
     class Meta:
         model = EngRec
         fields = ['report_date', 'tags', 'text']
+
+
+class SendDirReport(forms.ModelForm):
+
+    text = forms.Textarea()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['text'].label = 'Текст отчета'
+        self.fields['report_date'].label = 'Отчет за'
+
+    def clean(self):
+        return self.cleaned_data
+
+    class Meta:
+        model = DirRec
+        fields = ['report_date', 'tags', 'text']
+
+
+class AddEngNote(forms.ModelForm):
+
+    text = forms.Textarea()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['message'].label = 'Текст заметки'
+
+    def clean(self):
+        return self.cleaned_data
+
+    class Meta:
+        model = EngNotes
+        fields = ['message']
+
 
 
 

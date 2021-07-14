@@ -8,5 +8,10 @@ urlpatterns = [
     path('регистрация/', views.RegistrationView.as_view(), name='регистрация'),
     path('login/', views.LoginView.as_view(), name='login'),
     path('logout/', views.user_logout, name='logout'),
-    path('добавить запись/', views.SendReportView.as_view(), name='добавить запись')
+    path('добавить запись инженеров/', views.SendEngReportView.as_view(), name='добавить запись инженеров'),
+    path('добавить запись режиссеров/', views.SendDirReportView.as_view(), name='добавить запись режиссеров'),
+    path('добавить заметку инженеров/', views.AddEngNoteView.as_view(), name='добавить заметку инженеров'),
+    path('удалить заметку/<int:note_id>', views.delete_note, name='удалить заметку'),
 ]
+
+

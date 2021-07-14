@@ -10,10 +10,6 @@ class Record(models.Model):
     text = models.TextField(default='', verbose_name='')
     report_date = models.DateField(default=timezone.now,  verbose_name='За какое число')
 
-
-
-
-
     def publish(self):
         self.created_date = timezone.now()
         self.save()
@@ -27,10 +23,11 @@ class Record(models.Model):
 
 
 class EngRec(Record):
-    tag_list = [('Без замечаний', 'Без замечаний'), ('Прямой эфир', 'Прямой эфир'),
-                ('Запись', 'Запись')]
-    tags = models.TextField(default='Без замечаний', max_length=20, choices=tag_list, verbose_name='Теги')
 
+    tag_list = [('Без замечаний', 'Без замечаний'), ('Прямой эфир', 'Прямой эфир'),
+                ('Запись', 'Запись'), ('Прямой эфир + Запись', 'Прямой эфир + Запись')]
+
+    tags = models.TextField(default='Без замечаний', max_length=20, choices=tag_list, verbose_name='Теги')
 
     def publish(self):
         self.created_date = timezone.now()
@@ -46,28 +43,59 @@ class EngRec(Record):
 
 class DirRec(Record):
     tag_list = [('Без замечаний', 'Без замечаний'), ('Прямой эфир', 'Прямой эфир'),
-                ('Запись', 'Запись')]
-    tags = models.TextField(default='Без замечаний', max_length=20, choices=tag_list, verbose_name='Теги')
-
+                ('Запись', 'Запись'), ('Прямой эфир + Запись', 'Прямой эфир + Запись')]
+    tags = models.TextField(default='Без замечаний', max_length=50, choices=tag_list, verbose_name='Теги')
 
     def publish(self):
         self.created_date = timezone.now()
         self.save()
 
     def __str__(self):
-        return self.str(self.report_date)+' '+str(self.author)
+        return str(self.report_date)+' '+str(self.author)
 
     class Meta:
         verbose_name = 'Запись в журнал режиссеров'
         verbose_name_plural = 'Записи в журнале режиссеров'
 
 
-class EngNotes(models.Model):
+class Notes(models.Model):
     message = models.TextField(default='', verbose_name='Текст заметки')
     created_date = models.DateField(default=timezone.now, verbose_name='Дата')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                verbose_name='от')
 
+    def publish(self):
+        self.created_date = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return str(self.created_date)+' '+str(self.author)
+
     class Meta:
         verbose_name = 'Заметка'
         verbose_name_plural = 'Заметки'
+
+
+class EngNotes(Notes):
+
+    def publish(self):
+        self.created_date = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return str(self.created_date)+' '+str(self.author)
+
+    class Meta:
+        verbose_name = 'Заметка инженеров'
+        verbose_name_plural = 'Заметки инженеров'
+
+
+class DirNotes(Notes):
+
+    def publish(self):
+        self.created_date = timezone.now()
+        self.save()
+
+    class Meta:
+        verbose_name = 'Заметка режиссеров'
+        verbose_name_plural = 'Заметки режиссеров'
