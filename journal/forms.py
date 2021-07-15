@@ -1,7 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from django.contrib.admin.widgets import AdminDateWidget
-from .models import Record, EngRec, DirRec, EngNotes, DirNotes
+from .models import EngRec, DirRec, EngNotes, DirNotes
 
 
 class RegistrationForm(forms.ModelForm):
