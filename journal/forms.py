@@ -128,5 +128,21 @@ class AddEngNote(forms.ModelForm):
         fields = ['message']
 
 
+class AddDirNote(forms.ModelForm):
+
+    text = forms.Textarea()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['message'].label = 'Текст заметки'
+
+    def clean(self):
+        return self.cleaned_data
+
+    class Meta:
+        model = DirNotes
+        fields = ['message']
+
+
 
 

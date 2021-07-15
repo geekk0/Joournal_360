@@ -11,7 +11,7 @@ from itertools import *
 from operator import *
 
 from .models import EngRec, DirRec, EngNotes, DirNotes, Notes
-from .forms import LoginForm, RegistrationForm, SendEngReport, SendDirReport, AddEngNote
+from .forms import LoginForm, RegistrationForm, SendEngReport, SendDirReport, AddEngNote, AddDirNote
 
 
 def rec_list(request):
@@ -162,8 +162,7 @@ class SendDirReportView(SendEngReportView):
 
             report.author = request.user
             report.created_date = timezone.now()
-            report.tags.set(form['tags'])
-                #= form.cleaned_data['tags']
+            report.tags = form.cleaned_data['tags']
             report.save()
 
             return HttpResponseRedirect('/')
@@ -186,6 +185,28 @@ class AddEngNoteView(View):
     def post(self, request, *args, **kwargs):
 
         form = AddEngNote(request.POST or None)
+
+        if form.is_valid():
+            report = form.save(commit=False)
+
+            report.author = request.user
+            report.created_date = timezone.now()
+            report.save()
+
+            return HttpResponseRedirect('/')
+
+
+class AddDirNoteView(View):
+
+    def get(self, request, *args, **kwargs):
+        form = AddDirNote(request.POST or None)
+        context = {'form': form}
+
+        return render(request, 'add_note.html', context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = AddDirNote(request.POST or None)
 
         if form.is_valid():
             report = form.save(commit=False)
