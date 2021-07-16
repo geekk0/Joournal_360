@@ -3,17 +3,44 @@
 
 
 {% block title %}
-    <title>Журнал 360</title>
+
+    <title>Результаты поиска:</title>
+
 {% endblock %}
 
 
-{% block content  %}
+
+{% block content %}
+
+<script src="https://code.jquery.com/jquery-3.6.0.js"
+        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
+    <script type="text/javascript">
+
+
+    let input_text = '{{ input_text }}'
+
+    $(document).ready(function(){
+    Highlight();
+
+    });
+
+    function Highlight() {
+
+
+
+        window.find(input_text);
+
+}
+
+
+    </script>
 
 <div class="search-label-icon">
 
 
     <form class="search-label-icon" action="{% url 'искать в записях инженеров' %}" method="get">
-        <input name="q" type="text" id="box" placeholder="Найти в записях...">
+        <input name="q" type="text" placeholder={{ input_text }}>
     </form>
 
 
@@ -26,17 +53,12 @@
     <th style="width:15%">Отправил:</th>
     <th style="width:55%">Текст</th>
 
-{%  for recs in records_list %}
+{%  for recs in search_query %}
     <tr>
-         <td style="width:15%; text-align: center;">{{ recs.report_date }}</td>
-         <td style="width:15%; text-align: center;">{{ recs.tags }}</td>
-         <td style="width:15%; text-align: center;">{{ recs.author }}</td>
-         {% if recs.text|length > 70 %}
-                <td style="width:55%">{{recs.text|truncatechars:300 }}
-                <a href="{% url 'запись' role recs.id  %}">Читать полностью</a>
-         {% else %}
-                 <td style="width:60%">{{recs.text }}
-         {% endif %}
+        <td style="width:15%; text-align: center">{{ recs.report_date }}</td>
+        <td style="width:15%; text-align: center">{{ recs.tags }}</td>
+        <td style="width:15%; text-align: center">{{ recs.author }}</td>
+        <td style="width:60%; min-width: 60%">{{ recs.text }}</td>
 
     </tr>
 

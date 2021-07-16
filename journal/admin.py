@@ -6,15 +6,19 @@ class EngRecAdmin(admin.ModelAdmin):
 
     fields = ['created_date', 'author', 'tags', 'report_date', 'text']
 
-    list_display = ("id", "report_date", "author")
-    search_fields = "tags__startswith", "id__iexact"
+    list_filter = ('author', 'tags')
+
+    list_display = ("id", "report_date", "tags", "author")
+    search_fields = "tags__istartswith", "id__iexact"
 
 class DirRecAdmin(admin.ModelAdmin):
 
     fields = ['created_date', 'author', 'tags', 'report_date', 'text']
 
-    list_display = ("id", "report_date", "author", "tags")
-    search_fields = "tags__startswith", "id__iexact"
+    list_filter = ('author', 'tags')
+
+    list_display = ("id", "report_date", "tags", "author")
+    search_fields = "tags__istartswith", "id__iexact"
 
 
 class EngNotesAdmin(admin.ModelAdmin):

@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.generic import DetailView, View
-from django.contrib.auth.models import User, Group
+from django.views.generic import TemplateView, ListView
 
 from itertools import *
 from operator import *
@@ -216,3 +216,44 @@ class AddDirNoteView(View):
             report.save()
 
             return HttpResponseRedirect('/')
+
+
+def search_eng_recs(request):
+
+    input_text = request.GET.get('q')
+
+    #search_query = EngRec.objects.filter(text__icontains=input_text)
+
+    roles = []
+    role = ''
+    records_list = None
+    notes = None
+
+    for g in request.user.groups.all():
+        roles.append(g.name)
+
+    if not roles:
+        records_list = None
+        return render(request, 'not_in_group.html')
+
+    else:
+
+        role = roles[0]
+
+        if role == 'Техдирекция':
+            search_query = EngRec.objects.filter(text__icontains=input_text)
+            notes = EngNotes.objects.order_by('-created_date')
+
+        elif role == 'Режиссеры':
+            search_query = DirRec.objects.filter(text__icontains=input_text)
+            notes = DirNotes.objects.order_by('-created_date')
+
+        elif role == 'Все отчеты':
+            search_query = list(chain(EngRec.objects.filter(text__icontains=input_text),
+                                      DirRec.objects.filter(text__icontains=input_text)))
+            notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
+            notes.sort(key=attrgetter('created_date'), reverse=True)
+
+        context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role}
+
+    return render(request, 'search_result.html', context)
