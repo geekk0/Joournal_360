@@ -51,7 +51,8 @@
     <th style="width:15%">Отправил:</th>
     <th style="width:55%">Текст</th>
 
-{%  for recs in search_query %}
+
+    {%  for recs in search_query %}
     <tr>
         <td style="width:15%; text-align: center">{{ recs.report_date }}</td>
         <td style="width:15%; text-align: center">{{ recs.tags }}</td>
