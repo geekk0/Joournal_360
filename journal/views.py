@@ -34,26 +34,42 @@ def get_role(request):
         else:
 
             role = roles[0]
+        return role
 
-            if role == 'Техдирекция':
-                records_list = EngRec.objects.order_by('-report_date')
-                notes = EngNotes.objects.order_by('-created_date')
 
-            elif role == 'Режиссеры':
-                records_list = DirRec.objects.order_by('-report_date')
-                notes = DirNotes.objects.order_by('-created_date')
+def rec_list(request):
 
-            elif role == 'Все отчеты':
-                records_list = list(chain(EngRec.objects.all(), DirRec.objects.all()))
-                records_list.sort(key=attrgetter('report_date'), reverse=True)
-                notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
-                notes.sort(key=attrgetter('created_date'), reverse=True)
+    role = get_role(request)
+    group_list = User.objects.filter(groups__name=role)
+    taglist = None
 
-        context = {'records_list': records_list, 'notes': notes, 'role': role}
-        return render(request, 'rec_list.html', context)
+    if role == 'Техдирекция':
+        records_list = EngRec.objects.order_by('-report_date')
+        notes = EngNotes.objects.order_by('-created_date')
+        taglist = EngRec.tag_list
+
+    elif role == 'Режиссеры':
+        records_list = DirRec.objects.order_by('-report_date')
+        notes = DirNotes.objects.order_by('-created_date')
+        taglist = DirRec.tag_list
+
+    elif role == 'Все отчеты':
+        records_list = list(chain(EngRec.objects.all(), DirRec.objects.all()))
+        records_list.sort(key=attrgetter('report_date'), reverse=True)
+        notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
+        notes.sort(key=attrgetter('created_date'), reverse=True)
+        taglist = chain(EngRec.tag_list, DirRec.tag_list)
+        group_list = User.objects.all()
 
     else:
         return HttpResponseRedirect('login/')
+
+    context = {'records_list': records_list, 'notes': notes, 'role': role,
+           'group_list': group_list, "taglist": taglist}
+    return render(request, 'rec_list.html', context)
+
+
+
 
 
 def record_full_text(request, rec_id, role):
@@ -220,42 +236,61 @@ class AddDirNoteView(View):
             return HttpResponseRedirect('/')
 
 
-def search_eng_recs(request):
+def search_recs(request):
+
+
 
     input_text = request.GET.get('q')
 
-    #search_query = EngRec.objects.filter(text__icontains=input_text)
+    role = get_role(request)
 
-    roles = []
-    role = ''
-    records_list = None
-    notes = None
+    if role == 'Техдирекция':
+        search_query = EngRec.objects.filter(text__icontains=input_text)
+        notes = EngNotes.objects.order_by('-created_date')
 
-    for g in request.user.groups.all():
-        roles.append(g.name)
+    elif role == 'Режиссеры':
+        search_query = DirRec.objects.filter(text__icontains=input_text)
+        notes = DirNotes.objects.order_by('-created_date')
 
-    if not roles:
+    elif role == 'Все отчеты':
+        search_query = list(chain(EngRec.objects.filter(text__icontains=input_text),
+                                  DirRec.objects.filter(text__icontains=input_text)))
+        notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
+        notes.sort(key=attrgetter('created_date'), reverse=True)
+    else:
         records_list = None
         return render(request, 'not_in_group.html')
 
-    else:
-
-        role = roles[0]
-
-        if role == 'Техдирекция':
-            search_query = EngRec.objects.filter(text__icontains=input_text)
-            notes = EngNotes.objects.order_by('-created_date')
-
-        elif role == 'Режиссеры':
-            search_query = DirRec.objects.filter(text__icontains=input_text)
-            notes = DirNotes.objects.order_by('-created_date')
-
-        elif role == 'Все отчеты':
-            search_query = list(chain(EngRec.objects.filter(text__icontains=input_text),
-                                      DirRec.objects.filter(text__icontains=input_text)))
-            notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
-            notes.sort(key=attrgetter('created_date'), reverse=True)
-
-        context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role}
+    context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role}
 
     return render(request, 'search_result.html', context)
+
+
+def filter(request):
+
+    author = request.GET.get('author')
+
+    tag = request.GET.get('tag')
+
+    qs_filtered_by_author = EngRec.objects.all().order_by('-report_date')
+
+    if author != 'Выберите автора':
+
+        qs_filtered_by_author = EngRec.objects.filter(author=author).order_by('-report_date')
+
+    if tag != 'Выберите тег':
+
+        qs_filtered_by_author = qs_filtered_by_author.filter(tags__iexact=tag).order_by('-report_date')
+
+    context = {'qs_filtered_by_author': qs_filtered_by_author}
+
+    return render(request, 'search_result.html', context)
+
+
+
+
+
+
+
+
+
