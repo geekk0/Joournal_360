@@ -98,11 +98,22 @@ table th {
 
 div.search-label-icon {
     display: block;
-    margin-left: auto;
+    margin-left: 59%;
     margin-right: auto;
     width: 10%;
-    margin-top: 5%;
+
 }
+
+.selector-filter {
+    width: 40%;
+    float: left;
+    margin-left:10%;
+}
+
+.bar {
+ margin-top: 4%;
+}
+
 
 
 .highlight { background-color: yellow }

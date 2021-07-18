@@ -39,7 +39,7 @@
 <div class="search-label-icon">
 
 
-    <form class="search-label-icon" action="{% url 'искать в записях инженеров' %}" method="get">
+    <form class="search-label-icon" action="{% url 'поиск' %}" method="get">
         <input name="q" type="text" placeholder={{ input_text }}>
     </form>
 
@@ -60,8 +60,19 @@
         <td style="width:60%; min-width: 60%">{{ recs.text }}</td>
 
     </tr>
+    {%  endfor %}
 
-{%  endfor %}
+
+    {%  for recs in qs_filtered_by_author %}
+    <tr>
+        <td style="width:15%; text-align: center">{{ recs.report_date }}</td>
+        <td style="width:15%; text-align: center">{{ recs.tags }}</td>
+        <td style="width:15%; text-align: center">{{ recs.author }}</td>
+        <td style="width:60%; min-width: 60%">{{ recs.text }}</td>
+
+    </tr>
+
+    {%  endfor %}
 
 </table>
 

@@ -12,8 +12,9 @@ urlpatterns = [
     path('добавить запись режиссеров/', views.SendDirReportView.as_view(), name='добавить запись режиссеров'),
     path('добавить заметку инженеров/', views.AddEngNoteView.as_view(), name='добавить заметку инженеров'),
     path('добавить заметку режиссеров/', views.AddDirNoteView.as_view(), name='добавить заметку режиссеров'),
-    path('искать в записях инженеров/', views.search_eng_recs, name='искать в записях инженеров'),
+    path('поиск/', views.search_recs, name='поиск'),
     path('удалить заметку/<int:note_id>', views.delete_note, name='удалить заметку'),
+    path('фильтр/', views.filter, name='фильтр'),
 ]
 
 

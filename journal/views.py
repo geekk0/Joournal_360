@@ -6,6 +6,8 @@ from django.shortcuts import render
 from django.utils import timezone
 from django.views.generic import DetailView, View
 from django.views.generic import TemplateView, ListView
+from django.contrib.auth.models import User
+
 
 from itertools import *
 from operator import *
@@ -14,7 +16,7 @@ from .models import EngRec, DirRec, EngNotes, DirNotes, Notes
 from .forms import LoginForm, RegistrationForm, SendEngReport, SendDirReport, AddEngNote, AddDirNote
 
 
-def rec_list(request):
+def get_role(request):
 
     if request.user.is_authenticated:
         roles = []
@@ -235,7 +237,6 @@ def search_eng_recs(request):
     if not roles:
         records_list = None
         return render(request, 'not_in_group.html')
-
 
     else:
 
