@@ -9,15 +9,56 @@
 
 {% block content  %}
 
-<div class="search-label-icon">
+    <div class="bar">
+
+        <div class="selector-container">
+
+            <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
+                <label for="author"></label>
 
 
-    <form class="search-label-icon" action="{% url 'искать в записях инженеров' %}" method="get">
-        <input name="q" type="text" id="box" placeholder="Найти в записях...">
-    </form>
+                <label for="tag"></label>
+                <select id="tag" name="tag">
+
+                    <option>Выберите тег</option>
+
+                    {% for key, value in taglist %}
 
 
-</div>
+                        <option content={{ value }}>{{ value }}</option>
+
+                    {% endfor %}
+
+                </select>
+
+
+                <select id="author" name="author">
+
+                    <option >Выберите автора</option>
+
+                    {% for author in group_list %}
+
+                        <option value={{ author.id }}>{{ author }}</option>
+
+                    {% endfor %}
+                </select>
+
+                <input type="submit" value="Применить фильтр">
+            </form>
+
+        </div>
+
+        <div class="search-label-icon">
+
+
+            <form class="search-label-icon" action="{% url 'поиск' %}" method="get">
+                <input name="q" type="text" id="box" placeholder="Найти в записях...">
+            </form>
+
+
+        </div>
+
+    </div>
 
 
 <table class="record_layout">
