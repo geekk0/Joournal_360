@@ -236,6 +236,7 @@ def search_eng_recs(request):
         records_list = None
         return render(request, 'not_in_group.html')
 
+
     else:
 
         role = roles[0]
