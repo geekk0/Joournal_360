@@ -257,7 +257,6 @@ def find(request):
 
     taglist = None
 
-
     if role == 'Техдирекция':
         search_query = search_query_e
         notes = EngNotes.objects.order_by('-created_date')
@@ -268,33 +267,33 @@ def find(request):
         notes = DirNotes.objects.order_by('-created_date')
         taglist = DirRec.tag_list
 
+    elif role == 'Все отчеты':
+        group_list = User.objects.all()
+
     if role is None:
         return render(request, 'not_in_group.html')
 
     if 'Выберите' not in author:
 
         search_query = search_query.filter(author=author).order_by('-report_date')
-        search_query_e = search_query_e.filter(author=author).order_by('-report_date')
-        search_query_d = search_query_d.filter(author=author).order_by('-report_date')
+        search_query_e = search_query_e.filter(author=author)
+        search_query_d = search_query_d.filter(author=author)
         author_name = group_list.get(id=author)
 
     if tag != 'Выберите тег':
 
         search_query = search_query.filter(tags__iexact=tag).order_by('-report_date')
-        search_query_e = search_query_e.filter(tags__iexact=tag).order_by('-report_date')
-        search_query_d = search_query_d.filter(tags__iexact=tag).order_by('-report_date')
+        search_query_e = search_query_e.filter(tags__iexact=tag)
+        search_query_d = search_query_d.filter(tags__iexact=tag)
 
     if role == "Все отчеты":
 
         search_query = list(chain(search_query_e, search_query_d))
-
+        search_query.sort(key=attrgetter('report_date'), reverse=True)
         notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
         notes.sort(key=attrgetter('created_date'), reverse=True)
 
         taglist = chain(EngRec.tag_list, DirRec.tag_list)
-        group_list = User.objects.all()
-
-
 
     context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role,
                "taglist": taglist, "author_name": author_name, "tag": tag, "group_list": group_list, "author": author}
