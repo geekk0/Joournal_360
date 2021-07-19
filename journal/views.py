@@ -138,8 +138,6 @@ class RegistrationView(View):
         return render(request, 'registration.html', context)
 
 
-
-
 class SendEngReportView(View):
 
     def get(self, request, *args, **kwargs):
@@ -240,6 +238,10 @@ def find(request):
 
     role = get_role(request)
 
+    start_date = request.GET.get('startdate')
+
+    stop_date = request.GET.get('stopdate')
+
     input_text = request.GET.get('q')
 
     author = request.GET.get('author')
@@ -273,6 +275,12 @@ def find(request):
     if role is None:
         return render(request, 'not_in_group.html')
 
+    if start_date:
+        search_query = search_query.filter(report_date__gte=start_date, report_date__lte=stop_date).order_by(
+            '-report_date')
+        search_query_e = search_query_e.filter(report_date__gte=start_date, report_date__lte=stop_date)
+        search_query_d = search_query_e.filter(report_date__gte=start_date, report_date__lte=stop_date)
+
     if 'Выберите' not in author:
 
         search_query = search_query.filter(author=author).order_by('-report_date')
@@ -296,7 +304,8 @@ def find(request):
         taglist = chain(EngRec.tag_list, DirRec.tag_list)
 
     context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role,
-               "taglist": taglist, "author_name": author_name, "tag": tag, "group_list": group_list, "author": author}
+               "taglist": taglist, "author_name": author_name, "tag": tag, "group_list": group_list,
+               "start_date": start_date, "stop_date": stop_date, "author": author}
 
     return render(request, 'search_result.html', context)
 
