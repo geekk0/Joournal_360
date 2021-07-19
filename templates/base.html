@@ -30,11 +30,11 @@
 
             {% if role == 'Техдирекция' %}
 
-                <a class="authorization" href="{% url 'добавить запись инженеров' %}">Добавить запись</a>
+                <a href="{% url 'добавить запись инженеров' %}"><img title="Добавить запись" style='width:25%' src="{% static 'images/inkwell.png'%}"></a>
 
             {% elif role == 'Режиссеры' %}
 
-                <a class="authorization" href="{% url 'добавить запись режиссеров' %}">Добавить запись</a>
+                <a href="{% url 'добавить запись режиссеров' %}"><img title="Добавить запись" style='width:25%' src="{% static 'images/inkwell.png'%}"></a>
 
             {% endif %}
 
@@ -68,7 +68,8 @@
         <div class="logout">
             {% if request.user.is_authenticated %}
 
-                <a class="authorization" href="{% url 'logout' %}">Выйти</a>
+                <a class="authorization" href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
+                style="width:30%"></a>
 
             {% endif %}
         </div>

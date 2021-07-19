@@ -90,12 +90,14 @@
     <div>
         {% if role == 'Техдирекция' %}
 
-            <a class="authorization" href="{% url 'добавить заметку инженеров' %}">+</a>
+            <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
+                <img src="{% static 'images/plus_circle_black.png'%}" title="Добавить заметку" style="width:100%"></a>
         {% endif %}
 
         {% if role == 'Режиссеры' %}
 
-            <a class="authorization" href="{% url 'добавить заметку режиссеров' %}">+</a>
+            <a class="authorization" href="{% url 'добавить заметку режиссеров' %}">
+                <img src="{% static 'images/plus_circle_black.png'%}" title="Добавить заметку" style="width:100%"></a>
         {% endif %}
     </div>
 

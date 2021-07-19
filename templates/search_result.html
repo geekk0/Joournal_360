@@ -82,7 +82,7 @@
 
                     <input type="submit" value="Найти">
 
-                    <input type="button" onclick="window.location.href = 'http://127.0.0.1:8000';" value="Очистить"/>
+                    <input type="button" onclick="window.location.href = {{ BASE_DIR }}'/'" value="Очистить"/>
                 </form>
 
             </div>
@@ -122,12 +122,14 @@
     <div>
         {% if role == 'Техдирекция' %}
 
-            <a class="authorization" href="{% url 'добавить заметку инженеров' %}">+</a>
+            <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
+                <img src="{% static 'images/plus_circle_black.png'%}" title="Добавить заметку" style="width:100%"></a>
         {% endif %}
 
         {% if role == 'Режиссеры' %}
 
-            <a class="authorization" href="{% url 'добавить заметку режиссеров' %}">+</a>
+            <a class="authorization" href="{% url 'добавить заметку режиссеров' %}">
+                <img src="{% static 'images/plus_circle_black.png'%}" title="Добавить заметку" style="width:100%"></a>
         {% endif %}
     </div>
 

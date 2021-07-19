@@ -106,7 +106,7 @@ div.search-label-icon {
 
 .selector-filter {
     float: left;
-    margin-left:6%;
+    margin-left:3%;
 }
 
 .bar {
@@ -130,6 +130,8 @@ textarea {
 
 }
 
-
+#box {
+width: 15%;
+}
 
 .highlight { background-color: yellow }
