@@ -43,21 +43,12 @@
                     {% endfor %}
                 </select>
 
-                <input type="submit" value="Применить фильтр">
+                <input name="q" type="text" id="box" placeholder="В тексте...">
+
+                <input type="submit" value="Найти">
             </form>
 
         </div>
-
-        <div class="search-label-icon">
-
-
-            <form class="search-label-icon" action="{% url 'поиск' %}" method="get">
-                <input name="q" type="text" id="box" placeholder="Найти в записях...">
-            </form>
-
-
-        </div>
-
     </div>
 
 

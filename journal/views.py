@@ -12,7 +12,7 @@ from django.contrib.auth.models import User
 from itertools import *
 from operator import *
 
-from .models import EngRec, DirRec, EngNotes, DirNotes, Notes
+from .models import EngRec, DirRec, EngNotes, DirNotes, Notes, Record
 from .forms import LoginForm, RegistrationForm, SendEngReport, SendDirReport, AddEngNote, AddDirNote
 
 
@@ -236,53 +236,68 @@ class AddDirNoteView(View):
             return HttpResponseRedirect('/')
 
 
-def search_recs(request):
-
-
-
-    input_text = request.GET.get('q')
+def find(request):
 
     role = get_role(request)
 
-    if role == 'Техдирекция':
-        search_query = EngRec.objects.filter(text__icontains=input_text)
-        notes = EngNotes.objects.order_by('-created_date')
-
-    elif role == 'Режиссеры':
-        search_query = DirRec.objects.filter(text__icontains=input_text)
-        notes = DirNotes.objects.order_by('-created_date')
-
-    elif role == 'Все отчеты':
-        search_query = list(chain(EngRec.objects.filter(text__icontains=input_text),
-                                  DirRec.objects.filter(text__icontains=input_text)))
-        notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
-        notes.sort(key=attrgetter('created_date'), reverse=True)
-    else:
-        records_list = None
-        return render(request, 'not_in_group.html')
-
-    context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role}
-
-    return render(request, 'search_result.html', context)
-
-
-def filter(request):
+    input_text = request.GET.get('q')
 
     author = request.GET.get('author')
 
+    author_name = 'Выберите автора'
+
     tag = request.GET.get('tag')
 
-    qs_filtered_by_author = EngRec.objects.all().order_by('-report_date')
+    group_list = User.objects.filter(groups__name=role)
 
-    if author != 'Выберите автора':
+    search_query = EngRec.objects.all()
 
-        qs_filtered_by_author = EngRec.objects.filter(author=author).order_by('-report_date')
+    search_query_e = EngRec.objects.filter(text__icontains=input_text).order_by('-report_date')
+    search_query_d = DirRec.objects.filter(text__icontains=input_text).order_by('-report_date')
+
+    taglist = None
+
+
+    if role == 'Техдирекция':
+        search_query = search_query_e
+        notes = EngNotes.objects.order_by('-created_date')
+        taglist = EngRec.tag_list
+
+    elif role == 'Режиссеры':
+        search_query = search_query_d
+        notes = DirNotes.objects.order_by('-created_date')
+        taglist = DirRec.tag_list
+
+    if role is None:
+        return render(request, 'not_in_group.html')
+
+    if 'Выберите' not in author:
+
+        search_query = search_query.filter(author=author).order_by('-report_date')
+        search_query_e = search_query_e.filter(author=author).order_by('-report_date')
+        search_query_d = search_query_d.filter(author=author).order_by('-report_date')
+        author_name = group_list.get(id=author)
 
     if tag != 'Выберите тег':
 
-        qs_filtered_by_author = qs_filtered_by_author.filter(tags__iexact=tag).order_by('-report_date')
+        search_query = search_query.filter(tags__iexact=tag).order_by('-report_date')
+        search_query_e = search_query_e.filter(tags__iexact=tag).order_by('-report_date')
+        search_query_d = search_query_d.filter(tags__iexact=tag).order_by('-report_date')
 
-    context = {'qs_filtered_by_author': qs_filtered_by_author}
+    if role == "Все отчеты":
+
+        search_query = list(chain(search_query_e, search_query_d))
+
+        notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
+        notes.sort(key=attrgetter('created_date'), reverse=True)
+
+        taglist = chain(EngRec.tag_list, DirRec.tag_list)
+        group_list = User.objects.all()
+
+
+
+    context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role,
+               "taglist": taglist, "author_name": author_name, "tag": tag, "group_list": group_list, "author": author}
 
     return render(request, 'search_result.html', context)
 

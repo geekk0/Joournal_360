@@ -36,15 +36,53 @@
 
     </script>
 
-<div class="search-label-icon">
+
+        <div class="bar">
+
+            <div class="selector-container">
+
+                <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
+                    <label for="author"></label>
 
 
-    <form class="search-label-icon" action="{% url 'поиск' %}" method="get">
-        <input name="q" type="text" placeholder={{ input_text }}>
-    </form>
+                    <label for="tag"></label>
+                    <select id="tag" name="tag">
+
+                        <option>{{ tag }}</option>
+
+                        {% for key, value in taglist %}
 
 
-</div>
+                            <option content={{ value }}>{{ value }}</option>
+
+                        {% endfor %}
+
+                    </select>
+
+
+                    <select id="author" name="author">
+
+                        <option value={{ author }}>{{ author_name }}</option>
+
+                        {% for author in group_list %}
+
+                            <option value={{ author.id }}>{{ author }}</option>
+
+                        {% endfor %}
+                    </select>
+
+                    <input name="q" type="text" id="box" placeholder={{ input_text }}>
+
+                    <input type="submit" value="Найти">
+
+                    <input type="button" onclick="window.location.href = 'http://127.0.0.1:8000';" value="Очистить"/>
+                </form>
+
+            </div>
+        </div>
+
+
+
 <table class="record_layout">
     <th style="width:15%">Отчет за:</th>
     <th style="width:15%">Теги (проблемы)</th>
@@ -53,26 +91,23 @@
 
 
     {%  for recs in search_query %}
-    <tr>
-        <td style="width:15%; text-align: center">{{ recs.report_date }}</td>
-        <td style="width:15%; text-align: center">{{ recs.tags }}</td>
-        <td style="width:15%; text-align: center">{{ recs.author }}</td>
-        <td style="width:60%; min-width: 60%">{{ recs.text }}</td>
-
-    </tr>
+            <tr>
+                <td style="width:15%; text-align: center">{{ recs.report_date }}</td>
+                <td style="width:15%; text-align: center">{{ recs.tags }}</td>
+                <td style="width:15%; text-align: center">{{ recs.author }}</td>
+                {% if input_text == '' %}
+                    {% if recs.text|length > 70 %}
+                        <td style="width:55%">{{recs.text|truncatechars:300 }}
+                        <a href="{% url 'запись' role recs.id  %}">Читать полностью</a>
+                    {% else %}
+                        <td style="width:60%; min-width: 60%">{{ recs.text }}</td>
+                    {% endif %}
+                {% else %}
+                    <td style="width:60%; min-width: 60%">{{ recs.text }}</td>
+                {% endif %}
+            </tr>
     {%  endfor %}
 
-
-    {%  for recs in qs_filtered_by_author %}
-    <tr>
-        <td style="width:15%; text-align: center">{{ recs.report_date }}</td>
-        <td style="width:15%; text-align: center">{{ recs.tags }}</td>
-        <td style="width:15%; text-align: center">{{ recs.author }}</td>
-        <td style="width:60%; min-width: 60%">{{ recs.text }}</td>
-
-    </tr>
-
-    {%  endfor %}
 
 </table>
 

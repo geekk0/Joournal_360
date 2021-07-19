@@ -105,13 +105,29 @@ div.search-label-icon {
 }
 
 .selector-filter {
-    width: 40%;
     float: left;
     margin-left:10%;
 }
 
 .bar {
  margin-top: 4%;
+}
+
+textarea {
+ resize:vertical;
+ width: 80% !important;
+}
+
+
+.btn {
+ margin-top: 10px;
+}
+
+.btn-success {
+ color:#fff;
+ background-color:#b51212 !important;
+ border-color:#b51212 !important;
+
 }
 
 
