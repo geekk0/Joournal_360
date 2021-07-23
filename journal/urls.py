@@ -14,6 +14,8 @@ urlpatterns = [
     path('добавить заметку режиссеров/', views.AddDirNoteView.as_view(), name='добавить заметку режиссеров'),
     path('удалить заметку/<int:note_id>', views.delete_note, name='удалить заметку'),
     path('фильтр/', views.find, name='фильтр'),
+    path('отправить отчет/', views.send_report, name='отправить отчет'),
+    path('редактировать/<int:note_id>', views.edit_note, name='редактировать'),
 ]
 
 

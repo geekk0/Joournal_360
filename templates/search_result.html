@@ -33,11 +33,14 @@
 
 }
 
-
     </script>
 
 
-        <div class="bar">
+    <div class="bar">
+
+            <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
+                <img src="{% static 'images/plus_circle_black.png'%}" title="Добавить заметку" style="width: 30%;
+                                                        margin-left: 35%;"></a>
 
             <div class="selector-container">
 
@@ -45,35 +48,37 @@
 
                     <label>C:</label>
                     <input type="date" name="startdate" value="{{ start_date }}" max="2025-06-04">
-
+                    <br>
                     <label>По:</label>
                     <input type="date" name="stopdate" value="{{ stop_date }}" max="2025-06-04">
+                    <br>
 
+                    <br>
+
+                    {% if role == 'Все отчеты' %}
+
+                        <br>
+                            <label for="group"></label>
+                            <select id="group" name="group">
+
+                            <option value={{ current_group_name }}>{{ current_group_name }}</option>
+
+                            {% for group in group_list %}
+
+                                <option value={{ group }}>{{ group }}</option>
+
+                            {% endfor %}
+                            </select>
+                    {% endif %}
+                    <br>
                     <label for="author"></label>
-
-
-                    <label for="tag"></label>
-                    <select id="tag" name="tag">
-
-                        <option>{{ tag }}</option>
-
-                        {% for key, value in taglist %}
-
-
-                            <option content={{ value }}>{{ value }}</option>
-
-                        {% endfor %}
-
-                    </select>
-
-
                     <select id="author" name="author">
 
                         <option value={{ author }}>{{ author_name }}</option>
 
-                        {% for author in group_list %}
+                        {% for author in author_list %}
 
-                            <option value={{ author.id }}>{{ author }}</option>
+                            <option value={{ author.id }}>{{ author|truncatechars:18 }}</option>
 
                         {% endfor %}
                     </select>
@@ -86,64 +91,43 @@
                 </form>
 
             </div>
-        </div>
 
+            <br>
+            <br>
+            <div class="username">
 
-<table class="record_layout">
-    <th style="width:15%">Отчет за:</th>
-    <th style="width:15%">Теги (проблемы)</th>
-    <th style="width:15%">Отправил:</th>
-    <th style="width:55%">Текст</th>
+            {{ role }}
 
-
-    {%  for recs in search_query %}
-            <tr>
-                <td style="width:15%; text-align: center">{{ recs.report_date }}</td>
-                <td style="width:15%; text-align: center">{{ recs.tags }}</td>
-                <td style="width:15%; text-align: center">{{ recs.author }}</td>
-                {% if input_text == '' %}
-                    {% if recs.text|length > 70 %}
-                        <td style="width:55%">{{recs.text|truncatechars:300 }}
-                        <a href="{% url 'запись' role recs.id  %}">Читать полностью</a>
-                    {% else %}
-                        <td style="width:60%; min-width: 60%">{{ recs.text }}</td>
-                    {% endif %}
-                {% else %}
-                    <td style="width:60%; min-width: 60%">{{ recs.text }}</td>
-                {% endif %}
-            </tr>
-    {%  endfor %}
-
-
-</table>
-
-<div class="notes_layout">
-
-    <div>
-        {% if role == 'Техдирекция' %}
-
-            <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
-                <img src="{% static 'images/plus_circle_black.png'%}" title="Добавить заметку" style="width:100%"></a>
-        {% endif %}
-
-        {% if role == 'Режиссеры' %}
-
-            <a class="authorization" href="{% url 'добавить заметку режиссеров' %}">
-                <img src="{% static 'images/plus_circle_black.png'%}" title="Добавить заметку" style="width:100%"></a>
-        {% endif %}
     </div>
 
-    <p style="text-align: center">Заметки:</p>
+            <div class="logout">
+                    {% if request.user.is_authenticated %}
 
-    {%  for ns in notes %}
-        <ul>
-         <li class="notes_meta">{{ ns.created_date }}    {{ ns.author }} <a href="{% url 'удалить заметку' ns.id %}"
-         >Удалить</a></li>
-         <li class="notes_text">{{ns.message }}</li>
-        </ul>
+                        <a class="authorization" href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
+                        style="width:30%"></a>
 
-    {%  endfor %}
+                    {% endif %}
+                </div>
 
-</div>
+        </div>
 
+    <div class="records">
+            {% for recs in search_query %}
+                <div class="record_layout" style="border: 2px solid green;">
+                     <p style="text-align: center">{{ recs.report_date }} {{ recs.author }}</p>
+                     <p style="">{{recs.text|linebreaks }}</p>
+                </div>
+            {% endfor %}
+    </div>
+
+    <br>
+    <hr style="height: 2px">
+    <div class="records">
+            {% for recs in all_records %}
+                <div class="record_layout" style="border: 2px solid black;">
+                     <p style="text-align: center">{{ recs.report_date }} {{ recs.author }}</p>
+                     <p style="">{{recs.text|linebreaks }}</p>
+                </div>
+            {% endfor %}
+    </div>
 {% endblock %}

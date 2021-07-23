@@ -1,9 +1,40 @@
-.record_layout {
-    width:70%;
-    display:inline-block;
-    float:left;
-    margin-left: 3%;
+.records {
+    width: 85%;
+    margin-left:auto;
+
 }
+
+
+.record_layout {
+
+    margin-top:1%;
+    border: 1.5px solid black;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 0.8rem; !important;
+
+}
+
+.bar {
+    padding-top: 1.5%;
+    width: 15%;
+    float: left;
+}
+
+.bar input {
+    margin-top: 10%;
+}
+
+.bar select {
+    margin-top: 10% !important;
+}
+
+
+.selector-container {
+    width: 100%;
+    text-align: center;
+}
+
 
 table {
     border-collapse: collapse;
@@ -29,6 +60,8 @@ table th {
 .record_layout ul {
     display:inline-block;
     width: 100%;
+    margin-left: auto;
+    margin-right: auto;
 }
 
 .record_layout li {
@@ -49,27 +82,39 @@ table th {
     float:right;
 }
 
-.notes_layout {
-    display:inline-block;
-    width:20%;
-    border: 1.5px solid #da5959;
-    margin-left: 4%;
+.notes {
+    width: 85%;
+    margin-left:auto;
+
 }
 
-.notes_layout p {
-    margin-top: 2%;
-    margin-bottom: 1rem;
-    width: 20%;
+
+.notes_layout {
+
+    margin-top:0.5%;
+    border: 1.5px solid darkgreen;
     margin-left: auto;
     margin-right: auto;
+    padding-left: 0.8rem; !important;
+    padding-bottom: 0.5rem;
+
 }
 
+.edit_note {
+
+}
+
+
+[type="date"]::-webkit-calendar-picker-indicator {
+    opacity: 0;
+}
+
+
 .notes_layout a {
-    width: 10%;
-    float: left;
-    margin-left: 10%;
+    width: 4%;
     margin-top: 1%;
-    font-size: 24;
+    display: inline-block;
+    margin-left: 30%;
 }
 
 .notes_layout ul {
@@ -105,12 +150,10 @@ div.search-label-icon {
 }
 
 .selector-filter {
-    float: left;
     margin-left:3%;
 }
 
 .bar {
- margin-top: 4%;
 }
 
 textarea {
@@ -131,7 +174,7 @@ textarea {
 }
 
 #box {
-width: 15%;
+width: 90%;
 }
 
 .highlight { background-color: yellow }

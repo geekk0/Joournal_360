@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import EngRec, DirRec, EngNotes, DirNotes
+from .models import EngRec, DirRec, EngNotes, DirNotes, Images
 
 
 class RegistrationForm(forms.ModelForm):
@@ -110,6 +110,14 @@ class SendDirReport(forms.ModelForm):
     class Meta:
         model = DirRec
         fields = ['report_date', 'tags', 'text']
+
+
+class ImageForm(forms.ModelForm):
+    image = forms.ImageField(label='Изображение')
+
+    class Meta:
+        model = Images
+        fields = ('image', )
 
 
 class AddEngNote(forms.ModelForm):

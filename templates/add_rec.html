@@ -19,12 +19,16 @@
         <form action ='' method="POST">
             {% csrf_token %}
             {{ form|crispy }}
+            {{ formset|crispy }}
             <input type="submit" class="btn btn-success" value="Добавить">
         </form>
     </div>
 
 
 </div>
+
+
+
 
 
 {%  endblock %}

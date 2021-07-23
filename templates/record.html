@@ -37,6 +37,17 @@
                     {{ rt.text }}
                 </div>
 
+            <div class="images">
+
+                {% for image in images %}
+
+                    <p>{{ image.record }}</p>
+                    <img src="{{ image.image.url }}">
+                {% endfor %}
+
+
+            </div>
+
             </div>
 
         {% endfor %}

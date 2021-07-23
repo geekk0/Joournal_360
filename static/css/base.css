@@ -1,8 +1,10 @@
 .header {
-    width: 100%;
+    width: 30%;
     display: block;
     padding-top: 20px;
+    float: right;
 }
+
 
 .add_record {
     width:20%;
@@ -32,6 +34,8 @@
 
 .username {
     display:inline-block;
+    text-align: center;
+    width: 100%;
 
 }
 
@@ -43,5 +47,6 @@
 
 .logout {
     display: inline-block;
-    padding-left: 30px;
+    padding-left: 100px;
+    padding-top: 10px;
 }

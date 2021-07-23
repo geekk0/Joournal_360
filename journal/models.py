@@ -1,14 +1,15 @@
 from django.conf import settings
 from django.db import models
 from django.utils import timezone
+from django.template.defaultfilters import slugify
 
 
 class Record(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                verbose_name='Отчет от')
     created_date = models.DateTimeField(default=timezone.now, verbose_name='Дата отправки')
-    text = models.TextField(default='', verbose_name='')
-    report_date = models.DateField(default=timezone.now,  verbose_name='За какое число')
+    text = models.TextField(default='', verbose_name='Текст')
+    report_date = models.DateField(blank=True, default=timezone.now,  verbose_name='За какое число')
 
     def publish(self):
         self.created_date = timezone.now()
@@ -20,6 +21,21 @@ class Record(models.Model):
     class Meta:
         verbose_name = 'Запись'
         verbose_name_plural = 'Записи'
+
+
+"""def get_image_filename(instance, filename):
+    title = instance.record__str__
+    slug = slugify(title)
+    return "record_images/%s-%s" % (slug, filename)"""
+
+
+class Images(models.Model):
+    record = models.ForeignKey(Record, default=None, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='', verbose_name='Загрузить фото', blank=True, null=True)
+
+
+def get_images(rec_name):
+    return Images.objects.get(record=rec_name)
 
 
 class EngRec(Record):
