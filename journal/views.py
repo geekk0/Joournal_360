@@ -98,8 +98,9 @@ def rec_list(request):
     elif role == 'Все отчеты':
         records_list = list(chain(EngRec.objects.all(), DirRec.objects.all()))
         records_list.sort(key=attrgetter('created_date'), reverse=True)
-        notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
-        notes.sort(key=attrgetter('created_date'), reverse=True)
+        notes = None
+        """list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
+        notes.sort(key=attrgetter('created_date'), reverse=True)"""
         taglist = chain(EngRec.tag_list, DirRec.tag_list)
         author_list = User.objects.all()
 
@@ -216,8 +217,6 @@ class SendEngReportView(View):
                     image = form['image']
                     photo = Images(post=report, image=image)
                     photo.save()
-
-            messages.success(request, "Изображение добавлено.")
 
             return HttpResponseRedirect('/')
 
