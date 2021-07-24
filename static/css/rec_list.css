@@ -12,6 +12,7 @@
     margin-left: auto;
     margin-right: auto;
     padding-left: 0.8rem; !important;
+    width: 97%;
 
 }
 
@@ -19,6 +20,12 @@
     padding-top: 1.5%;
     width: 15%;
     float: left;
+    background-color: darkcyan;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    bottom: 0;
 }
 
 .bar input {
@@ -97,6 +104,7 @@ table th {
     margin-right: auto;
     padding-left: 0.8rem; !important;
     padding-bottom: 0.5rem;
+    width: 97%;
 
 }
 
@@ -149,10 +157,6 @@ div.search-label-icon {
 
 }
 
-.selector-filter {
-    margin-left:3%;
-}
-
 .bar {
 }
 
@@ -178,3 +182,7 @@ width: 90%;
 }
 
 .highlight { background-color: yellow }
+
+.logout {
+    width:100%;
+}

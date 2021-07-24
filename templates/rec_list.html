@@ -14,8 +14,8 @@
 <div class="bar">
 
     <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
-                <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись" style="width: 30%;
-                                                        margin-left: 35%;"></a>
+                <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
+                     style="width: 25%; display: block;margin-left: auto;margin-right: auto;"></a>
 
 
 
@@ -78,8 +78,8 @@
     <div class="logout">
             {% if request.user.is_authenticated %}
 
-                <a class="authorization" href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
-                style="width:30%"></a>
+                <a style="width:100%;display:block" class="authorization" href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
+                style="width:15%; display: block;margin-left: auto;margin-right: auto;"></a>
 
             {% endif %}
         </div>
