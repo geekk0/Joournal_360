@@ -126,7 +126,7 @@ class AddEngNote(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['message'].label = 'Текст заметки'
+        self.fields['message'].label = 'Текст записи'
 
     def clean(self):
         return self.cleaned_data

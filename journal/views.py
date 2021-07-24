@@ -56,17 +56,31 @@ def send_report(request):           # Склеивает заметки, зап�
 
         EngNotes.objects.all().delete()
 
+    if role == "Режиссеры":
+
+        full_text = ''
+        author = request.user
+        created_date = timezone.now()
+
+        for note in DirNotes.objects.all():
+            full_text = note.message
+
+        DirRec.objects.create(author=author, created_date=created_date, text=full_text)
+
+        DirNotes.objects.all().delete()
+
     return HttpResponseRedirect('/')
 
 
-def edit_note(request, note_id):
+def edit_note_eng(request, note_id):
+
     note = EngNotes.objects.get(id=note_id)
 
     if request.method != 'POST':
         form = AddEngNote(instance=note, initial={'message': note.message})
         context = {'form': form}
 
-        return render(request, 'add_note.html', context)
+        return render(request, 'edit_note.html', context)
 
     else:
         form = AddEngNote(instance=note, data=request.POST)
@@ -78,12 +92,33 @@ def edit_note(request, note_id):
     return render(request, 'record.html', context)
 
 
+def edit_note_dir(request, note_id):
+
+    note = DirNotes.objects.get(id=note_id)
+    user_name = request.user.username
+
+    if request.method != 'POST':
+        form = AddDirNote(instance=note, initial={'message': note.message})
+        context = {'form': form}
+
+        return render(request, 'edit_note.html', context)
+
+    else:
+        form = AddEngNote(instance=note, data=request.POST)
+        if form.is_valid():
+            form.save()
+            return HttpResponseRedirect('/')
+
+    context = {'note': note, 'index': index, 'form': form}
+    return render(request, 'record.html', context)
+
 def rec_list(request):
 
     role = get_role(request)
     author_list = User.objects.filter(groups__name=role)
 
     group_list = Group.objects.all()
+    current_user = request.user
 
     if role == 'Техдирекция':
         records_list = EngRec.objects.order_by('-created_date')
@@ -108,7 +143,7 @@ def rec_list(request):
         return HttpResponseRedirect('login/')
 
     context = {'records_list': records_list, 'notes': notes, 'role': role,
-           'author_list': author_list, "taglist": taglist, 'group_list': group_list}
+           'author_list': author_list, "taglist": taglist, 'group_list': group_list, 'current_user': current_user}
     return render(request, 'rec_list.html', context)
 
 
@@ -247,19 +282,29 @@ class SendDirReportView(SendEngReportView):
             return HttpResponseRedirect('/')
 
 
-def delete_note(request, note_id):
+def delete_note(request):
 
-    Notes.objects.filter(id=note_id).delete()
+    user = request.user.id
+
+    Notes.objects.filter(author=user).delete()
     return HttpResponseRedirect('/')
 
 
 class AddEngNoteView(View):
 
     def get(self, request, *args, **kwargs):
-        form = AddEngNote(request.POST or None)
-        context = {'form': form}
 
-        return render(request, 'add_note.html', context)
+        user = request.user.id
+
+        if EngNotes.objects.filter(author=user).exists():
+            return HttpResponseRedirect('/')
+
+        else:
+
+            form = AddEngNote(request.POST or None)
+            context = {'form': form}
+
+            return render(request, 'add_note.html', context)
 
     def post(self, request, *args, **kwargs):
 
@@ -278,10 +323,17 @@ class AddEngNoteView(View):
 class AddDirNoteView(View):
 
     def get(self, request, *args, **kwargs):
-        form = AddDirNote(request.POST or None)
-        context = {'form': form}
 
-        return render(request, 'add_note.html', context)
+        user = request.user.id
+
+        if DirNotes.objects.filter(author=user).exists():
+            return HttpResponseRedirect('/')
+
+        else:
+            form = AddDirNote(request.POST or None)
+            context = {'form': form}
+
+            return render(request, 'add_note.html', context)
 
     def post(self, request, *args, **kwargs):
 

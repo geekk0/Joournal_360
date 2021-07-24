@@ -13,9 +13,21 @@
 
 <div class="bar">
 
-    <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
-                <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
-                     style="width: 25%; display: block;margin-left: auto;margin-right: auto;"></a>
+    {% if role == 'Техдирекция' %}
+
+        <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
+                    <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
+                         style="width: 25%; display: block;margin-left: auto;margin-right: auto;"></a>
+
+    {% endif %}
+
+    {% if role == 'Режиссеры' %}
+
+        <a class="authorization" href="{% url 'добавить заметку режиссеров' %}">
+                    <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
+                         style="width: 25%; display: block;margin-left: auto;margin-right: auto;"></a>
+
+    {% endif %}
 
 
 
@@ -70,8 +82,10 @@
         <br>
         <br>
     <div class="username">
+        {{ current_user }}
 
-            {{ role }}
+        <br>
+        {{ role }}
 
     </div>
 
@@ -95,8 +109,24 @@
         <div class="notes_layout" style="border: 2px solid dodgerblue;">
             <p style="text-align: center">{{ note.report_date }} {{ note.author }}</p>
             <p style="">{{ note.message|linebreaks }}</p>
-            <a class="edit_note" href="{% url 'редактировать' note.id %}">
-                <img src="{% static 'images/edit.png'%}" title="Редактировать" style="width:70%"></a>
+            {% if role == 'Техдирекция' %}
+
+                <a class="edit_note" href="{% url 'редактировать запись инженеры' note.id %}">
+                    <img src="{% static 'images/edit.png'%}" title="Редактировать" style="width:70%"></a>
+
+            {% endif %}
+
+            {% if note.author == current_user %}
+                <a style="" href="{%  url 'удалить запись' %}"><img style="width:70%" src="{% static 'images/delete.png'%}" </a>
+            {% endif %}
+
+            {% if role == 'Режиссеры' %}
+
+                <a class="authorization" href="{% url 'редактировать запись режиссеры' note.id %}">
+                   <img src="{% static 'images/edit.png'%}" title="Редактировать" style="width:70%"></a>
+
+            {% endif %}
+
             <a style="" href="{% url 'отправить отчет' %}"><img src="{% static 'images/send.png'%}"
                                                    title="Отправить" style="width:80%;"></a>
         </div>
