@@ -1,13 +1,15 @@
 {% extends 'base.html' %}
 {% load static %}
 
-
 {% block title %}
     <title>Журнал 360</title>
 {% endblock %}
 
 
 {% block content  %}
+
+    <link href="{% static 'css/datepicker.min.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'js/datepicker.min.js' %}"></script>
 
     <div class="header">
 
@@ -50,58 +52,51 @@
 
     <div class="bar">
 
+        <div class="selector-container">
 
-    <div class="selector-container">
+                <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
 
-            <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
+                    <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
+                       style="visibility:hidden"/>
+                    {% if role == 'Все отчеты' %}
+                        <br>
+                        <label for="group"></label>
+                            <select id="group" name="group">
 
-                <label>C:</label>
-                <input type="date" name="startdate" max="2025-06-04">
-                <br>
-                <label>По:</label>
-                <input type="date" name="stopdate" max="2025-06-04">
-                <br>
+                                <option >Отдел:</option>
 
-                {% if role == 'Все отчеты' %}
+                                {% for group in group_list %}
+
+                                    <option value={{ group.id }}>{{ group }}</option>
+
+                                {% endfor %}
+                            </select>
+                    {% endif %}
                     <br>
-                    <label for="group"></label>
-                        <select id="group" name="group">
+                    <label for="author"></label>
+                    <select id="author" name="author">
 
-                            <option >Отдел:</option>
+                        <option >Отчет от:</option>
 
-                            {% for group in group_list %}
+                        {% for author in author_list %}
 
-                                <option value={{ group.id }}>{{ group }}</option>
+                            <option value={{ author.id }}>{{ author|truncatechars:18 }}</option>
 
-                            {% endfor %}
-                        </select>
-                {% endif %}
-                <br>
-                <label for="author"></label>
-                <select id="author" name="author">
-
-                    <option >Отчет от:</option>
-
-                    {% for author in author_list %}
-
-                        <option value={{ author.id }}>{{ author|truncatechars:18 }}</option>
-
-                    {% endfor %}
-                </select>
+                        {% endfor %}
+                    </select>
 
 
-                <br>
-                <input name="q" type="text" id="box" placeholder="В тексте...">
-                <br>
-                <input type="submit" value="Найти">
-            </form>
+                    <br>
+                    <input name="q" type="text" id="box" placeholder="В тексте...">
+                    <br>
+                    <input type="submit" value="Найти">
+                </form>
+
+        </div>
 
     </div>
 
-</div>
-
-
-<div class="notes">
+    <div class="notes">
 
 
 
@@ -153,8 +148,7 @@
 
 </div>
 
-
-<div class="records">
+    <div class="records">
     {% for recs in records_list %}
         <div class="record_layout">
              <p style="">{{ recs.report_date }} {{ recs.author }}</p>

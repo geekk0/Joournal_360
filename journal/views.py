@@ -1,4 +1,5 @@
 import itertools
+import datetime
 
 from django.contrib.auth import authenticate, login, logout
 from django.forms import modelformset_factory
@@ -360,9 +361,17 @@ def find(request):
 
     role = get_role(request)
 
-    start_date = request.GET.get('startdate')
+    date = request.GET.get('date')
 
-    stop_date = request.GET.get('stopdate')
+    if date == '':
+
+        date = None
+
+    else:
+
+        date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
+
+    print(date)
 
     input_text = request.GET.get('q')
 
@@ -419,11 +428,11 @@ def find(request):
     if role is None:
         return render(request, 'not_in_group.html')
 
-    if start_date:
-        search_query = search_query.filter(report_date__gte=start_date, report_date__lte=stop_date).order_by(
+    if date:
+        search_query = search_query.filter(report_date=date).order_by(
             '-report_date')
-        search_query_e = search_query_e.filter(report_date__gte=start_date, report_date__lte=stop_date)
-        search_query_d = search_query_e.filter(report_date__gte=start_date, report_date__lte=stop_date)
+        search_query_e = search_query_e.filter(report_date=date)
+        search_query_d = search_query_e.filter(report_date=date)
 
     if 'Отчет' not in author:   # Если автор выбран
 
@@ -448,7 +457,7 @@ def find(request):
 
     context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role,
                "author_name": author_name, "tag": tag, "author_list": author_list,
-               "start_date": start_date, "stop_date": stop_date, "author": author, "all_records": all_records,
+               "date": date, "author": author, "all_records": all_records,
                'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name}
 
 

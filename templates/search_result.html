@@ -14,29 +14,26 @@
 
 <script src="https://code.jquery.com/jquery-3.6.0.js"
         integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+    <link href="{% static 'css/datepicker.min.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'js/datepicker.min.js' %}"></script>
 
     <script type="text/javascript">
 
+        $(document).ready(function(){
+            Highlight();
 
-    let input_text = '{{ input_text }}'
+        });
 
-    $(document).ready(function(){
-    Highlight();
+        function Highlight() {
+            window.find(input_text);
 
-    });
-
-    function Highlight() {
-
-
-
-        window.find(input_text);
-
-}
+        }
 
     </script>
 
 
-        <div class="header">
+
+    <div class="header">
 
             <div class="add_note">
                 {% if role == 'Техдирекция' %}
@@ -78,56 +75,53 @@
     <div class="bar">
 
 
-    <div class="selector-container">
+        <div class="selector-container">
 
-            <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
+                <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
 
-                <label>C:</label>
-                <input type="date" name="startdate" max="2025-06-04">
-                <br>
-                <label>По:</label>
-                <input type="date" name="stopdate" max="2025-06-04">
-                <br>
 
-                {% if role == 'Все отчеты' %}
+                    <input type='text' name='date' id='search_calendar' class="datepicker-here" data-inline="True"
+                           style="visibility:hidden"/>
+
+                    {% if role == 'Все отчеты' %}
+                        <br>
+                        <label for="group"></label>
+                            <select id="group" name="group">
+
+                                <option value={{ current_group }}>{{ current_group_name }}</option>
+
+                                {% for group in group_list %}
+
+                                    <option value={{ group.id }}>{{ group }}</option>
+
+                                {% endfor %}
+                            </select>
+                    {% endif %}
                     <br>
-                    <label for="group"></label>
-                        <select id="group" name="group">
+                    <label for="author"></label>
+                    <select id="author" name="author">
 
-                            <option value={{ current_group }}>{{ current_group_name }}</option>
+                        <option value={{ author }}>{{ author_name }}</option>
+                        {% for author in author_list %}
 
-                            {% for group in group_list %}
+                            <option value={{ author.id }}>{{ author|truncatechars:18 }}</option>
 
-                                <option value={{ group.id }}>{{ group }}</option>
-
-                            {% endfor %}
-                        </select>
-                {% endif %}
-                <br>
-                <label for="author"></label>
-                <select id="author" name="author">
-
-                    <option value={{ author }}>{{ author_name }}</option>
-                    {% for author in author_list %}
-
-                        <option value={{ author.id }}>{{ author|truncatechars:18 }}</option>
-
-                    {% endfor %}
-                </select>
+                        {% endfor %}
+                    </select>
 
 
-                <br>
-                <input name="q" type="text" id="box" placeholder="В тексте...">
-                <br>
-                <input type="submit" value="Найти">
-                <input type="button" value="Очистить" onClick='location.href="/"'>
-            </form>
+                    <br>
+                    <input name="q" type="text" id="box" placeholder="В тексте...">
+                    <br>
+                    <input type="submit" value="Найти">
+                    <input type="button" value="Очистить" onClick='location.href="/"'>
+                </form>
+
+        </div>
 
     </div>
 
-</div>
-
-    <div class="records">
+    <div class="searched_records">
             {% for recs in search_query %}
                 <div class="record_layout" style="border: 2px solid green;">
                      <p style="">{{ recs.report_date }} {{ recs.author }}</p>
@@ -137,8 +131,9 @@
     </div>
 
     <br>
-    <hr style="height: 2px; width:85%;margin-left: 15%">
-    <div class="records">
+    <hr style="height: 2px; width:65%;margin-left:420px">
+
+    <div class="other_records">
             {% for recs in all_records %}
                 <div class="record_layout" style="border: 2px solid black;">
                      <p style="">{{ recs.report_date }} {{ recs.author }}</p>
@@ -146,4 +141,5 @@
                 </div>
             {% endfor %}
     </div>
+
 {% endblock %}
