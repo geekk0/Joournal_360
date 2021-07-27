@@ -36,94 +36,112 @@
     </script>
 
 
-    <div class="bar">
+        <div class="header">
 
-            <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
-                <img src="{% static 'images/plus_circle_black.png'%}" title="Добавить заметку"
-                     style="width: 25%; display: block;margin-left: auto;margin-right: auto;"></a>
+            <div class="add_note">
+                {% if role == 'Техдирекция' %}
 
-            <div class="selector-container">
+                    <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
+                                <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
+                                     style=""></a>
 
-                <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
+                {% endif %}
 
-                    <label>C:</label>
-                    <input type="date" name="startdate" value="{{ start_date }}" max="2025-06-04">
-                    <br>
-                    <label>По:</label>
-                    <input type="date" name="stopdate" value="{{ stop_date }}" max="2025-06-04">
-                    <br>
+                {% if role == 'Режиссеры' %}
 
-                    <br>
+                    <a class="authorization" href="{% url 'добавить заметку режиссеров' %}">
+                                <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
+                                     style=""></a>
 
-                    {% if role == 'Все отчеты' %}
-
-                        <br>
-                            <label for="group"></label>
-                            <select id="group" name="group">
-
-                            <option value={{ current_group_name }}>{{ current_group_name }}</option>
-
-                            {% for group in group_list %}
-
-                                <option value={{ group }}>{{ group }}</option>
-
-                            {% endfor %}
-                            </select>
-                    {% endif %}
-                    <label for="author"></label>
-                    <select id="author" name="author">
-
-                        <option value={{ author }}>{{ author_name }}</option>
-
-                        {% for author in author_list %}
-
-                            <option value={{ author.id }}>{{ author|truncatechars:18 }}</option>
-
-                        {% endfor %}
-                    </select>
-
-                    <input name="q" type="text" id="box" placeholder={{ input_text }}>
-
-                    <input type="submit" value="Найти">
-
-                    <input type="button" onclick="window.location.href = {{ BASE_DIR }}'/'" value="Очистить"/>
-                </form>
+                {% endif %}
 
             </div>
-            <br>
-            <br>
-            <div class="username">
 
-            {{ role }}
+            <div class="label">
+                <a style="color:black;font-size:18pt" href="/">Журнал 360</a>
 
-    </div>
+            </div>
 
             <div class="logout">
                     {% if request.user.is_authenticated %}
 
-                        <a class="authorization" href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
-                        style="width:15%; display: block;margin-left: auto;margin-right: auto;"></a>
+                        <p>{{ current_user }}                 {{ role }}</p>
+
+                        <a style="" class="authorization" href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
+                        style=""></a>
 
                     {% endif %}
-                </div>
+            </div>
 
-        </div>
+    </div>
+
+    <div class="bar">
+
+
+    <div class="selector-container">
+
+            <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
+
+                <label>C:</label>
+                <input type="date" name="startdate" max="2025-06-04">
+                <br>
+                <label>По:</label>
+                <input type="date" name="stopdate" max="2025-06-04">
+                <br>
+
+                {% if role == 'Все отчеты' %}
+                    <br>
+                    <label for="group"></label>
+                        <select id="group" name="group">
+
+                            <option value={{ current_group }}>{{ current_group_name }}</option>
+
+                            {% for group in group_list %}
+
+                                <option value={{ group.id }}>{{ group }}</option>
+
+                            {% endfor %}
+                        </select>
+                {% endif %}
+                <br>
+                <label for="author"></label>
+                <select id="author" name="author">
+
+                    <option value={{ author }}>{{ author_name }}</option>
+                    {% for author in author_list %}
+
+                        <option value={{ author.id }}>{{ author|truncatechars:18 }}</option>
+
+                    {% endfor %}
+                </select>
+
+
+                <br>
+                <input name="q" type="text" id="box" placeholder="В тексте...">
+                <br>
+                <input type="submit" value="Найти">
+                <input type="button" value="Очистить" onClick='location.href="/"'>
+            </form>
+
+    </div>
+
+</div>
 
     <div class="records">
             {% for recs in search_query %}
                 <div class="record_layout" style="border: 2px solid green;">
-                     <p style="text-align: center">{{ recs.report_date }} {{ recs.author }}</p>
+                     <p style="">{{ recs.report_date }} {{ recs.author }}</p>
                      <p style="">{{recs.text|linebreaks }}</p>
                 </div>
             {% endfor %}
     </div>
 
     <br>
-    <hr style="height: 2px">
+    <hr style="height: 2px; width:85%;margin-left: 15%">
     <div class="records">
             {% for recs in all_records %}
                 <div class="record_layout" style="border: 2px solid black;">
-                     <p style="text-align: center">{{ recs.report_date }} {{ recs.author }}</p>
+                     <p style="">{{ recs.report_date }} {{ recs.author }}</p>
                      <p style="">{{recs.text|linebreaks }}</p>
                 </div>
             {% endfor %}

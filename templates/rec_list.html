@@ -9,26 +9,46 @@
 
 {% block content  %}
 
+    <div class="header">
 
+            <div class="add_note">
+                {% if role == 'Техдирекция' %}
 
-<div class="bar">
+                    <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
+                                <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
+                                     style=""></a>
 
-    {% if role == 'Техдирекция' %}
+                {% endif %}
 
-        <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
-                    <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
-                         style="width: 25%; display: block;margin-left: auto;margin-right: auto;"></a>
+                {% if role == 'Режиссеры' %}
 
-    {% endif %}
+                    <a class="authorization" href="{% url 'добавить заметку режиссеров' %}">
+                                <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
+                                     style=""></a>
 
-    {% if role == 'Режиссеры' %}
+                {% endif %}
 
-        <a class="authorization" href="{% url 'добавить заметку режиссеров' %}">
-                    <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
-                         style="width: 25%; display: block;margin-left: auto;margin-right: auto;"></a>
+            </div>
 
-    {% endif %}
+            <div class="label">
+                <a style="color:black;font-size:18pt" href="/">Журнал 360</a>
 
+            </div>
+
+            <div class="logout">
+                    {% if request.user.is_authenticated %}
+
+                        <p>{{ current_user }}                 {{ role }}</p>
+
+                        <a href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
+                        ></a>
+
+                    {% endif %}
+            </div>
+
+    </div>
+
+    <div class="bar">
 
 
     <div class="selector-container">
@@ -51,7 +71,7 @@
 
                             {% for group in group_list %}
 
-                                <option value={{ group }}>{{ group }}</option>
+                                <option value={{ group.id }}>{{ group }}</option>
 
                             {% endfor %}
                         </select>
@@ -76,27 +96,7 @@
                 <input type="submit" value="Найти">
             </form>
 
-
-
-        </div>
-        <br>
-        <br>
-    <div class="username">
-        {{ current_user }}
-
-        <br>
-        {{ role }}
-
     </div>
-
-    <div class="logout">
-            {% if request.user.is_authenticated %}
-
-                <a style="width:100%;display:block" class="authorization" href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
-                style="width:15%; display: block;margin-left: auto;margin-right: auto;"></a>
-
-            {% endif %}
-        </div>
 
 </div>
 
@@ -107,28 +107,43 @@
 
     {% for note in notes %}
         <div class="notes_layout" style="border: 2px solid dodgerblue;">
-            <p style="text-align: center">{{ note.report_date }} {{ note.author }}</p>
+            <p style="">{{ note.report_date }} {{ note.author }}</p>
             <p style="">{{ note.message|linebreaks }}</p>
             {% if role == 'Техдирекция' %}
 
-                <a class="edit_note" href="{% url 'редактировать запись инженеры' note.id %}">
-                    <img src="{% static 'images/edit.png'%}" title="Редактировать" style="width:70%"></a>
+                {% if note.author == current_user %}
 
-            {% endif %}
+                    <div class="controls">
 
-            {% if note.author == current_user %}
-                <a style="" href="{%  url 'удалить запись' %}"><img style="width:70%" src="{% static 'images/delete.png'%}" </a>
+                        <a class="edit_note" href="{% url 'редактировать запись инженеры' note.id %}">
+                            <img src="{% static 'images/edit.png'%}" title="Редактировать"></a>
+                        <a style="" href="{% url 'удалить запись' %}"><img src="{% static 'images/delete.png'%}"></a>
+                        <a style="" href="{% url 'отправить отчет' %}"><img src="{% static 'images/send.png'%}"
+                                                       title="Отправить"></a>
+                    </div>
+
+                {% endif %}
+
+
+
             {% endif %}
 
             {% if role == 'Режиссеры' %}
 
-                <a class="authorization" href="{% url 'редактировать запись режиссеры' note.id %}">
-                   <img src="{% static 'images/edit.png'%}" title="Редактировать" style="width:70%"></a>
+                {% if note.author == current_user %}
 
+                    <div class="controls">
+
+                        <a class="edit_note" href="{% url 'редактировать запись режиссеры' note.id %}">
+                            <img src="{% static 'images/edit.png'%}" title="Редактировать"></a>
+                        <a href="{% url 'удалить запись' %}"><img src="{% static 'images/delete.png'%}"></a>
+                        <a href="{% url 'отправить отчет' %}"><img src="{% static 'images/send.png'%}"
+                                                                   title="Отправить"></a>
+                    </div>
+
+                {% endif %}
             {% endif %}
 
-            <a style="" href="{% url 'отправить отчет' %}"><img src="{% static 'images/send.png'%}"
-                                                   title="Отправить" style="width:80%;"></a>
         </div>
 
 
@@ -142,7 +157,7 @@
 <div class="records">
     {% for recs in records_list %}
         <div class="record_layout">
-             <p style="text-align: center">{{ recs.report_date }} {{ recs.author }}</p>
+             <p style="">{{ recs.report_date }} {{ recs.author }}</p>
              <p style="">{{recs.text|linebreaks }}</p>
         </div>
     {% endfor %}

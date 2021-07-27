@@ -1,10 +1,41 @@
 .header {
+    width: 100%;
+    display: block;
+    height: 10%;
+
+}
+
+.controls {
+    width:60%;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.controls img{
+    width:100%;
+
+}
+
+.add_note {
     width: 30%;
     display: block;
-    padding-top: 20px;
+    float: left;
+    padding-top: 1%;
+}
+
+.add_note a {
+    width: 20%;
+    display: block;
     float: right;
 }
 
+
+.add_note img {
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+    height: 90%;
+}
 
 .add_record {
     width:20%;
@@ -32,20 +63,65 @@
     margin-right: auto;
 }
 
-.username {
+.label {
     display:inline-block;
-    text-align: center;
+    padding-top: 2%;
+    text-align: end;
+    width: 30%;
+    padding-left:10%;
+
+}
+
+.label a {
     width: 100%;
+    display: block;
+
+}
+
+.label h5 {
+    font-size: 1.75rem;
+
+}
+
+.label img {
+    display: block;
+    height: 80%;
+    padding-left: 70%;
+    padding-top: 3%;
+
 
 }
 
 .register {
-    display: inline-block;
-    padding-bottom: 20px;
+    padding-top: 5%;
+    width: 10%;
+    text-align: center;
+    float: right;
 }
 
+.register a {
+    color:red;
+    padding-right:15%;
+}
 
 .logout {
+    width: 30%;
+    display: block;
+    float: right;
+    padding-bottom: 10%;
+    padding-top: 0.5%;
+    text-align: right;
+    height:10%;
+}
+
+.logout p {
     display: inline-block;
-    padding-top: 5%;
+    padding-top:5%;
+
+}
+
+.logout img {
+    height: 8vh;
+    padding-top:1.5%;
+    padding-left: 3%;
 }

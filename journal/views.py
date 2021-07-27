@@ -8,6 +8,7 @@ from django.utils import timezone
 from django.views.generic import DetailView, View
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth.models import User, Group
+from django.core.exceptions import ObjectDoesNotExist
 
 
 from itertools import *
@@ -117,7 +118,7 @@ def rec_list(request):
     role = get_role(request)
     author_list = User.objects.filter(groups__name=role)
 
-    group_list = Group.objects.all()
+    group_list = Group.objects.all().exclude(name='Все отчеты')
     current_user = request.user
 
     if role == 'Техдирекция':
@@ -355,7 +356,7 @@ def find(request):
 
     current_group = request.GET.get('group')
 
-    """current_group_name = 'Отдел:'"""
+    current_group_name = 'Отдел:'
 
     role = get_role(request)
 
@@ -371,7 +372,7 @@ def find(request):
 
     tag = request.GET.get('tag')
 
-    author_list = User.objects.filter(groups__name=current_group)
+    author_list = User.objects.filter(groups__name=role)
 
     search_query = EngRec.objects.all()
 
@@ -399,12 +400,20 @@ def find(request):
 
         if 'Отдел:' not in current_group:   # Если отдел выбран
 
-            if current_group == 'Техдирекция':
+            current_group_name = Group.objects.get(id=current_group)
+
+            current_group_name = str(current_group_name)
+
+            if current_group_name == 'Техдирекция':
                 search_query = EngRec.objects.filter(text__icontains=input_text).order_by('-created_date')
-            elif current_group == 'Режиссеры':
+            elif current_group_name == 'Режиссеры':
                 search_query = DirRec.objects.filter(text__icontains=input_text).order_by('-created_date')
 
-            author_list = User.objects.filter(groups__name=current_group)
+            author_list = User.objects.filter(groups__name=current_group_name)
+
+        else:
+            author_list = User.objects.all()
+
         all_records = list(chain(all_records_e, all_records_d))
 
     if role is None:
@@ -421,7 +430,12 @@ def find(request):
         search_query = search_query.filter(author=author).order_by('-created_date')
         search_query_e = search_query_e.filter(author=author)
         search_query_d = search_query_d.filter(author=author)
-        author_name = author_list.get(id=author)
+        """author_list = User.objects.filter(groups__name=role)"""
+        try:
+            author_name = author_list.get(id=author)
+        except:
+            return HttpResponseRedirect('/')
+
 
     if role == "Все отчеты" and 'Отдел:' in current_group:
 
@@ -431,7 +445,6 @@ def find(request):
         notes.sort(key=attrgetter('created_date'), reverse=True)
 
 
-    current_group_name = current_group
 
     context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role,
                "author_name": author_name, "tag": tag, "author_list": author_list,
