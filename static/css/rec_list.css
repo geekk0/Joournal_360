@@ -207,3 +207,30 @@ width: 90%;
 
 .highlight { background-color: yellow }
 
+.comments {
+    padding-top: 5%;
+}
+
+.comments_layout {
+}
+
+#comments_author {
+    display: block;
+    float:left;
+    width: 20%;
+}
+
+
+#comments_text {
+    display: inline-block;
+    width:60%;
+}
+
+
+#comments_created {
+    display: block;
+    float:right;
+    width: 20%;
+    text-align: center;
+}
+

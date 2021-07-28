@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import EngRec, DirRec, EngNotes, DirNotes, Images
+from .models import EngRec, DirRec, EngNotes, DirNotes, Images, Comments
 
 
 class RegistrationForm(forms.ModelForm):
@@ -151,6 +151,20 @@ class AddDirNote(forms.ModelForm):
         model = DirNotes
         fields = ['message']
 
+
+class AddComment(forms.ModelForm):
+    text = forms.Textarea()
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['text'].label = 'Текст коммента'
+
+    def clean(self):
+        return self.cleaned_data
+
+    class Meta:
+        model = Comments
+        fields = ['text']
 
 
 

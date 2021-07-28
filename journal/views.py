@@ -15,8 +15,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from itertools import *
 from operator import *
 
-from .models import EngRec, DirRec, EngNotes, DirNotes, Notes, Record, Images
-from .forms import LoginForm, RegistrationForm, SendEngReport, SendDirReport, AddEngNote, AddDirNote, ImageForm
+from .models import EngRec, DirRec, EngNotes, DirNotes, Notes, Record, Images, Comments
+from .forms import LoginForm, RegistrationForm, SendEngReport, SendDirReport, AddEngNote, AddDirNote, ImageForm, AddComment
 
 
 def get_role(request):
@@ -119,6 +119,8 @@ def rec_list(request):
     role = get_role(request)
     author_list = User.objects.filter(groups__name=role)
 
+    comments = Comments.objects.all()
+
     group_list = Group.objects.all().exclude(name='Все отчеты')
     current_user = request.user
 
@@ -127,13 +129,20 @@ def rec_list(request):
         notes = EngNotes.objects.order_by('-created_date')
         taglist = EngRec.tag_list
 
+
     elif role == 'Режиссеры':
         records_list = DirRec.objects.order_by('-created_date')
         notes = DirNotes.objects.order_by('-created_date')
         taglist = DirRec.tag_list
 
+
+
+
+
+
     elif role == 'Все отчеты':
         records_list = list(chain(EngRec.objects.all(), DirRec.objects.all()))
+
         records_list.sort(key=attrgetter('created_date'), reverse=True)
         notes = None
         """list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
@@ -144,8 +153,11 @@ def rec_list(request):
     else:
         return HttpResponseRedirect('login/')
 
+
+
     context = {'records_list': records_list, 'notes': notes, 'role': role,
-           'author_list': author_list, "taglist": taglist, 'group_list': group_list, 'current_user': current_user}
+           'author_list': author_list, "taglist": taglist, 'group_list': group_list, 'current_user': current_user,
+               'comments': comments}
     return render(request, 'rec_list.html', context)
 
 
@@ -361,6 +373,8 @@ def find(request):
 
     role = get_role(request)
 
+    comments = Comments.objects.all()
+
     date = request.GET.get('date')
 
     if date == '':
@@ -458,16 +472,45 @@ def find(request):
     context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role,
                "author_name": author_name, "tag": tag, "author_list": author_list,
                "date": date, "author": author, "all_records": all_records,
-               'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name}
+               'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name,
+               'comments': comments}
 
 
     return render(request, 'search_result.html', context)
 
 
+class AddCommentView(View):
+
+    def get(self, request, *args, **kwargs):
+
+        form = AddComment(request.POST or None)
+        context = {'form': form}
+
+        return render(request, 'add_comment.html', context)
+
+    def post(self, request, record_id, *args, **kwargs):
+
+        form = AddComment(request.POST or None)
+
+        if form.is_valid():
+            comment = form.save(commit=False)
+
+            comment.record_id = Record.objects.get(id=record_id)
+            comment.author = request.user
+            comment.created = timezone.now()
+            comment.save()
+
+            comments_count(request, record_id)
+
+            return HttpResponseRedirect('/')
 
 
+def comments_count(request, record_id):
 
-
-
+    record = Record.objects.get(id=record_id)
+    correct_count = len(Comments.objects.filter(record_id=record_id))
+    print(type(correct_count))
+    record.comments_count = correct_count
+    record.save()
 
 

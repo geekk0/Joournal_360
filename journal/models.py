@@ -10,6 +10,7 @@ class Record(models.Model):
     created_date = models.DateTimeField(default=timezone.now, verbose_name='Дата отправки')
     text = models.TextField(default='', verbose_name='Текст')
     report_date = models.DateField(blank=True, default=timezone.now,  verbose_name='За какое число')
+    comments_count = models.IntegerField(default=0, editable=False, verbose_name='Количество комментов')
 
     def publish(self):
         self.created_date = timezone.now()
@@ -17,6 +18,10 @@ class Record(models.Model):
 
     def __str__(self):
         return str(self.report_date)+' '+str(self.author)
+
+    def get_comments_count(self):
+        self.comments_count = len(Comments.objects.filter(record_id=self.id))
+        self.save()
 
     class Meta:
         verbose_name = 'Запись'
@@ -115,3 +120,25 @@ class DirNotes(Notes):
     class Meta:
         verbose_name = 'Заметка режиссеров'
         verbose_name_plural = 'Заметки режиссеров'
+
+
+class Comments(models.Model):
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                               verbose_name='Автор коммента')
+    record_id = models.ForeignKey(Record, on_delete=models.CASCADE, verbose_name='К посту:')
+    text = models.TextField(max_length=500, verbose_name='Текст коммента')
+    created = models.DateField(default=timezone.now, verbose_name='')
+
+    def publish(self):
+        self.created = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return str(self.created)+' '+str(self.author)
+
+    class Meta:
+        verbose_name = 'Комменатрий'
+        verbose_name_plural = 'Комментарии'
+
+
+

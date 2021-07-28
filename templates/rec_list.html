@@ -153,6 +153,36 @@
         <div class="record_layout">
              <p style="">{{ recs.report_date }} {{ recs.author }}</p>
              <p style="">{{recs.text|linebreaks }}</p>
+
+
+
+             <div class="comments">
+                 <p style="display:none ">{{ recs.get_comments_count }}</p>
+                 {% if recs.comments_count > 0 %}
+                    <p>Комментарии:({{ recs.comments_count }})</p>
+                    {% for Comments in recs.comments_set.all %}
+
+
+
+                            <div class="comments_layout">
+
+                                    <p id="comments_author">{{ Comments.author }}</p>
+                                    <p id="comments_text">{{ Comments.text }}</p>
+                                    <p id="comments_created">{{ Comments.created }}</p>
+
+                                </div>
+
+                    {% endfor %}
+                {% endif %}
+
+             </div>
+
+
+
+
+            <a class="authorization" href="{% url 'добавить комментарий' recs.id %}">
+                                <img style="width:3%" src="{% static 'images/plus_circle_black.png'%}" title="Добавить комментарий"
+                                     style=""></a>
         </div>
     {% endfor %}
 </div>
