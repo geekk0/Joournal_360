@@ -212,6 +212,7 @@ width: 90%;
 }
 
 .comments_layout {
+    display:none;
 }
 
 #comments_author {
@@ -232,5 +233,9 @@ width: 90%;
     float:right;
     width: 20%;
     text-align: center;
+}
+
+.comments:active .comments_layout {
+    display:block;
 }
 

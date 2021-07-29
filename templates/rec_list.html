@@ -159,7 +159,7 @@
              <div class="comments">
                  <p style="display:none ">{{ recs.get_comments_count }}</p>
                  {% if recs.comments_count > 0 %}
-                    <p>Комментарии:({{ recs.comments_count }})</p>
+                    <a>Комментарии:({{ recs.comments_count }})</a>
                     {% for Comments in recs.comments_set.all %}
 
 
@@ -181,7 +181,7 @@
 
 
             <a class="authorization" href="{% url 'добавить комментарий' recs.id %}">
-                                <img style="width:3%" src="{% static 'images/plus_circle_black.png'%}" title="Добавить комментарий"
+                                <img style="width:2.5%" src="{% static 'images/plus_circle_black.png'%}" title="Добавить комментарий"
                                      style=""></a>
         </div>
     {% endfor %}
