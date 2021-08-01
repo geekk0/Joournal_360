@@ -48,7 +48,7 @@
             <div class="logout">
                     {% if request.user.is_authenticated %}
 
-                        <p>{{ current_user }}                 {{ role }}</p>
+                        <p>{{ current_user }}                 {{ roles }}</p>
 
                         <a style="" class="authorization" href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
                         style=""></a>
@@ -98,34 +98,30 @@
 
                 <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
 
-
-
-
-                    {% if role == 'Все отчеты' %}
+                    {% if multirole == True %}
                         <br>
-                        <label for="group"></label>
-                            <select id="group" name="group">
+                        <div class="group_select">
+                                <ul id="group" style="list-style-type:none">
 
-                                <option value={{ current_group }}>{{ current_group_name }}</option>
+                                    {% for group in group_list %}
 
-                                {% for group in group_list %}
+                                        <li><a href={% url 'выбор отдела' group.id %}>{{ group }}</a></li>
 
-                                    <option value={{ group.id }}>{{ group }}</option>
-
-                                {% endfor %}
-                            </select>
+                                    {% endfor %}
+                                </ul>
+                        </div>
                     {% endif %}
                     <br>
-                    <label for="author"></label>
-                    <select id="author" name="author">
+                    <div class="author_select">
+                        <ul id="author" style="list-style-type:none">
 
-                        <option value={{ author }}>{{ author_name }}</option>
-                        {% for author in author_list %}
+                            {% for author in author_list %}
 
-                            <option value={{ author.id }}>{{ author|truncatechars:18 }}</option>
+                                <li><a href={% url 'выбор автора' author.id %}>{{ author }}</a></li>
 
-                        {% endfor %}
-                    </select>
+                            {% endfor %}
+                        </ul>
+                    </div>
 
 
                     <br>

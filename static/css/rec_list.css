@@ -242,3 +242,13 @@ width: 90%;
 .comments:active a {
     display:none;
 }
+
+.group_select a {
+    color:white;
+    font-size: 20pt;
+}
+
+.author_select a {
+    color:white;
+    font-size: 14pt;
+}

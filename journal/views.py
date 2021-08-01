@@ -220,7 +220,7 @@ def rec_list(request):
     comments = Comments.objects.all().order_by('-created')
 
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
-               'multirole': multirole, 'group_list': user_groups}
+               'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list}
 
     return render(request, 'rec_list.html', context)
 
@@ -338,6 +338,11 @@ def comments_count(request, record_id):
 
 
 def find_by_date(request):
+    multirole = False
+
+    if request.user.groups.all().count() > 1:
+        multirole = True
+
     group_list = Group.objects.all()
 
     current_group = request.GET.get('group')
@@ -345,6 +350,8 @@ def find_by_date(request):
     current_group_name = 'Отдел:'
 
     role = get_role(request)
+
+    roles = str(get_roles(request))
 
     date = request.GET.get('date')
 
@@ -380,18 +387,121 @@ def find_by_date(request):
 
     all_records = records.order_by('-created_date')
 
-    context = {'search_query': search_query, "notes": notes, 'role': role,
+    context = {'search_query': search_query, "notes": notes, 'role': role, 'multirole': multirole,
                "author_name": author_name, "tag": tag, "author_list": author_list,
-               "date": date, "author": author, "all_records": all_records,
+               "date": date, "author": author, "all_records": all_records, 'roles': roles,
                'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name,
                'comments': comments}
 
     return render(request, 'search_result.html', context)
 
 
-def find_by_group(request):
+def find_by_group(request, group_id):
+
+    multirole = False
+
+    if request.user.groups.all().count() > 1:
+        multirole = True
+
+    group_list = Group.objects.all()
+
+    current_group = request.GET.get('group')
+
+    current_group_name = 'Отдел:'
+
+    role = get_role(request)
 
     roles = str(get_roles(request))
+
+    date = request.GET.get('date')
+
+    author = request.GET.get('author')
+
+    tag = request.GET.get('tag')
+
+    user_groups = request.user.groups.all()
+
+    author_list = User.objects.filter(groups__name=role)
+
+    match_authors_list = []
+    for group in user_groups:
+        for author in User.objects.filter(groups__name=group):
+            match_authors_list.append(author)
+    print(match_authors_list)
+
+    all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+
+    single_group = Group.objects.get(id=group_id)
+    single_group_authors = User.objects.filter(groups__name=single_group)
+    search_query = Record.objects.filter(author__in=single_group_authors).order_by('-created_date')
+
+    comments = Comments.objects.all()
+
+
+    context = {'search_query': search_query,  'role': role, "author_list": author_list,
+               "author": author, "all_records": all_records, 'multirole': multirole, 'roles': roles,
+               'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name,
+               'comments': comments}
+
+    return render(request, 'search_result.html', context)
+
+
+def find_by_author(request, author_id):
+
+    multirole = False
+
+    if request.user.groups.all().count() > 1:
+        multirole = True
+
+    group_list = Group.objects.all()
+
+    current_group = request.GET.get('group')
+
+    current_group_name = 'Отдел:'
+
+    role = get_role(request)
+
+    roles = str(get_roles(request))
+
+    date = request.GET.get('date')
+
+    author = request.GET.get('author')
+
+    tag = request.GET.get('tag')
+
+    user_groups = request.user.groups.all()
+
+    author_list = User.objects.filter(groups__name=role)
+
+    match_authors_list = []
+    for group in user_groups:
+        for author in User.objects.filter(groups__name=group):
+            match_authors_list.append(author)
+    print(match_authors_list)
+
+    all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+
+    search_query = Record.objects.filter(author_id=author_id).order_by('-created_date')
+
+    comments = Comments.objects.all()
+
+
+    context = {'search_query': search_query,  'role': role, "author_list": author_list,
+               "author": author, "all_records": all_records, 'multirole': multirole, 'roles': roles,
+               'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name,
+               'comments': comments}
+
+    return render(request, 'search_result.html', context)
+
+
+def find_by_text(request):
+
+    input_text = request.GET.get('q')
+
+    roles = str(get_roles(request))
+
+    print(roles)
+
     user_groups = request.user.groups.all()
 
     print(user_groups)
@@ -406,15 +516,21 @@ def find_by_group(request):
         for author in User.objects.filter(groups__name=group):
             match_authors_list.append(author)
 
-    records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+    print(match_authors_list)
 
-    notes = Notes.objects.filter(author__in=match_authors_list)
+    search_query = Record.objects.filter(author__in=match_authors_list).filter(text__icontains=input_text).order_by('-created_date')
+
+    all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
     comments = Comments.objects.all().order_by('-created')
 
 
 
+    context = {'comments': comments, 'roles': roles, 'current_user': current_user,
+               'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
+               'all_records': all_records}
 
+    return render(request, 'search_result.html', context)
 
 
 

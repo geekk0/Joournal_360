@@ -77,42 +77,40 @@
 
 
 
-                <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
+
 
                     <!--<input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
                        style="visibility:hidden"/>-->
                     {% if multirole == True %}
                         <br>
-                        <label for="group"></label>
-                            <select id="group" name="group" multiple>
+                        <div class="group_select">
+                                <ul id="group" style="list-style-type:none">
 
-                                <option >Отдел:</option>
+                                    {% for group in group_list %}
 
-                                {% for group in group_list %}
+                                        <li><a href={% url 'выбор отдела' group.id %}>{{ group }}</a></li>
 
-                                    <option value={{ group.id }}>{{ group }}</option>
-
-                                {% endfor %}
-                            </select>
+                                    {% endfor %}
+                                </ul>
+                        </div>
                     {% endif %}
                     <br>
-                    <label for="author"></label>
-                    <select id="author" name="author">
+                    <div class="author_select">
+                        <ul id="author" style="list-style-type:none">
 
-                        <option >Отчет от:</option>
+                            {% for author in author_list %}
 
-                        {% for author in author_list %}
+                                <li><a href={% url 'выбор автора' author.id %}>{{ author }}</a></li>
 
-                            <option value={{ author.id }}>{{ author|truncatechars:18 }}</option>
-
-                        {% endfor %}
-                    </select>
-
+                            {% endfor %}
+                        </ul>
+                    </div>
 
                     <br>
+               <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
                     <input name="q" type="text" id="box" placeholder="В тексте...">
                     <br>
-                    <!--<input type="submit" value="Найти">-->
+                    <input type="submit" value="Найти">
                 </form>
 
         </div>
