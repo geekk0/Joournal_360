@@ -12,8 +12,7 @@
 
 {% block content %}
 
-<script src="https://code.jquery.com/jquery-3.6.0.js"
-        integrity="sha256-H+K7U5CnXl1h5ywQfKtSj8PCmoN9aaq30gDh27Xc0jk=" crossorigin="anonymous"></script>
+
     <link href="{% static 'css/datepicker.min.css' %}" rel="stylesheet" type="text/css">
     <script src="{% static 'js/datepicker.min.js' %}"></script>
 
@@ -72,7 +71,40 @@
 
     </div>
 
-    <div class="bar">
+    <div class="bar" id="bar">
+
+
+            <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}" id='datepicker' method="get">
+
+
+                        <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
+                          style="visibility: hidden" />
+                        <input type="submit" value="Найти" id="submit_button"  style="visibility: hidden" />
+
+
+
+            </form>
+        <script type="application/javascript">
+
+
+
+        window.onload = function() {
+
+            let el = document.getElementById('datepick');
+            el.addEventListener("click", delay);
+
+        }
+
+        function delay() {
+        setTimeout(send_date, 0.5);
+        }
+
+        function send_date() {
+            document.forms['sdate'].submit()
+        }
+
+        </script>
+
 
 
         <div class="selector-container">
@@ -80,8 +112,7 @@
                 <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
 
 
-                    <input type='text' name='date' id='search_calendar' class="datepicker-here" data-inline="True"
-                           style="visibility:hidden"/>
+
 
                     {% if role == 'Все отчеты' %}
                         <br>
@@ -114,7 +145,7 @@
                     <input name="q" type="text" id="box" placeholder="В тексте...">
                     <br>
                     <input type="submit" value="Найти">
-                    <input type="button" value="Очистить" onClick='location.href="/"'>
+                    <a href="/" style="color:white">Очистить</a>
                 </form>
 
         </div>
@@ -126,7 +157,38 @@
                 <div class="record_layout" style="border: 2px solid green;">
                      <p style="">{{ recs.report_date }} {{ recs.author }}</p>
                      <p style="">{{recs.text|linebreaks }}</p>
-                </div>
+
+                    <div class="comments">
+                         <p style="display:none ">{{ recs.get_comments_count }}</p>
+                         {% if recs.comments_count > 0 %}
+                            <a>Комментарии:({{ recs.comments_count }})</a>
+                            {% for Comments in recs.comments_set.all %}
+
+
+
+                                    <div class="comments_layout">
+
+                                            <p id="comments_author">{{ Comments.author }}</p>
+                                            <p id="comments_text">{{ Comments.text }}</p>
+                                            <p id="comments_created">{{ Comments.created }}</p>
+
+                                        </div>
+
+                            {% endfor %}
+                        {% endif %}
+
+                     </div>
+
+
+
+
+            <a class="authorization" href="{% url 'добавить комментарий' recs.id %}">
+                                <img style="width:2.5%" src="{% static 'images/plus_circle_black.png'%}" title="Добавить комментарий"
+                                     style=""></a>
+
+        </div>
+
+
             {% endfor %}
     </div>
 
@@ -138,6 +200,34 @@
                 <div class="record_layout" style="border: 2px solid black;">
                      <p style="">{{ recs.report_date }} {{ recs.author }}</p>
                      <p style="">{{recs.text|linebreaks }}</p>
+
+                     <div class="comments">
+                         <p style="display:none ">{{ recs.get_comments_count }}</p>
+                         {% if recs.comments_count > 0 %}
+                            <a>Комментарии:({{ recs.comments_count }})</a>
+                            {% for Comments in recs.comments_set.all %}
+
+
+
+                                    <div class="comments_layout">
+
+                                            <p id="comments_author">{{ Comments.author }}</p>
+                                            <p id="comments_text">{{ Comments.text }}</p>
+                                            <p id="comments_created">{{ Comments.created }}</p>
+
+                                        </div>
+
+                            {% endfor %}
+                        {% endif %}
+
+                     </div>
+
+
+
+
+            <a class="authorization" href="{% url 'добавить комментарий' recs.id %}">
+                                <img style="width:2.5%" src="{% static 'images/plus_circle_black.png'%}" title="Добавить комментарий"
+                                     style=""></a>
                 </div>
             {% endfor %}
     </div>

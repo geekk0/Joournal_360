@@ -11,6 +11,8 @@
     <link href="{% static 'css/datepicker.min.css' %}" rel="stylesheet" type="text/css">
     <script src="{% static 'js/datepicker.min.js' %}"></script>
 
+
+
     <div class="header">
 
             <div class="add_note">
@@ -50,14 +52,48 @@
 
     </div>
 
-    <div class="bar">
+    <div class="bar" id="bar">
+
+            <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}" id='datepicker' method="get">
+
+
+                        <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
+                          style="visibility: hidden" />
+                        <input type="submit" value="Найти" id="submit_button"  style="visibility: hidden" />
+
+
+
+            </form>
+        <script type="application/javascript">
+
+
+
+        window.onload = function() {
+
+            let el = document.getElementById('datepick');
+            el.addEventListener("click", delay);
+
+        }
+
+        function delay() {
+        setTimeout(send_date, 0.5);
+        }
+
+        function send_date() {
+            document.forms['sdate'].submit()
+        }
+
+        </script>
 
         <div class="selector-container">
 
+
+
+
                 <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
 
-                    <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
-                       style="visibility:hidden"/>
+                    <!--<input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
+                       style="visibility:hidden"/>-->
                     {% if role == 'Все отчеты' %}
                         <br>
                         <label for="group"></label>
@@ -89,7 +125,7 @@
                     <br>
                     <input name="q" type="text" id="box" placeholder="В тексте...">
                     <br>
-                    <input type="submit" value="Найти">
+                    <!--<input type="submit" value="Найти">-->
                 </form>
 
         </div>

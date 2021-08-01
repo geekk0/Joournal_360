@@ -18,7 +18,7 @@ urlpatterns = [
     path('редактировать запись инженеры/<int:note_id>', views.edit_note_eng, name='редактировать запись инженеры'),
     path('редактировать запись режиссеры/<int:note_id>', views.edit_note_dir, name='редактировать запись режиссеры'),
     path('добавить комментарий/<int:record_id>', views.AddCommentView.as_view(), name='добавить комментарий'),
-
+    path('найти по дате/', views.find_by_date, name='найти по дате'),
 ]
 
 

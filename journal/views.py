@@ -375,17 +375,7 @@ def find(request):
 
     comments = Comments.objects.all()
 
-    date = request.GET.get('date')
 
-    if date == '':
-
-        date = None
-
-    else:
-
-        date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
-
-    print(date)
 
     input_text = request.GET.get('q')
 
@@ -442,22 +432,7 @@ def find(request):
     if role is None:
         return render(request, 'not_in_group.html')
 
-    if date:
-        search_query = search_query.filter(report_date=date).order_by(
-            '-report_date')
-        search_query_e = search_query_e.filter(report_date=date)
-        search_query_d = search_query_e.filter(report_date=date)
 
-    if 'Отчет' not in author:   # Если автор выбран
-
-        search_query = search_query.filter(author=author).order_by('-created_date')
-        search_query_e = search_query_e.filter(author=author)
-        search_query_d = search_query_d.filter(author=author)
-        """author_list = User.objects.filter(groups__name=role)"""
-        try:
-            author_name = author_list.get(id=author)
-        except:
-            return HttpResponseRedirect('/')
 
 
     if role == "Все отчеты" and 'Отдел:' in current_group:
@@ -470,8 +445,7 @@ def find(request):
 
 
     context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role,
-               "author_name": author_name, "tag": tag, "author_list": author_list,
-               "date": date, "author": author, "all_records": all_records,
+               "author_name": author_name, "tag": tag, "author_list": author_list, "author": author, "all_records": all_records,
                'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name,
                'comments': comments}
 
@@ -512,5 +486,81 @@ def comments_count(request, record_id):
     print(type(correct_count))
     record.comments_count = correct_count
     record.save()
+
+
+def find_by_date(request):
+    group_list = Group.objects.all()
+
+    current_group = request.GET.get('group')
+
+    current_group_name = 'Отдел:'
+
+    role = get_role(request)
+
+    comments = Comments.objects.all()
+
+    date = request.GET.get('date')
+
+    print(date)
+
+    input_text = request.GET.get('q')
+
+    author = request.GET.get('author')
+
+    author_name = 'Отчет от:'
+
+    tag = request.GET.get('tag')
+
+    author_list = User.objects.filter(groups__name=role)
+
+    search_query = EngRec.objects.all()
+
+
+    if date:
+        date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
+
+    else:
+        return HttpResponseRedirect('/')
+
+
+
+
+    dated_records_e = EngRec.objects.filter(report_date=date)
+    dated_records_d = DirRec.objects.filter(report_date=date)
+
+    comments = Comments.objects.all()
+
+    notes = None
+
+    all_records_e = EngRec.objects.all().order_by('-created_date')
+    all_records_d = DirRec.objects.all().order_by('-created_date')
+    all_records = list(chain(all_records_e, all_records_d))
+
+    if role == 'Техдирекция':
+        search_query = dated_records_e.order_by('-created_date')
+        notes = EngNotes.objects.order_by('-created_date')
+
+    elif role == 'Режиссеры':
+        search_query = dated_records_d.order_by('-created_date')
+        notes = DirNotes.objects.order_by('-created_date')
+
+    elif role == 'Все отчеты':
+        search_query = list(chain(dated_records_e, dated_records_d))
+        search_query.sort(key=attrgetter('report_date'), reverse=True)
+        notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
+        notes.sort(key=attrgetter('created_date'), reverse=True)
+
+    context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role,
+               "author_name": author_name, "tag": tag, "author_list": author_list,
+               "date": date, "author": author, "all_records": all_records,
+               'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name,
+               'comments': comments}
+
+    return render(request, 'search_result.html', context)
+
+
+
+
+
 
 
