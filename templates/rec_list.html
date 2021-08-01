@@ -16,22 +16,9 @@
     <div class="header">
 
             <div class="add_note">
-                {% if role == 'Техдирекция' %}
-
-                    <a class="authorization" href="{% url 'добавить заметку инженеров' %}">
+                <a class="authorization" href="{% url 'добавить заметку' %}">
                                 <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
                                      style=""></a>
-
-                {% endif %}
-
-                {% if role == 'Режиссеры' %}
-
-                    <a class="authorization" href="{% url 'добавить заметку режиссеров' %}">
-                                <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
-                                     style=""></a>
-
-                {% endif %}
-
             </div>
 
             <div class="label">
@@ -42,7 +29,7 @@
             <div class="logout">
                     {% if request.user.is_authenticated %}
 
-                        <p>{{ current_user }}                 {{ role }}</p>
+                        <p>{{ current_user }}                 {{ roles }}</p>
 
                         <a href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
                         ></a>
@@ -94,10 +81,10 @@
 
                     <!--<input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
                        style="visibility:hidden"/>-->
-                    {% if role == 'Все отчеты' %}
+                    {% if multirole == True %}
                         <br>
                         <label for="group"></label>
-                            <select id="group" name="group">
+                            <select id="group" name="group" multiple>
 
                                 <option >Отдел:</option>
 
@@ -140,41 +127,19 @@
         <div class="notes_layout" style="border: 2px solid dodgerblue;">
             <p style="">{{ note.report_date }} {{ note.author }}</p>
             <p style="">{{ note.message|linebreaks }}</p>
-            {% if role == 'Техдирекция' %}
 
-                {% if note.author == current_user %}
+            {% if note.author == current_user %}
 
                     <div class="controls">
 
-                        <a class="edit_note" href="{% url 'редактировать запись инженеры' note.id %}">
+                        <a class="edit_note" href="{% url 'редактировать запись' note.id %}">
                             <img src="{% static 'images/edit.png'%}" title="Редактировать"></a>
                         <a style="" href="{% url 'удалить запись' %}"><img src="{% static 'images/delete.png'%}"></a>
                         <a style="" href="{% url 'отправить отчет' %}"><img src="{% static 'images/send.png'%}"
                                                        title="Отправить"></a>
                     </div>
 
-                {% endif %}
-
-
-
             {% endif %}
-
-            {% if role == 'Режиссеры' %}
-
-                {% if note.author == current_user %}
-
-                    <div class="controls">
-
-                        <a class="edit_note" href="{% url 'редактировать запись режиссеры' note.id %}">
-                            <img src="{% static 'images/edit.png'%}" title="Редактировать"></a>
-                        <a href="{% url 'удалить запись' %}"><img src="{% static 'images/delete.png'%}"></a>
-                        <a href="{% url 'отправить отчет' %}"><img src="{% static 'images/send.png'%}"
-                                                                   title="Отправить"></a>
-                    </div>
-
-                {% endif %}
-            {% endif %}
-
         </div>
 
 
@@ -185,7 +150,7 @@
 </div>
 
     <div class="records">
-    {% for recs in records_list %}
+    {% for recs in records %}
         <div class="record_layout">
              <p style="">{{ recs.report_date }} {{ recs.author }}</p>
              <p style="">{{recs.text|linebreaks }}</p>

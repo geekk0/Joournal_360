@@ -4,7 +4,7 @@ from django.utils.safestring import mark_safe
 from .models import Record, EngRec, DirRec, EngNotes, DirNotes, Images, Comments
 
 
-class ImagesInline(admin.TabularInline):
+"""class ImagesInline(admin.TabularInline):
     model = Images
 
 
@@ -49,13 +49,22 @@ class DirNotesAdmin(admin.ModelAdmin):
     fields = ['created_date', 'author', 'message']
 
     list_display = ("id", 'created_date', "author")
+    search_fields = "id__iexact","""
+
+
+class AdminRecords(admin.ModelAdmin):
+
+    fields = ['created_date', 'author', 'message']
+
+    list_filter = ('author', 'tags')
+
     search_fields = "id__iexact",
 
 
-admin.site.register(EngNotes, EngNotesAdmin)
+"""admin.site.register(EngNotes, EngNotesAdmin)
 admin.site.register(DirNotes, DirNotesAdmin)
 admin.site.register(EngRec, EngRecAdmin)
 admin.site.register(DirRec, DirRecAdmin)
-admin.site.register(Images)
+admin.site.register(Images)"""
 admin.site.register(Comments)
-
+admin.site.register(Record)

@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import EngRec, DirRec, EngNotes, DirNotes, Images, Comments
+from .models import EngRec, DirRec, EngNotes, DirNotes, Images, Comments, Notes
 
 
 class RegistrationForm(forms.ModelForm):
@@ -120,7 +120,7 @@ class ImageForm(forms.ModelForm):
         fields = ('image', )
 
 
-class AddEngNote(forms.ModelForm):
+class AddNote(forms.ModelForm):
 
     text = forms.Textarea()
 
@@ -132,7 +132,7 @@ class AddEngNote(forms.ModelForm):
         return self.cleaned_data
 
     class Meta:
-        model = EngNotes
+        model = Notes
         fields = ['message']
 
 
