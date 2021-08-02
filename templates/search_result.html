@@ -18,201 +18,252 @@
 
     <script type="text/javascript">
 
-        $(document).ready(function(){
-            Highlight();
 
-        });
+    $(document).on('click', function(e) {
 
-        function Highlight() {
-            window.find(input_text);
+        let c = e.target.querySelector('.comments_layout');
+        let a = e.target.querySelector('#comms_link');
+
+
+
+
+        if (c.style.display == 'none') {
+
+            c.style.display = 'block';
+            console.log(c.style.display)
+            comments_text = a.innerHTML;
+            a.setAttribute('text_before', a.innerHTML);
+            a.innerHTML = '';
+
 
         }
+
+        else {
+
+            c.style.display = 'none';
+            a.innerHTML = a.getAttribute('text_before');
+            a.style.background = 'white';
+
+        }
+
+    });
 
     </script>
 
 
 
-    <div class="header">
 
-            <div class="add_note">
-                <a class="authorization" href="{% url 'добавить заметку' %}">
-                                <img src="{% static 'images/plus_circle_black.png'%}" title="Начать запись"
-                                     style=""></a>
+
+    <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.png'%}); background-size: cover">
+        <div class="header" style="background-image: url({% static 'images/back+logo_3840х2160-01.png'%}); background-size: cover">
+
+                    <div class="logo">
+                        <img src={% static 'images/360_International_white.png'%}>
+                    </div>
+
+                    <div class="add_note">
+                        <a class="authorization" href="{% url 'добавить заметку' %}">
+                                        <img src="{% static 'images/plus_red.png'%}" title="Начать запись"
+                                             style=""></a>
+                    </div>
+
+                    <div class="label">
+                        <a style="font-size:18pt" href="/">Журнал 360</a>
+
+                    </div>
+
+                    <div class="logout">
+                            {% if request.user.is_authenticated %}
+
+                                <p>{{ current_user }}                 {{ roles }}</p>
+
+                                <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
+                                ></a>
+
+                            {% endif %}
+                    </div>
+
             </div>
 
-            <div class="label">
-                <a style="color:black;font-size:18pt" href="/">Журнал 360</a>
+        <div class="bar" id="bar" style="background-image: url({% static 'images/back+logo_3840х2160-01.png'%}); background-size: cover">
 
-            </div>
-
-            <div class="logout">
-                    {% if request.user.is_authenticated %}
-
-                        <p>{{ current_user }}                 {{ roles }}</p>
-
-                        <a style="" class="authorization" href="{% url 'logout' %}"><img src="{% static 'images/quit.png'%}" title="Выйти"
-                        style=""></a>
-
-                    {% endif %}
-            </div>
-
-    </div>
-
-    <div class="bar" id="bar">
+                    <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
+                          id='datepicker' method="get" style="z-index: 2 !important">
 
 
-            <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}" id='datepicker' method="get">
-
-
-                        <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
-                          style="visibility: hidden" />
-                        <input type="submit" value="Найти" id="submit_button"  style="visibility: hidden" />
+                                <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
+                                  style="visibility: hidden" />
+                                <input type="submit" value="Найти" id="submit_button"  style="visibility: hidden" />
 
 
 
-            </form>
-        <script type="application/javascript">
+                    </form>
+                <script type="application/javascript">
 
 
 
-        window.onload = function() {
+                window.onload = function() {
 
-            let el = document.getElementById('datepick');
-            el.addEventListener("click", delay);
+                    let el = document.getElementById('datepick');
+                    el.addEventListener("click", delay);
 
-        }
+                }
 
-        function delay() {
-        setTimeout(send_date, 0.5);
-        }
+                function delay() {
+                setTimeout(send_date, 0.5);
+                }
 
-        function send_date() {
-            document.forms['sdate'].submit()
-        }
+                function send_date() {
+                    document.forms['sdate'].submit()
+                }
 
-        </script>
+                </script>
+
+                <div class="selector-container">
 
 
 
-        <div class="selector-container">
 
-                <form class="selector-filter" action="{% url 'фильтр' %}" method="get">
 
-                    {% if multirole == True %}
-                        <br>
-                        <div class="group_select">
-                                <ul id="group" style="list-style-type:none">
 
-                                    {% for group in group_list %}
 
-                                        <li><a href={% url 'выбор отдела' group.id %}>{{ group }}</a></li>
+                            {% if multirole == True %}
+                                <br>
+                                <div class="group_select">
+                                        <ul id="group" style="list-style-type:none">
+
+                                            {% for group in group_list %}
+
+                                                <li><a href={% url 'выбор отдела' group.id %}>{{ group }}</a></li>
+
+                                            {% endfor %}
+                                        </ul>
+                                </div>
+                            {% endif %}
+                            <br>
+                            <div class="author_select">
+
+                            {% if multirole == True %}
+
+                                    <div class="authors_url_list">
+                                        <p id="check">Отчет от:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp></p>
+
+
+                                        <div class="authors">
+                                            <ul class="" style="list-style-type:none">
+
+                                                    {% for author in author_list %}
+
+                                                        <li><a href={% url 'выбор автора' author.id %}>{{ author }}</a></li>
+
+                                                    {% endfor %}
+                                            </ul>
+                                        </div>
+                                    </div>
+                            {% else %}
+
+
+
+                                <ul id="author" style="list-style-type:none">
+
+                                    {% for author in author_list %}
+
+                                        <li><a href={% url 'выбор автора' author.id %}>{{ author }}</a></li>
 
                                     {% endfor %}
                                 </ul>
-                        </div>
-                    {% endif %}
-                    <br>
-                    <div class="author_select">
-                        <ul id="author" style="list-style-type:none">
+                            {% endif %}
+                            </div>
 
-                            {% for author in author_list %}
+                       <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
+                            <input name="q" type="text" id="box" placeholder="В тексте...">
+                            <br>
+                            <input type="submit" value="Найти">
+                        </form>
 
-                                <li><a href={% url 'выбор автора' author.id %}>{{ author }}</a></li>
-
-                            {% endfor %}
-                        </ul>
-                    </div>
-
-
-                    <br>
-                    <input name="q" type="text" id="box" placeholder="В тексте...">
-                    <br>
-                    <input type="submit" value="Найти">
-                    <a href="/" style="color:white">Очистить</a>
-                </form>
-
-        </div>
-
-    </div>
-
-    <div class="searched_records">
-            {% for recs in search_query %}
-                <div class="record_layout" style="border: 2px solid green;">
-                     <p style="">{{ recs.report_date }} {{ recs.author }}</p>
-                     <p style="">{{recs.text|linebreaks }}</p>
-
-                    <div class="comments">
-                         <p style="display:none ">{{ recs.get_comments_count }}</p>
-                         {% if recs.comments_count > 0 %}
-                            <a>Комментарии:({{ recs.comments_count }})</a>
-                            {% for Comments in recs.comments_set.all %}
-
-
-
-                                    <div class="comments_layout">
-
-                                            <p id="comments_author">{{ Comments.author }}</p>
-                                            <p id="comments_text">{{ Comments.text }}</p>
-                                            <p id="comments_created">{{ Comments.created }}</p>
-
-                                        </div>
-
-                            {% endfor %}
-                        {% endif %}
-
-                     </div>
-
-
-
-
-            <a class="authorization" href="{% url 'добавить комментарий' recs.id %}">
-                                <img style="width:2.5%" src="{% static 'images/plus_circle_black.png'%}" title="Добавить комментарий"
-                                     style=""></a>
-
-        </div>
-
-
-            {% endfor %}
-    </div>
-
-    <br>
-    <hr style="height: 2px; width:65%;margin-left:420px">
-
-    <div class="other_records">
-            {% for recs in all_records %}
-                <div class="record_layout" style="border: 2px solid black;">
-                     <p style="">{{ recs.report_date }} {{ recs.author }}</p>
-                     <p style="">{{recs.text|linebreaks }}</p>
-
-                     <div class="comments">
-                         <p style="display:none ">{{ recs.get_comments_count }}</p>
-                         {% if recs.comments_count > 0 %}
-                            <a>Комментарии:({{ recs.comments_count }})</a>
-                            {% for Comments in recs.comments_set.all %}
-
-
-
-                                    <div class="comments_layout">
-
-                                            <p id="comments_author">{{ Comments.author }}</p>
-                                            <p id="comments_text">{{ Comments.text }}</p>
-                                            <p id="comments_created">{{ Comments.created }}</p>
-
-                                        </div>
-
-                            {% endfor %}
-                        {% endif %}
-
-                     </div>
-
-
-
-
-            <a class="authorization" href="{% url 'добавить комментарий' recs.id %}">
-                                <img style="width:2.5%" src="{% static 'images/plus_circle_black.png'%}" title="Добавить комментарий"
-                                     style=""></a>
                 </div>
-            {% endfor %}
+
+            </div>
+    </div>
+
+    <div class="content">
+
+        <div class="searched_records">
+                {% for recs in search_query %}
+                    <div class="record_layout" style="border: 2px solid green;">
+                         <p style="">{{ recs.report_date }} {{ recs.author }}</p>
+                         <p style="">{{recs.text|linebreaks }}</p>
+
+                        <div class="comments">
+                             <p style="display:none ">{{ recs.get_comments_count }}</p>
+                             {% if recs.comments_count > 0 %}
+                                <a id="comms_link">Комментарии:({{ recs.comments_count }})</a>
+                                <div class="comments_layout" style="display: none">
+                                    {% for Comments in recs.comments_set.all %}
+
+
+
+                                                    <p id="comments_author">{{ Comments.author }}</p>
+                                                    <p id="comments_text">{{ Comments.text }}</p>
+                                                    <p id="comments_created">{{ Comments.created }}</p>
+
+
+
+                                    {% endfor %}
+                                </div>
+                             {% endif %}
+
+                         </div>
+
+
+
+
+                <a class="authorization" href="{% url 'добавить комментарий' recs.id %}">
+                                    <img style="width:2.5%" src="{% static 'images/plus_circle_black.png'%}" title="Добавить комментарий"
+                                         style=""></a>
+
+            </div>
+
+
+                {% endfor %}
+        </div>
+
+        <br>
+        <hr style="height: 2px; width:65%;margin-left:420px">
+
+        <div class="other_records">
+                {% for recs in all_records %}
+                    <div class="record_layout" style="border: 2px solid black;">
+                         <p style="">{{ recs.report_date }} {{ recs.author }}</p>
+                         <p style="">{{recs.text|linebreaks }}</p>
+
+                         <div class="comments">
+                             <p style="display:none ">{{ recs.get_comments_count }}</p>
+                             {% if recs.comments_count > 0 %}
+                                <a id="comms_link">Комментарии:({{ recs.comments_count }})</a>
+                                <div class="comments_layout" style="display: none">
+                                     {% for Comments in recs.comments_set.all %}
+
+                                        <p id="comments_author">{{ Comments.author }}</p>
+                                                    <p id="comments_text">{{ Comments.text }}</p>
+                                                    <p id="comments_created">{{ Comments.created }}</p>
+
+                                     {% endfor %}
+                                </div>
+                             {% endif %}
+
+                         </div>
+
+
+
+
+                <a class="authorization" href="{% url 'добавить комментарий' recs.id %}">
+                                    <img style="width:2.5%" src="{% static 'images/plus_circle_black.png'%}" title="Добавить комментарий"
+                                         style=""></a>
+                    </div>
+                {% endfor %}
+        </div>
+
     </div>
 
 {% endblock %}

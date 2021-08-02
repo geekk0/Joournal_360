@@ -1,40 +1,40 @@
 .header {
     width: 100%;
     display: block;
-    height: 10%;
+    height: 108px;
+    position:fixed;
+    top:0;
+    z-index: 1;
 
 }
 
-.controls {
+.note_controls {
     width:60%;
     margin-left:auto;
-    margin-right:auto;
+    margin-right:30%;
 }
 
-.controls img{
+.note_controls img{
     width:100%;
 
 }
 
 .add_note {
-    width: 30%;
+    width: 15%;
     display: block;
     float: left;
-    padding-top: 1%;
+    padding-top: 1.2%;
 }
 
 .add_note a {
     width: 20%;
     display: block;
-    float: right;
 }
 
 
 .add_note img {
     display: block;
-    margin-left: auto;
-    margin-right: auto;
-    height: 90%;
+    height: 60%;
 }
 
 .add_record {
@@ -60,21 +60,20 @@
 .logo img {
     width: 30%;
     margin-left: auto;
-    margin-right: auto;
+    margin-right: 25%;
 }
 
 .label {
     display:inline-block;
     padding-top: 2%;
-    text-align: end;
-    width: 30%;
-    padding-left:10%;
+    width: 20%;
 
 }
 
 .label a {
     width: 100%;
     display: block;
+    margin-left: 30%;
 
 }
 
@@ -100,7 +99,7 @@
 }
 
 .register a {
-    color:red;
+    color: #ff0000;
     padding-right:15%;
 }
 
@@ -108,9 +107,10 @@
     width: 30%;
     display: block;
     float: right;
-    padding-top: 0.5%;
+    padding-top: 1%;
     text-align: right;
     height:10%;
+    margin-right: 3%;
 }
 
 .logout p {
@@ -120,7 +120,7 @@
 }
 
 .logout img {
-    height: 8vh;
+    height: 7vh;
     padding-top:1.5%;
     padding-left: 3%;
 }

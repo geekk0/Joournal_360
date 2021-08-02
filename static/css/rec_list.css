@@ -1,6 +1,51 @@
+.content {
+    padding-top:108px;
+    background:white;
+}
+
+.logo {
+    width: 25%;
+    float: left;
+
+}
+
+
+.logo img {
+    width:40% !important;
+    padding-top: 3%;
+}
+
+.template a {
+    color:white;
+}
+
+.template a:active {
+    color:red;
+}
+
+.template a:hover {
+    color:red;
+
+}
+
+.bar a:hover {
+    color:red;
+    transform: scale(1.3);
+
+}
+
+.template p {
+    color:white;
+}
+
+#datepicker {
+    height:50%;
+}
+
 .records {
     width: 80%;
     margin-left:auto;
+    background:white;
 
 }
 
@@ -19,6 +64,8 @@
 .datepicker {
     margin-left:auto !important;
     margin-right:auto !important;
+    padding-top: 30px;
+
 }
 
 div.datepicker-inline:nth-child(3) {
@@ -30,13 +77,13 @@ div.datepicker-inline:nth-child(3) {
     padding-top: 1.5%;
     width: 280px;
     float: left;
-    background-color: darkcyan;
     position: fixed;
     left: 0;
     right: 0;
     top: 0;
     bottom: 0;
     box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.25);
+
 }
 
 .bar input {
@@ -103,6 +150,7 @@ table th {
 .notes {
     width: 80%;
     margin-left:auto;
+    background:white;
 
 }
 
@@ -211,9 +259,7 @@ width: 90%;
     padding-top: 5%;
 }
 
-.comments_layout {
-    display:none;
-}
+
 
 #comments_author {
     display: block;
@@ -235,14 +281,6 @@ width: 90%;
     text-align: center;
 }
 
-.comments:active .comments_layout {
-    display:block;
-}
-
-.comments:active a {
-    display:none;
-}
-
 .group_select a {
     color:white;
     font-size: 20pt;
@@ -251,4 +289,29 @@ width: 90%;
 .author_select a {
     color:white;
     font-size: 14pt;
+}
+
+.authors{
+    display:none;
+}
+
+.authors a{
+    color:black;
+}
+
+.authors_url_list:hover .authors{
+    display: block;
+    position: absolute;
+    top: 500;
+    left: 250;
+    z-index: 3;
+    color: black;
+    background: white;
+}
+
+#check {
+    border: 1.5px solid white;
+    width: 60%;
+    margin-left: auto;
+    margin-right: auto;
 }

@@ -10,6 +10,7 @@ from django.views.generic import DetailView, View
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.decorators import login_required
 
 
 from itertools import *
@@ -64,6 +65,7 @@ class RegistrationView(View):
             return HttpResponseRedirect('/')
         context = {'form': form}
         return render(request, 'registration.html', context)
+
 
 
 class AddNoteView(View):
@@ -141,6 +143,10 @@ def get_role(request):
 
             role = roles[0]
         return role
+    else:
+        render(request, 'login.html')
+
+
 
 
 def get_roles(request):
@@ -158,9 +164,10 @@ def get_roles(request):
             return render(request, 'not_in_group.html')
         else:
             return roles
+    else:
+        render(request, 'login.html')
 
-
-def send_report(request):           # Преобразует заметки в записи
+def send_report(request): # Преобразует заметки в записи
 
     full_text = ''
     author = request.user
@@ -196,7 +203,10 @@ def edit_note(request, note_id):
     return render(request, 'record.html', context)
 
 
+@login_required
 def rec_list(request):
+
+
 
     roles = str(get_roles(request))
     user_groups = request.user.groups.all()
@@ -421,12 +431,13 @@ def find_by_group(request, group_id):
 
     user_groups = request.user.groups.all()
 
-    author_list = User.objects.filter(groups__name=role)
+    author_list = User.objects.filter(groups=group_id)
 
     match_authors_list = []
     for group in user_groups:
         for author in User.objects.filter(groups__name=group):
             match_authors_list.append(author)
+
     print(match_authors_list)
 
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
