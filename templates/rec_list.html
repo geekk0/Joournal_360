@@ -45,11 +45,6 @@
 
     </script>
 
-
-    {% if user.is_authenticated != True %}
-
-
-    {% endif %}
     <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.png'%}); background-size: cover">
         <div class="header" style="background-image: url({% static 'images/back+logo_3840х2160-01.png'%}); background-size: cover">
 
@@ -71,7 +66,7 @@
                     <div class="logout">
                             {% if request.user.is_authenticated %}
 
-                                <p>{{ current_user }}                 {{ roles }}</p>
+                                <p>{{ current_user }}&nbsp{{ roles }}&nbsp{{ user_departments_list }}</p>
 
                                 <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
                                 ></a>
@@ -117,40 +112,33 @@
 
                 <div class="selector-container">
 
-
-
-
-
-
-                            <!--<input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
-                               style="visibility:hidden"/>-->
-                            {% if multirole == True %}
+                        {% if multirole == True %}
                                 <br>
                                 <div class="group_select">
                                         <ul id="group" style="list-style-type:none">
 
-                                            {% for group in group_list %}
+                                            {% for department in user_departments %}
 
-                                                <li><a href={% url 'выбор отдела' group.id %}>{{ group }}</a></li>
+                                                <li><a href={% url 'фильтр по отделу' department.id %}>{{ department.name }}</a></li>
 
                                             {% endfor %}
                                         </ul>
                                 </div>
-                            {% endif %}
-                            <div class="author_select">
+                        {% endif %}
+                            <div class="groups_authors_select">
 
                                 {% if multirole == True %}
 
-                                    <div class="authors_url_list">
+                                    <div class="groups_authors_url_list">
                                         <p id="check">Отчет от:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp></p>
 
 
-                                        <div class="authors">
+                                        <div class="groups_authors">
                                             <ul class="" style="list-style-type:none">
 
-                                                    {% for author in author_list %}
+                                                    {% for group_author in groups_authors_list %}
 
-                                                        <li><a href={% url 'выбор автора' author.id %}>{{ author }}</a></li>
+                                                        <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
 
                                                     {% endfor %}
                                             </ul>
@@ -160,16 +148,20 @@
                                 {% else %}
 
 
-                                    <ul id="author" style="list-style-type:none">
+                                    <ul id="group_author" style="list-style-type:none">
 
-                                        {% for author in author_list %}
+                                        {% for group_author in groups_authors_list %}
 
-                                            <li><a href={% url 'выбор автора' author.id %}>{{ author }}</a></li>
+                                            <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
 
                                         {% endfor %}
                                     </ul>
 
+
+
                                 {% endif %}
+
+
                             </div>
 
                        <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
@@ -182,6 +174,7 @@
 
             </div>
     </div>
+
     <div class="content">
         <div class="notes">
 
@@ -216,7 +209,8 @@
         <div class="records">
         {% for recs in records %}
             <div class="record_layout">
-                 <p style="">{{ recs.report_date }} {{ recs.author }}</p>
+                <p style="display: none">{{ recs.get_author_group }}</p>
+                 <p style="">{{ recs.report_date }}&nbsp{{ recs.author_group }}&nbsp{{ recs.author }}</p>
                  <p style="">{{recs.text|linebreaks }}</p>
 
 
@@ -246,6 +240,7 @@
         {% endfor %}
     </div>
     </div>
+
 {% endblock %}
 
 

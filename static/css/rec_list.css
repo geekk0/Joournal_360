@@ -286,20 +286,20 @@ width: 90%;
     font-size: 20pt;
 }
 
-.author_select a {
+.groups_authors_select a {
     color:white;
     font-size: 14pt;
 }
 
-.authors{
+.groups_authors{
     display:none;
 }
 
-.authors a{
+.groups_authors a{
     color:black;
 }
 
-.authors_url_list:hover .authors{
+.groups_authors_url_list:hover .groups_authors{
     display: block;
     position: absolute;
     top: 500;

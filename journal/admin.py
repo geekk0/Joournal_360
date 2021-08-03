@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Record, EngRec, DirRec, EngNotes, DirNotes, Images, Comments
+from .models import Record, Comments, Department, Notes
 
 
 """class ImagesInline(admin.TabularInline):
@@ -68,3 +68,5 @@ admin.site.register(DirRec, DirRecAdmin)
 admin.site.register(Images)"""
 admin.site.register(Comments)
 admin.site.register(Record)
+admin.site.register(Department)
+admin.site.register(Notes)

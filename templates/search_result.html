@@ -75,7 +75,7 @@
                     <div class="logout">
                             {% if request.user.is_authenticated %}
 
-                                <p>{{ current_user }}                 {{ roles }}</p>
+                                <p>{{ current_user }}&nbsp{{ roles }}&nbsp{{ user_departments_list }}</p>
 
                                 <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
                                 ></a>
@@ -121,58 +121,56 @@
 
                 <div class="selector-container">
 
-
-
-
-
-
-
-                            {% if multirole == True %}
+                        {% if multirole == True %}
                                 <br>
                                 <div class="group_select">
                                         <ul id="group" style="list-style-type:none">
 
-                                            {% for group in group_list %}
+                                            {% for department in user_departments %}
 
-                                                <li><a href={% url 'выбор отдела' group.id %}>{{ group }}</a></li>
+                                                <li><a href={% url 'фильтр по отделу' department.id %}>{{ department.name }}</a></li>
 
                                             {% endfor %}
                                         </ul>
                                 </div>
-                            {% endif %}
-                            <br>
-                            <div class="author_select">
+                        {% endif %}
+                            <div class="groups_authors_select">
 
-                            {% if multirole == True %}
+                                {% if multirole == True %}
 
-                                    <div class="authors_url_list">
+                                    <div class="groups_authors_url_list">
                                         <p id="check">Отчет от:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp></p>
 
 
-                                        <div class="authors">
+                                        <div class="groups_authors">
                                             <ul class="" style="list-style-type:none">
 
-                                                    {% for author in author_list %}
+                                                    {% for group_author in groups_authors_list %}
 
-                                                        <li><a href={% url 'выбор автора' author.id %}>{{ author }}</a></li>
+                                                        <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
 
                                                     {% endfor %}
                                             </ul>
                                         </div>
                                     </div>
-                            {% else %}
+
+                                {% else %}
+
+
+                                    <ul id="group_author" style="list-style-type:none">
+
+                                        {% for group_author in groups_authors_list %}
+
+                                            <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
+
+                                        {% endfor %}
+                                    </ul>
 
 
 
-                                <ul id="author" style="list-style-type:none">
+                                {% endif %}
 
-                                    {% for author in author_list %}
 
-                                        <li><a href={% url 'выбор автора' author.id %}>{{ author }}</a></li>
-
-                                    {% endfor %}
-                                </ul>
-                            {% endif %}
                             </div>
 
                        <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
@@ -191,7 +189,7 @@
         <div class="searched_records">
                 {% for recs in search_query %}
                     <div class="record_layout" style="border: 2px solid green;">
-                         <p style="">{{ recs.report_date }} {{ recs.author }}</p>
+                         <p style="">{{ recs.report_date }}&nbsp{{ recs.author_group }}&nbsp{{ recs.author }}</p>
                          <p style="">{{recs.text|linebreaks }}</p>
 
                         <div class="comments">
@@ -234,7 +232,7 @@
         <div class="other_records">
                 {% for recs in all_records %}
                     <div class="record_layout" style="border: 2px solid black;">
-                         <p style="">{{ recs.report_date }} {{ recs.author }}</p>
+                         <p style="">{{ recs.report_date }}&nbsp{{ recs.author_group }}&nbsp{{ recs.author }}</p>
                          <p style="">{{recs.text|linebreaks }}</p>
 
                          <div class="comments">

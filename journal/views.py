@@ -13,11 +13,12 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 
 
+
 from itertools import *
 from operator import *
 
-from .models import EngRec, DirRec, EngNotes, DirNotes, Notes, Record, Images, Comments
-from .forms import LoginForm, RegistrationForm, SendEngReport, SendDirReport, AddNote, AddDirNote, ImageForm, AddComment
+from .models import Notes, Record, Images, Comments, Department
+from .forms import LoginForm, RegistrationForm, AddNote, AddComment
 
 
 class LoginView(View):
@@ -65,7 +66,6 @@ class RegistrationView(View):
             return HttpResponseRedirect('/')
         context = {'form': form}
         return render(request, 'registration.html', context)
-
 
 
 class AddNoteView(View):
@@ -147,8 +147,6 @@ def get_role(request):
         render(request, 'login.html')
 
 
-
-
 def get_roles(request):
     if request.user.is_authenticated:
         roles = []
@@ -166,6 +164,7 @@ def get_roles(request):
             return roles
     else:
         render(request, 'login.html')
+
 
 def send_report(request): # Преобразует заметки в записи
 
@@ -203,25 +202,49 @@ def edit_note(request, note_id):
     return render(request, 'record.html', context)
 
 
+def detect_admin_groups():
+    all_users = User.objects.all()
+
+    group_names = []
+
+    for user in all_users:
+        if user.has_perm('journal.delete_comments'):
+            group_name = Group.objects.get(user=user.id)
+            group_names.append(group_name)
+    return group_names
+
+
 @login_required
 def rec_list(request):
 
+    admin_groups = detect_admin_groups()
 
+    multirole = False
 
     roles = str(get_roles(request))
     user_groups = request.user.groups.all()
 
-    print(user_groups)
+    user_departments_list = []
 
-    multirole = False
+    for group in user_groups:
 
-    if request.user.groups.all().count() > 1:
+        deps = Department.objects.filter(groups=group)
+
+        for dep_objects in deps:
+            user_departments_list.append(dep_objects.name)
+
+
+    if len(user_departments_list) > 1:
         multirole = True
     current_user = request.user
     match_authors_list = []
-    for group in user_groups:
-        for author in User.objects.filter(groups__name=group):
-            match_authors_list.append(author)
+
+    user_departments = Department.objects.filter(groups__in=user_groups)
+
+    for dep in user_departments:
+        for group in Group.objects.filter(department=dep):
+            for author in User.objects.filter(groups__name=group):
+                match_authors_list.append(author)
 
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
@@ -229,8 +252,13 @@ def rec_list(request):
 
     comments = Comments.objects.all().order_by('-created')
 
+    groups_authors_list = Group.objects.filter(department__in=user_departments).distinct().\
+        exclude(name__in=admin_groups)
+
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
-               'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list}
+               'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
+               'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
+               'user_departments_list': user_departments_list}
 
     return render(request, 'rec_list.html', context)
 
@@ -248,132 +276,56 @@ def delete_note(request):
     return HttpResponseRedirect('/')
 
 
-def find(request):
-
-    group_list = Group.objects.all()
-
-    current_group = request.GET.get('group')
-
-    current_group_name = 'Отдел:'
-
-    role = get_role(request)
-
-    comments = Comments.objects.all()
-
-
-
-    input_text = request.GET.get('q')
-
-    author = request.GET.get('author')
-
-    author_name = 'Отчет от:'
-
-    tag = request.GET.get('tag')
-
-    author_list = User.objects.filter(groups__name=role)
-
-    search_query = EngRec.objects.all()
-
-    search_query_e = EngRec.objects.filter(text__icontains=input_text).order_by('-created_date')
-    search_query_d = DirRec.objects.filter(text__icontains=input_text).order_by('-created_date')
-
-    all_records_e = EngRec.objects.all().order_by('-created_date')
-    all_records_d = DirRec.objects.all().order_by('-created_date')
-
-    all_records = EngRec.objects.all()
-
-    notes = None
-
-    if role == 'Техдирекция':
-        search_query = search_query_e
-        notes = EngNotes.objects.order_by('-created_date')
-        all_records = all_records_e
-
-    elif role == 'Режиссеры':
-        search_query = search_query_d
-        notes = DirNotes.objects.order_by('-created_date')
-        all_records = all_records_d
-
-    elif role == 'Все отчеты':
-
-        if 'Отдел:' not in current_group:   # Если отдел выбран
-
-            current_group_name = Group.objects.get(id=current_group)
-
-            current_group_name = str(current_group_name)
-
-            if current_group_name == 'Техдирекция':
-                search_query = EngRec.objects.filter(text__icontains=input_text).order_by('-created_date')
-            elif current_group_name == 'Режиссеры':
-                search_query = DirRec.objects.filter(text__icontains=input_text).order_by('-created_date')
-
-            author_list = User.objects.filter(groups__name=current_group_name)
-
-        else:
-            author_list = User.objects.all()
-
-        all_records = list(chain(all_records_e, all_records_d))
-
-    if role is None:
-        return render(request, 'not_in_group.html')
-
-
-
-
-    if role == "Все отчеты" and 'Отдел:' in current_group:
-
-        search_query = list(chain(search_query_e, search_query_d))
-        search_query.sort(key=attrgetter('report_date'), reverse=True)
-        notes = list(chain(EngNotes.objects.all(), DirNotes.objects.all()))
-        notes.sort(key=attrgetter('created_date'), reverse=True)
-
-
-
-    context = {'search_query': search_query, "notes": notes, "input_text": input_text, 'role': role,
-               "author_name": author_name, "tag": tag, "author_list": author_list, "author": author, "all_records": all_records,
-               'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name,
-               'comments': comments}
-
-
-    return render(request, 'search_result.html', context)
-
-
 def comments_count(request, record_id):
 
     record = Record.objects.get(id=record_id)
     correct_count = len(Comments.objects.filter(record_id=record_id))
-    print(type(correct_count))
     record.comments_count = correct_count
     record.save()
 
 
 def find_by_date(request):
+
+    date = request.GET.get('date')
+
     multirole = False
 
     if request.user.groups.all().count() > 1:
         multirole = True
 
-    group_list = Group.objects.all()
+    admin_groups = detect_admin_groups()
 
-    current_group = request.GET.get('group')
-
-    current_group_name = 'Отдел:'
-
-    role = get_role(request)
+    multirole = False
 
     roles = str(get_roles(request))
-
-    date = request.GET.get('date')
-
-    author = request.GET.get('author')
-
-    author_name = 'Отчет от:'
-
-    tag = request.GET.get('tag')
-
     user_groups = request.user.groups.all()
 
-    author_list = User.objects.filter(groups__name=role)
+    user_departments_list = []
+
+    for group in user_groups:
+
+        deps = Department.objects.filter(groups=group)
+
+        for dep_objects in deps:
+            user_departments_list.append(dep_objects.name)
+
+    if len(user_departments_list) > 1:
+        multirole = True
+    current_user = request.user.username
+    match_authors_list = []
+
+    user_departments = Department.objects.filter(groups__in=user_groups)
+
+    for dep in user_departments:
+        for group in Group.objects.filter(department=dep):
+            for author in User.objects.filter(groups__name=group):
+                match_authors_list.append(author)
+
+    records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+
+    groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
+        exclude(name__in=admin_groups)
+
 
     if date:
         date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
@@ -383,76 +335,76 @@ def find_by_date(request):
 
     match_authors_list = []
     for group in user_groups:
-        for author in User.objects.filter(groups__name=group):
-            match_authors_list.append(author)
-    print(match_authors_list)
+            for author in User.objects.filter(groups__name=group):
+                match_authors_list.append(author)
 
-    records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+    all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
-    dated_records = records.filter(report_date=date)
+    search_query = records.filter(report_date=date)
 
-    search_query = dated_records.order_by('-created_date')
     notes = Notes.objects.order_by('-created_date')
     comments = Comments.objects.all()
 
-    all_records = records.order_by('-created_date')
-
-    context = {'search_query': search_query, "notes": notes, 'role': role, 'multirole': multirole,
-               "author_name": author_name, "tag": tag, "author_list": author_list,
-               "date": date, "author": author, "all_records": all_records, 'roles': roles,
-               'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name,
-               'comments': comments}
+    context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
+               'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
+               'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
+               'user_departments_list': user_departments_list, 'all_records': all_records}
 
     return render(request, 'search_result.html', context)
 
 
-def find_by_group(request, group_id):
+def sort_by_group(request, group_id):
+
+    admin_groups = detect_admin_groups()
 
     multirole = False
 
-    if request.user.groups.all().count() > 1:
-        multirole = True
-
-    group_list = Group.objects.all()
-
-    current_group = request.GET.get('group')
-
-    current_group_name = 'Отдел:'
-
-    role = get_role(request)
-
     roles = str(get_roles(request))
-
-    date = request.GET.get('date')
-
-    author = request.GET.get('author')
-
-    tag = request.GET.get('tag')
-
     user_groups = request.user.groups.all()
 
-    author_list = User.objects.filter(groups=group_id)
+    user_departments_list = []
 
-    match_authors_list = []
     for group in user_groups:
-        for author in User.objects.filter(groups__name=group):
-            match_authors_list.append(author)
 
-    print(match_authors_list)
+        deps = Department.objects.filter(groups=group)
+
+        for dep_objects in deps:
+            user_departments_list.append(dep_objects.name)
+
+    if len(user_departments_list) > 1:
+        multirole = True
+    current_user = request.user.username
+    match_authors_list = []
+
+    user_departments = Department.objects.filter(groups__in=user_groups)
+
+    for dep in user_departments:
+        for group in Group.objects.filter(department=dep):
+            for author in User.objects.filter(groups__name=group):
+                match_authors_list.append(author)
+
+    records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+
+    notes = Notes.objects.filter(author__in=match_authors_list)
+
+    comments = Comments.objects.all().order_by('-created')
+
+    groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
+        exclude(name__in=admin_groups)
+
 
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
     single_group = Group.objects.get(id=group_id)
     single_group_authors = User.objects.filter(groups__name=single_group)
-    search_query = Record.objects.filter(author__in=single_group_authors).order_by('-created_date')
+    search_query = records.filter(author__in=single_group_authors).order_by('-created_date')
 
     comments = Comments.objects.all()
 
-
-    context = {'search_query': search_query,  'role': role, "author_list": author_list,
-               "author": author, "all_records": all_records, 'multirole': multirole, 'roles': roles,
-               'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name,
-               'comments': comments}
+    context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
+               'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
+               'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
+               'user_departments_list': user_departments_list, 'all_records': all_records}
 
     return render(request, 'search_result.html', context)
 
@@ -488,7 +440,6 @@ def find_by_author(request, author_id):
     for group in user_groups:
         for author in User.objects.filter(groups__name=group):
             match_authors_list.append(author)
-    print(match_authors_list)
 
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
@@ -507,41 +458,93 @@ def find_by_author(request, author_id):
 
 def find_by_text(request):
 
-    input_text = request.GET.get('q')
-
-    roles = str(get_roles(request))
-
-    print(roles)
-
-    user_groups = request.user.groups.all()
-
-    print(user_groups)
+    admin_groups = detect_admin_groups()
 
     multirole = False
 
-    if request.user.groups.all().count() > 1:
-        multirole = True
-    current_user = request.user
-    match_authors_list = []
+    user_groups = request.user.groups.all()
+
+    input_text = request.GET.get('q')
+
+
+    user_departments_list = []
+
     for group in user_groups:
-        for author in User.objects.filter(groups__name=group):
-            match_authors_list.append(author)
 
-    print(match_authors_list)
+        deps = Department.objects.filter(groups=group)
 
-    search_query = Record.objects.filter(author__in=match_authors_list).filter(text__icontains=input_text).order_by('-created_date')
+        for dep_objects in deps:
+            user_departments_list.append(dep_objects.name)
 
-    all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+
+    if len(user_departments_list) > 1:
+        multirole = True
+    current_user = request.user.username
+    match_authors_list = []
+
+    user_departments = Department.objects.filter(groups__in=user_groups)
+
+    for dep in user_departments:
+        for group in Group.objects.filter(department=dep):
+            for author in User.objects.filter(groups__name=group):
+                match_authors_list.append(author)
+
+    records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+
+    groups_authors_list = Group.objects.filter(department__in=user_departments).distinct().\
+        exclude(name__in=admin_groups)
+
+    search_query = records.filter(text__icontains=input_text).order_by('-created_date')
+
+    all_records = records
 
     comments = Comments.objects.all().order_by('-created')
 
-
-
-    context = {'comments': comments, 'roles': roles, 'current_user': current_user,
-               'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
+    context = {'comments': comments, 'current_user': current_user, 'multirole': multirole,
+               'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
                'all_records': all_records}
 
     return render(request, 'search_result.html', context)
+
+
+def sort_by_department(request, department_id):
+
+    admin_groups = detect_admin_groups()
+
+    author_groups_list = Group.objects.filter(department=department_id)
+
+    authors_list = User.objects.filter(groups__in=author_groups_list)
+
+    records = Record.objects.filter(author__in=authors_list)
+
+    user_groups = request.user.groups.all()
+
+    current_user = request.user.username
+
+    roles = str(get_roles(request))
+
+    user_departments_list = []
+
+    for group in user_groups:
+
+        deps = Department.objects.filter(groups=group)
+
+        for dep_objects in deps:
+            user_departments_list.append(dep_objects.name)
+
+    user_departments = Department.objects.filter(groups__in=user_groups)
+
+    groups_authors_list = Group.objects.filter(department=department_id).distinct(). \
+        exclude(name__in=admin_groups)
+
+    comments = Comments.objects.all().order_by('-created')
+
+    context = {'all_records': records, 'comments': comments, 'groups_authors_list': groups_authors_list,
+               'current_user': current_user, 'roles': roles, 'user_departments': user_departments,
+               'user_departments_list': user_departments_list }
+
+    return render (request, 'search_result.html', context)
+
 
 
 

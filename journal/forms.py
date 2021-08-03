@@ -1,6 +1,6 @@
 from django import forms
 from django.contrib.auth.models import User
-from .models import EngRec, DirRec, EngNotes, DirNotes, Images, Comments, Notes
+from .models import Images, Comments, Notes, Record
 
 
 class RegistrationForm(forms.ModelForm):
@@ -75,43 +75,6 @@ class LoginForm(forms.ModelForm):
         fields = ['username', 'password']
 
 
-class SendEngReport(forms.ModelForm):
-
-    tag_list = [('Без замечаний', 'Без замечаний'), ('Прямой эфир', 'Прямой эфир'),
-                ('Запись', 'Запись')]
-
-    text = forms.Textarea()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['text'].label = 'Текст отчета'
-        self.fields['report_date'].label = 'Отчет за'
-
-    def clean(self):
-        return self.cleaned_data
-
-    class Meta:
-        model = EngRec
-        fields = ['report_date', 'tags', 'text']
-
-
-class SendDirReport(forms.ModelForm):
-
-    text = forms.Textarea()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['text'].label = 'Текст отчета'
-        self.fields['report_date'].label = 'Отчет за'
-
-    def clean(self):
-        return self.cleaned_data
-
-    class Meta:
-        model = DirRec
-        fields = ['report_date', 'tags', 'text']
-
-
 class ImageForm(forms.ModelForm):
     image = forms.ImageField(label='Изображение')
 
@@ -133,22 +96,6 @@ class AddNote(forms.ModelForm):
 
     class Meta:
         model = Notes
-        fields = ['message']
-
-
-class AddDirNote(forms.ModelForm):
-
-    text = forms.Textarea()
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['message'].label = 'Текст заметки'
-
-    def clean(self):
-        return self.cleaned_data
-
-    class Meta:
-        model = DirNotes
         fields = ['message']
 
 

@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User, Group
-from django.template.defaultfilters import slugify
 
 
 class Record(models.Model):
@@ -12,6 +11,7 @@ class Record(models.Model):
     text = models.TextField(default='', verbose_name='Текст')
     report_date = models.DateField(blank=True, default=timezone.now,  verbose_name='За какое число')
     comments_count = models.IntegerField(default=0, editable=False, verbose_name='Количество комментов')
+    author_group = models.CharField(blank=True, editable=False, verbose_name='Группа автора отчета', max_length=64)
 
     def publish(self):
         self.created_date = timezone.now()
@@ -24,60 +24,14 @@ class Record(models.Model):
         self.comments_count = len(Comments.objects.filter(record_id=self.id))
         self.save()
 
+    def get_author_group(self):
+        auth_group = Group.objects.get(user=self.author)
+        self.author_group = auth_group.name
+        self.save()
+
     class Meta:
         verbose_name = 'Запись'
         verbose_name_plural = 'Записи'
-
-
-"""def get_image_filename(instance, filename):
-    title = instance.record__str__
-    slug = slugify(title)
-    return "record_images/%s-%s" % (slug, filename)"""
-
-
-class Images(models.Model):
-    record = models.ForeignKey(Record, default=None, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='', verbose_name='Загрузить фото', blank=True, null=True)
-
-
-def get_images(rec_name):
-    return Images.objects.get(record=rec_name)
-
-
-class EngRec(Record):
-
-    tag_list = [('Без замечаний', 'Без замечаний'), ('Прямой эфир', 'Прямой эфир'),
-                ('Запись', 'Запись'), ('Прямой эфир + Запись', 'Прямой эфир + Запись')]
-
-    tags = models.TextField(default='Без замечаний', max_length=20, choices=tag_list, verbose_name='Теги')
-
-    def publish(self):
-        self.created_date = timezone.now()
-        self.save()
-
-    def __str__(self):
-        return str(self.report_date)+' '+str(self.author)
-
-    class Meta:
-        verbose_name = 'Запись в журнал инженеров'
-        verbose_name_plural = 'Записи в журнале инженеров'
-
-
-class DirRec(Record):
-    tag_list = [('Без замечаний', 'Без замечаний'), ('Прямой эфир', 'Прямой эфир'),
-                ('Запись', 'Запись'), ('Прямой эфир + Запись', 'Прямой эфир + Запись')]
-    tags = models.TextField(default='Без замечаний', max_length=50, choices=tag_list, verbose_name='Теги')
-
-    def publish(self):
-        self.created_date = timezone.now()
-        self.save()
-
-    def __str__(self):
-        return str(self.report_date)+' '+str(self.author)
-
-    class Meta:
-        verbose_name = 'Запись в журнал режиссеров'
-        verbose_name_plural = 'Записи в журнале режиссеров'
 
 
 class Notes(models.Model):
@@ -98,31 +52,6 @@ class Notes(models.Model):
         verbose_name_plural = 'Заметки'
 
 
-class EngNotes(Notes):
-
-    def publish(self):
-        self.created_date = timezone.now()
-        self.save()
-
-    def __str__(self):
-        return str(self.created_date)+' '+str(self.author)
-
-    class Meta:
-        verbose_name = 'Заметка инженеров'
-        verbose_name_plural = 'Заметки инженеров'
-
-
-class DirNotes(Notes):
-
-    def publish(self):
-        self.created_date = timezone.now()
-        self.save()
-
-    class Meta:
-        verbose_name = 'Заметка режиссеров'
-        verbose_name_plural = 'Заметки режиссеров'
-
-
 class Comments(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                verbose_name='Автор коммента')
@@ -140,6 +69,36 @@ class Comments(models.Model):
     class Meta:
         verbose_name = 'Комменатрий'
         verbose_name_plural = 'Комментарии'
+
+
+class Department(models.Model):
+    groups = models.ManyToManyField(Group, blank=True)
+    name = models.CharField(blank=True, verbose_name='Название отдела', max_length=64)
+
+    def publish(self):
+        self.save()
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        verbose_name = 'Отдел'
+        verbose_name_plural = 'Отделы'
+
+
+class Images(models.Model):
+    record = models.ForeignKey(Record, default=None, on_delete=models.CASCADE)
+    image = models.ImageField(upload_to='', verbose_name='Загрузить фото', blank=True, null=True)
+
+
+def get_images(rec_name):
+    return Images.objects.get(record=rec_name)
+
+
+
+
+
+
 
 
 
