@@ -19,13 +19,10 @@
     <script type="text/javascript">
 
 
-    $(document).on('click', function(e) {
+        $('.record_layout').on('click', function(e) {
 
         let c = e.target.querySelector('.comments_layout');
         let a = e.target.querySelector('#comms_link');
-
-
-
 
         if (c.style.display == 'none') {
 
@@ -100,7 +97,7 @@
                     </form>
                 <script type="application/javascript">
 
-
+                $('#calendar').datepicker().data('datepicker').selectDate(new Date({{ set_date }}));
 
                 window.onload = function() {
 

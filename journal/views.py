@@ -284,6 +284,17 @@ def comments_count(request, record_id):
     record.save()
 
 
+def convert_date(date):
+
+    set_year = date[:4]
+    month = int(date[5:7])
+    set_month = str(month - 1)
+    set_day = date[8:10]
+
+    set_date = set_year+', '+set_month+', '+set_day
+
+    return set_date
+
 def find_by_date(request):
 
     date = request.GET.get('date')
@@ -326,9 +337,9 @@ def find_by_date(request):
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
         exclude(name__in=admin_groups)
 
-
     if date:
         date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
+
 
     else:
         return HttpResponseRedirect('/')
@@ -338,6 +349,10 @@ def find_by_date(request):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
 
+    print(date)
+
+    set_date = convert_date(date)
+
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
     search_query = records.filter(report_date=date)
@@ -345,9 +360,11 @@ def find_by_date(request):
     notes = Notes.objects.order_by('-created_date')
     comments = Comments.objects.all()
 
+    print(set_date)
+
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
-               'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
+               'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records}
 
     return render(request, 'search_result.html', context)
