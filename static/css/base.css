@@ -11,7 +11,7 @@
 .note_controls {
     width:60%;
     margin-left:auto;
-    margin-right:27%;
+    margin-right:28%;
 }
 
 .note_controls img{
@@ -23,12 +23,14 @@
     width: 15%;
     display: block;
     float: left;
-    padding-top: 1.2%;
+    margin-left: 10%;
 }
 
 .add_note a {
-    width: 20%;
     display: block;
+    font-size: 18pt;
+    padding-top: 14%;
+    text-decoration: none;
 }
 
 
@@ -55,6 +57,7 @@
     margin-right: auto;
     margin-left: auto;
     text-align: center;
+
 }
 
 .logo img {
@@ -115,7 +118,7 @@
 
 .logout p {
     display: inline-block;
-    padding-top:5%;
+    padding-top:4.5%;
 
 }
 
