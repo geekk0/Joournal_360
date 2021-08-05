@@ -315,6 +315,7 @@ def convert_date(date):
 
     return set_date
 
+
 def find_by_date(request):
 
     date = request.GET.get('date')
@@ -352,6 +353,8 @@ def find_by_date(request):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
 
+
+
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
@@ -364,7 +367,6 @@ def find_by_date(request):
     else:
         return HttpResponseRedirect('/')
 
-    match_authors_list = []
     for group in user_groups:
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
@@ -415,6 +417,8 @@ def sort_by_group(request, group_id):
         for group in Group.objects.filter(department=dep):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
+
+    print(match_authors_list)
 
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
