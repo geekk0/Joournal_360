@@ -46,9 +46,18 @@
     width: 80%;
     margin-left:auto;
     background:white;
+    margin-right: 2.5%;
 
 }
 
+.searched_records {
+    width: 80%;
+    margin-left:auto;
+    background:white;
+    margin-right: 2.5%;
+
+
+}
 
 .record_layout {
 
@@ -151,6 +160,7 @@ table th {
     width: 80%;
     margin-left:auto;
     background:white;
+    margin-right: 2.5%;
 
 }
 
@@ -256,7 +266,7 @@ width: 90%;
 .highlight { background-color: yellow }
 
 .comments {
-    padding-top: 5%;
+    padding-top: 1%;
 }
 
 

@@ -14,35 +14,48 @@
     <script type="text/javascript">
 
 
-    $('.record_layout').on('click', function(e) {
+    document.addEventListener("DOMContentLoaded", () => {
+        document.querySelectorAll('.comments').forEach(item => {
+            item.addEventListener('click', show_comments)
+        })
+    })
 
-        let c = e.target.querySelector('.comments_layout');
-        let a = e.target.querySelector('#comms_link');
+    function show_comments(e) {
+
+        let add = e.currentTarget.querySelector('.add_comment');
+        let input = e.currentTarget.querySelector('.add_comment input[name=input_text]')
+        let c = e.currentTarget.querySelector('.comments_layout');
+        let a = e.currentTarget.querySelector('#comms_link')
+
+        if (add.style.display === 'none') {
 
 
+            add.style.display = 'block';
+            input.focus();
 
+            if (c !== null) {
 
-        if (c.style.display == 'none') {
+                console.log(c)
 
-            c.style.display = 'block';
-            console.log(c.style.display)
-            comments_text = a.innerHTML;
-            a.setAttribute('text_before', a.innerHTML);
-            a.innerHTML = '';
+                c.style.display = 'block';
+                a.setAttribute('text_before', a.innerHTML);
+                a.innerHTML = '';
 
-
+            }
         }
 
         else {
+                add.style.display = 'none';
 
-            c.style.display = 'none';
-            a.innerHTML = a.getAttribute('text_before');
-            a.style.background = 'white';
+                if (c !== null) {
 
-        }
+                    c.style.display = 'none';
+                    a.innerHTML = a.getAttribute('text_before');
+                    a.style.background = 'white';
+                }
+             }
 
-    });
-
+    }
     </script>
 
     <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.png'%}); background-size: cover">
@@ -208,37 +221,43 @@
 
         <div class="records">
         {% for recs in records %}
-            <div class="record_layout">
+            <div class="record_layout" id="record">
                 <p style="display: none">{{ recs.get_author_group }}</p>
                  <p style="">{{ recs.report_date }}&nbsp{{ recs.author_group }}&nbsp{{ recs.author }}</p>
-                 <p style="">{{recs.text|linebreaks }}</p>
-
-
-
-                 <div class="comments">
+                 <p id="record_text" style="">{{recs.text|linebreaks }}</p>
+            <div class="comments">
                      <p style="display:none ">{{ recs.get_comments_count }}</p>
                      {% if recs.comments_count > 0 %}
                         <a id="comms_link">Комментарии:({{ recs.comments_count }})</a>
                         <div class="comments_layout" style="display: none">
+
                             {% for Comments in recs.comments_set.all %}
                                 <p id="comments_author">{{ Comments.author }}</p>
                                         <p id="comments_text">{{ Comments.text }}</p>
                                         <p id="comments_created">{{ Comments.created }}</p>
                             {% endfor %}
                         </div>
-                    {% endif %}
+                     {% else %}
+                        <br>
+                     {% endif %}
+                    <form class="add_comment" style="width:60%;margin-left:auto;margin-right:auto;display:none" action="{% url 'добавить комментарий' recs.id %}">
+                            <input name="input_text" type="text" id="box" placeholder="Добавить комментарий...">
+                            <br>
+                            <input type="submit" value="Найти" style="display: none">
+                    </form>
 
                  </div>
 
 
 
 
-                <a class="authorization" href="{% url 'добавить комментарий' recs.id %}">
-                                    <img style="width:2.5%" src="{% static 'images/plus_circle_black.png'%}" title="Добавить комментарий"
-                                         style=""></a>
+
             </div>
         {% endfor %}
-    </div>
+
+
+
+        </div>
     </div>
 
 {% endblock %}

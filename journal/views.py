@@ -124,6 +124,26 @@ class AddCommentView(View):
             return HttpResponseRedirect('/')
 
 
+def add_comment(request, record_id):
+
+    record = Record.objects.get(id=record_id)
+
+    input_text = request.GET.get('input_text')
+
+    comment = Comments.objects.create(author_id=request.user.id, record_id=record)
+
+    comment.text = input_text
+    comment.created = timezone.now()
+    comment.save()
+
+    return HttpResponseRedirect('/')
+
+
+
+
+
+
+
 def get_role(request):
 
     if request.user.is_authenticated:
@@ -349,8 +369,6 @@ def find_by_date(request):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
 
-    print(date)
-
     set_date = convert_date(date)
 
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
@@ -359,8 +377,6 @@ def find_by_date(request):
 
     notes = Notes.objects.order_by('-created_date')
     comments = Comments.objects.all()
-
-    print(set_date)
 
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
