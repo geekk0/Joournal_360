@@ -55,9 +55,10 @@
 
 .searched_records {
     width: 80%;
-    margin-left:auto;
     background:white;
     margin-right: 2.5%;
+    margin-left: 18%;
+
 
 
 }
@@ -161,7 +162,7 @@ table th {
 
 .notes {
     width: 80%;
-    margin-left:auto;
+    margin-left: 18%;
     background:white;
     margin-right: 2.5%;
 
@@ -184,11 +185,7 @@ table th {
 
 }
 
-.searched_records {
-    padding-top: 1%;
-    width: 80%;
-    margin-left:auto;
-}
+
 
 .other_records {
     padding-top: 1%;

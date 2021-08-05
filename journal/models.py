@@ -11,7 +11,7 @@ class Record(models.Model):
     text = models.TextField(default='', verbose_name='Текст')
     report_date = models.DateField(blank=True, default=timezone.now,  verbose_name='За какое число')
     comments_count = models.IntegerField(default=0, editable=False, verbose_name='Количество комментов')
-    author_group = models.CharField(blank=True, editable=False, verbose_name='Группа автора отчета', max_length=64)
+    author_group = models.CharField(blank=True, null=True, editable=False, verbose_name='Группа автора отчета', max_length=64)
 
     def publish(self):
         self.created_date = timezone.now()
