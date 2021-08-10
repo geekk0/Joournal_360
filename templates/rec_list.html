@@ -22,16 +22,18 @@
 
     function show_comments(e) {
 
+        console.log(e.target)
+        console.log(e.currentTarget)
         let add = e.currentTarget.querySelector('.add_comment');
         let input = e.currentTarget.querySelector('.add_comment input[name=input_text]')
         let c = e.currentTarget.querySelector('.comments_layout');
         let a = e.currentTarget.querySelector('#comms_link')
-        let d = e.currentTarget.querySelector('#tp_add_comment')
 
 
         if (add.style.display === 'none') {
 
-            d.innerHTML = 'Отменить';
+
+
             add.style.display = 'inline-block';
             input.focus();
 
@@ -39,18 +41,23 @@
 
                 console.log(c)
 
-                c.style.display = 'inline-block';
+                c.style.display = 'block';
                 a.setAttribute('text_before', a.innerHTML);
                 a.innerHTML = '';
 
 
 
+
+
             }
+
+
         }
 
         else {
                 add.style.display = 'none';
-                d.innerHTML = 'Добавить коммент +';
+
+
 
                 if (c !== null) {
 
@@ -58,8 +65,12 @@
                     a.innerHTML = a.getAttribute('text_before');
                     a.style.background = 'white';
 
+
+
                 }
              }
+
+
 
     }
 
@@ -244,7 +255,8 @@
         {% for recs in records %}
             <div class="record_layout" id="record">
                 <p style="display: none">{{ recs.get_author_group }}</p>
-                 <p style="">{{ recs.report_date }}&nbsp{{ recs.author_group }}&nbsp{{ recs.author }}</p>
+                <p style="display: none">{{ recs.get_author_names }}</p>
+                 <p style="">{{ recs.report_date }}&nbsp{{ recs.author_group }}&nbsp{{ recs.author_name }}</p>
                  <p id="record_text" style="">{{recs.text|linebreaks }}</p>
             <div class="comments">
                      <p style="display:none ">{{ recs.get_comments_count }}</p>
@@ -261,7 +273,7 @@
                      {% else %}
                          <button id="tp_add_comment">Добавить коммент +</button>
                      {% endif %}
-                                <form class="add_comment" style="width:60%;margin-left:5%;margin-right:auto;display:none" action="{% url 'добавить комментарий' recs.id %}">
+                                <form class="add_comment" style="width:80%;margin-left:0;display:none" action="{% url 'добавить комментарий' recs.id %}">
                                         <input name="input_text" type="text" id="box" placeholder="Добавить комментарий...">
                                         <br>
                                         <input type="submit" value="Найти" style="display: none">

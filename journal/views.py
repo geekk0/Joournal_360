@@ -139,11 +139,6 @@ def add_comment(request, record_id):
     return HttpResponseRedirect('/')
 
 
-
-
-
-
-
 def get_role(request):
 
     if request.user.is_authenticated:
@@ -228,9 +223,10 @@ def detect_admin_groups():
     group_names = []
 
     for user in all_users:
-        if user.has_perm('journal.delete_comments'):
+        if user.has_perm('journal.change_record'):
             group_name = Group.objects.get(user=user.id)
             group_names.append(group_name)
+    print(group_names)
     return group_names
 
 

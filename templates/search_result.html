@@ -35,7 +35,7 @@
         if (add.style.display === 'none') {
 
 
-            add.style.display = 'block';
+            add.style.display = 'inline-block';
             input.focus();
 
             if (c !== null) {
@@ -226,7 +226,7 @@
                                     {% endfor %}
                                 </div>
                              {% else %}
-                                <br>
+                                <button id="tp_add_comment">Добавить коммент +</button>
                              {% endif %}
                             <form class="add_comment" style="width:60%;margin-left:auto;margin-right:auto;display:none" action="{% url 'добавить комментарий' recs.id %}">
                                     <input name="input_text" type="text" id="box" placeholder="Добавить комментарий...">
@@ -261,7 +261,7 @@
                             {% endfor %}
                         </div>
                      {% else %}
-                        <br>
+                        <button id="tp_add_comment">Добавить коммент +</button>
                      {% endif %}
                     <form class="add_comment" style="width:60%;margin-left:auto;margin-right:auto;display:none" action="{% url 'добавить комментарий' recs.id %}">
                             <input name="input_text" type="text" id="box" placeholder="Добавить комментарий...">

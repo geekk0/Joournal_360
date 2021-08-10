@@ -12,6 +12,7 @@ class Record(models.Model):
     report_date = models.DateField(blank=True, default=timezone.now,  verbose_name='За какое число')
     comments_count = models.IntegerField(default=0, editable=False, verbose_name='Количество комментов')
     author_group = models.CharField(blank=True, null=True, editable=False, verbose_name='Группа автора отчета', max_length=64)
+    author_name = models.CharField(blank=True, null=True, editable=False, verbose_name='Имя и фамилия автора отчета', max_length=64)
 
     def publish(self):
         self.created_date = timezone.now()
@@ -27,6 +28,12 @@ class Record(models.Model):
     def get_author_group(self):
         auth_group = Group.objects.get(user=self.author)
         self.author_group = auth_group.name
+        self.save()
+
+    def get_author_names(self):
+        author_firstname = User.objects.get(username=self.author).first_name
+        author_lastname = User.objects.get(username=self.author).last_name
+        self.author_name = author_firstname+' '+author_lastname
         self.save()
 
     class Meta:
