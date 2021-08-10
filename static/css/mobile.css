@@ -1,6 +1,489 @@
-@media screen and (orientation:portrait) and (max-width: 400px) and (max-height:900px) {
-    /* длин моб верт*/
+@media screen and (orientation:portrait) and (max-width: 500px) and (max-height:900px) {
+    /*моб верт*/
     .bar {
-        display: none ;
+        display: none;
+    }
+
+    .header {
+        height: 12%;
+    }
+
+    .logo {
+        width: 30%;
+        margin-left: 10%;
+        margin-top: 3%;
+    }
+
+    .logout a {
+        display: none;
+    }
+
+    #user_group {
+        display: none;
+    }
+
+    #user_department {
+        display: none;
+    }
+
+    .logout {
+        width: 32%;
+    }
+
+    .logout p {
+        padding-top: 0;
+    }
+
+    .add_note a {
+        font-size: 10pt;
+    }
+
+    .find {
+        display: block;
+        width: 90%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .mobile_menu {
+        display: block;
+        width: 10%;
+        position: absolute;
+        left: 77%;
+        top: 33%;
+    }
+
+    .mobile_menu_image {
+        width: 100%;
+    }
+
+    .mobile_menu:hover .mobile_menu_list {
+        visibility: visible;
+        opacity: 1;
+
+    }
+
+    .mobile_menu_list a {
+
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .mobile_menu_list li {
+        opacity: 1;
+        width: 100%;
+        text-align: center;
+    }
+
+
+    .mobile_menu_list a:hover {
+        color: black;
+    }
+
+    .mobile_menu_list li:hover {
+        background: red;
+
+    }
+
+    .mobile_menu_list li a {
+        display: inline-block;
+        color: black;
+    }
+
+
+    .mobile_menu_list {
+        visibility: hidden;
+        opacity: 0;
+        transition: .45s opacity, .45s visibility;
+        background: white;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 2;
+        position: absolute;
+        right: 1%;
+        list-style-type: none;
+        padding-left: 0px;
+        min-width: 150px;
+    }
+
+    .content {
+        width: 100%;
+        padding-top: 25%;
+    }
+
+    .record_layout {
+
+        margin-top: 1%;
+        border: 1.5px solid black;
+        margin-left: auto;
+        margin-right: auto;
+        /*! padding-left: 0.8rem; */
+    !important;
+        width: 100%;
+
+    }
+
+    .notes_layout {
+        width: 100%;
+    }
+
+    .notes_layout a {
+        width: 6%;
+        margin-left: 19%;
+    }
+
+    .note_controls {
+        width: 100%;
+    }
+
+    .note_controls img {
+        width: 100%;
+    }
+
+    .records {
+        width: 90%;
+        margin-left: auto;
+        background: white;
+        margin-right: auto;
+
+    }
+
+    .notes {
+        width: 90%;
+        margin-left: auto;
+        background: white;
+        margin-right: auto;
+
+    }
+
+    .searched_records {
+        width: 90%;
+        margin-left: auto;
+        background: white;
+        margin-right: auto;
+
+    }
+
+    p {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        font-size: 10pt;
+    }
+
+    a {
+        margin-top: 0;
+        margin-bottom: 1rem;
+        word-wrap: break-word;
+        font-size: 10pt;
+    }
+
+    .comments_layout {
+        display: block;
+        line-height: 0.5;
+    }
+
+
+    #comments_author {
+        width: 50%;
+    }
+
+    #comments_text {
+        width: 100%;
+    }
+
+    #comments_created {
+        display: none;
+    }
+
+
+    #sep {
+        height: 2px;
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .datepicker-inline {
+        padding-top: 0;
+    }
+
+    #datepicker {
+        height: 40%;
+        padding-top: 20%;
+    }
+
+    .datepicker-inline .datepicker {
+        border-color: #d7d7d7;
+        box-shadow: none;
+        position: static;
+        left: auto;
+        right: auto;
+        opacity: 1;
+        -webkit-transform: none;
+        transform: none;
+        width: 90%;
+    }
+
+    .groups_authors {
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+    .group_select a {
+        color: black;
+    }
+
+    #group {
+        list-style-type: none;
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #group a:hover {
+        color: red;
+    }
+
+    #datepicker {
+        height: 75%;
+        padding-top: 20%;
+    }
+
+    #search_text {
+        display: none;
+    }
+
+
+    #textbox {
+        margin-left: 12%;
+        width: auto;
     }
 }
+
+
+@media screen and (orientation:landscape) and (max-width: 900px) and (max-height:500px) {
+    /*моб горизонт*/
+    .header {
+        width: 100%;
+        display: block;
+        height: 20%;
+        position: fixed;
+        top: 0;
+        z-index: 1;
+
+    }
+
+    .logout {
+        width: 30%;
+        display: block;
+        float: right;
+        padding-top: 2%;
+        text-align: right;
+        height: 10%;
+        margin-right: 5%;
+    }
+
+    #bar {
+        display: none;
+    }
+
+    .records {
+        width: 90%;
+        background: white;
+
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .notes {
+        width: 90%;
+        background: white;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .content {
+        padding-top: 13%;
+        background: white;
+
+    }
+
+    .logo {
+        width: 20%;
+        margin-left: 15%;
+    }
+
+    .mobile_menu {
+        display: block;
+        position: absolute;
+        width: 8%;
+        left: 86%;
+        top: 20%;
+    }
+
+    #user_group {
+        display: none;
+    }
+
+    #user_department {
+        display: none;
+    }
+
+    .authorization {
+        font-size: 12pt;
+    }
+
+    .group_select {
+        width: 80%;
+        margin-left: auto;
+    }
+
+    .groups_authors_select {
+        width: 80%;
+        margin-left: auto;
+    }
+
+
+    .add_note a {
+        font-size: 12pt;
+    }
+
+    .mobile_menu img {
+        vertical-align: middle;
+        width: 85%;
+    }
+
+    #sep {
+        height: 2px;
+        width: 65%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+
+    .logout {
+        display: none;
+    }
+
+    .mobile_menu:hover .mobile_menu_list {
+        visibility: visible;
+        opacity: 1;
+
+    }
+
+    .mobile_menu_list a {
+
+        padding: 0px;
+        margin: 0px;
+    }
+
+    .mobile_menu_list li {
+        opacity: 1;
+        width: 100%;
+        text-align: center;
+    }
+
+
+    .mobile_menu_list a:hover {
+        color: black;
+    }
+
+    .mobile_menu_list li:hover {
+        background: red;
+
+    }
+
+    .mobile_menu_list li a {
+        display: inline-block;
+        color: black;
+    }
+
+
+    .mobile_menu_list {
+        visibility: hidden;
+        opacity: 0;
+        transition: .45s opacity, .45s visibility;
+        background: white;
+        box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+        z-index: 2;
+        position: absolute;
+        right: 1%;
+        list-style-type: none;
+        padding-left: 0px;
+        min-width: 150px;
+    }
+
+    .datepicker-inline {
+        width: 60%;
+    }
+
+    .find > div:nth-child(3) > form:nth-child(1) {
+        width: 43%;
+        float: right;
+    }
+
+    #search_text {
+        display: none;
+    }
+
+    .groups_authors {
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+        display: block;
+    }
+
+    .group_select a {
+        color: black;
+    }
+
+    #group {
+        list-style-type: none;
+        width: 70%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    #group a:hover {
+        color: red;
+    }
+}
+
+    @media screen and (orientation: portrait) and (max-width: 500px) and (min-height: 600px) and (max-height: 800px) {
+        .add_note {
+            margin-top: 3%;
+        }
+
+    }
+
+
+
+    @media screen and (orientation: portrait) and (max-width: 500px) and (min-height: 800px) and (max-height: 900px) {
+        /*длин верт*/
+        .header {
+            height: 9%;
+        }
+
+        .add_note {
+            padding-top: 2%;
+        }
+
+        .logo {
+            margin-top: 1%;
+        }
+
+        .mobile_menu {
+            top: 29%;
+        }
+    }
+
+    @media screen and (orientation: landscape) and (max-width: 900px) and (min-height: 300px) {
+        .add_note{
+            margin-top:1%
+        }
+
+        .logo {
+            width:18%;
+        }
+    }

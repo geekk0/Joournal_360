@@ -26,36 +26,43 @@
         let input = e.currentTarget.querySelector('.add_comment input[name=input_text]')
         let c = e.currentTarget.querySelector('.comments_layout');
         let a = e.currentTarget.querySelector('#comms_link')
+        let d = e.currentTarget.querySelector('#tp_add_comment')
+
 
         if (add.style.display === 'none') {
 
-
-            add.style.display = 'block';
+            d.innerHTML = 'Отменить';
+            add.style.display = 'inline-block';
             input.focus();
 
             if (c !== null) {
 
                 console.log(c)
 
-                c.style.display = 'block';
+                c.style.display = 'inline-block';
                 a.setAttribute('text_before', a.innerHTML);
                 a.innerHTML = '';
+
+
 
             }
         }
 
         else {
                 add.style.display = 'none';
+                d.innerHTML = 'Добавить коммент +';
 
                 if (c !== null) {
 
                     c.style.display = 'none';
                     a.innerHTML = a.getAttribute('text_before');
                     a.style.background = 'white';
+
                 }
              }
 
     }
+
     </script>
 
     <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
@@ -79,7 +86,8 @@
                     <div class="logout">
                             {% if request.user.is_authenticated %}
 
-                                <p>{{ current_user }}&nbsp{{ roles }}&nbsp{{ user_departments_list }}</p>
+                                <span><p id="username">{{ current_user }}</p><p id="user_group">{{ roles }}</p>
+                                    <p id="user_department">{{ user_departments_list }}</p></span>
 
                                 <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
                                 ></a>
@@ -87,11 +95,24 @@
                             {% endif %}
                     </div>
 
+                    <div class="mobile_menu">
+                        <img class="mobile_menu_image" src="{% static 'images/bm.png'%}">
+
+
+                        <ul class="mobile_menu_list">
+                            <li><a href={% url 'по дате мобильный' %}>Найти по дате/тексту</a></li>
+                            <li><a href="{% url 'фильтр по отделу мобильный' %}">Отдел/Группа</a></li>
+                            <li><a href="{% url 'logout' %}">Выйти</a></li>
+
+
+                        </ul>
+                    </div>
+
             </div>
 
         <div class="bar" id="bar" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
 
-                    <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
+            <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
                           id='datepicker' method="get" style="z-index: 2 !important">
 
 
@@ -101,7 +122,7 @@
 
 
 
-                    </form>
+            </form>
                 <script type="application/javascript">
 
 
@@ -232,21 +253,21 @@
                         <div class="comments_layout" style="display: none">
 
                             {% for Comments in recs.comments_set.all %}
-                                <p id="comments_author">{{ Comments.author }}</p>
+                                <p id="comments_author">{{ Comments.author }}:</p>
                                         <p id="comments_text">{{ Comments.text }}</p>
                                         <p id="comments_created">{{ Comments.created }}</p>
                             {% endfor %}
                         </div>
                      {% else %}
-                        <br>
+                         <button id="tp_add_comment">Добавить коммент +</button>
                      {% endif %}
-                    <form class="add_comment" style="width:60%;margin-left:auto;margin-right:auto;display:none" action="{% url 'добавить комментарий' recs.id %}">
-                            <input name="input_text" type="text" id="box" placeholder="Добавить комментарий...">
-                            <br>
-                            <input type="submit" value="Найти" style="display: none">
-                    </form>
+                                <form class="add_comment" style="width:60%;margin-left:5%;margin-right:auto;display:none" action="{% url 'добавить комментарий' recs.id %}">
+                                        <input name="input_text" type="text" id="box" placeholder="Добавить комментарий...">
+                                        <br>
+                                        <input type="submit" value="Найти" style="display: none">
+                                </form>
 
-                 </div>
+            </div>
 
 
 

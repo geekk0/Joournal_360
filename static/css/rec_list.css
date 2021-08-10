@@ -185,7 +185,9 @@ table th {
 
 }
 
-
+.mobile_menu{
+    display:none;
+}
 
 .other_records {
     padding-top: 1%;
@@ -263,6 +265,12 @@ textarea {
 width: 90%;
 }
 
+#sep {
+    height: 2px;
+    width:65%;
+    margin-left: 25%;
+}
+
 .highlight { background-color: yellow }
 
 .comments {
@@ -324,4 +332,13 @@ width: 90%;
     width: 60%;
     margin-left: auto;
     margin-right: auto;
+}
+
+#tp_add_comment{
+    display:none;
+    margin-bottom:1%;
+}
+
+.comments:hover #tp_add_comment {
+    display:inline-block;
 }

@@ -18,6 +18,9 @@ urlpatterns = [
     path('фильтр по отделу/<int:department_id>', views.sort_by_department, name='фильтр по отделу'),
     path('фильтр по группе/<int:group_id>', views.sort_by_group, name='фильтр по группе'),
 
+    path('по дате мобильный/', views.by_date_view, name='по дате мобильный'),
+    path('фильтр по отделу мобильный/', views.by_group_view, name='фильтр по отделу мобильный'),
+
 ]
 
 

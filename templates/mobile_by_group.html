@@ -1,0 +1,110 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Журнал 360</title>
+{% endblock %}
+
+{% block content  %}
+
+    <link href="{% static 'css/datepicker.min.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'js/datepicker.min.js' %}"></script>
+
+
+    <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
+        <div class="header" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
+
+
+
+                    <div class="add_note">
+                        <a class="authorization" href="{% url 'добавить заметку' %}">Начать запись +</a>
+                    </div>
+
+                    <div class="logo">
+
+                        <a href="/" >
+                            <img src={% static 'images/360_International_white.png'%}>
+                        </a>
+
+
+                    </div>
+
+                    <div class="logout">
+                            {% if request.user.is_authenticated %}
+
+                                <p>{{ current_user }}&nbsp{{ roles }}&nbsp{{ user_departments_list }}</p>
+
+                                <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
+                                ></a>
+
+                            {% endif %}
+                    </div>
+
+                    <div class="mobile_menu">
+                        <img class="mobile_menu_image" src="{% static 'images/bm.png'%}">
+
+
+                        <ul class="mobile_menu_list">
+                            <li><a href={% url 'по дате мобильный' %}>Найти по дате/тексту</a></li>
+                            <li><a href="{% url 'фильтр по отделу мобильный' %}">Отдел/Группа</a></li>
+                            <li><a href="{% url 'logout' %}">Выйти</a></li>
+
+                        </ul>
+                    </div>
+
+            </div>
+
+
+    </div>
+
+    <div class="content">
+
+        <div class="group_select">
+            <ul id="group" style="list-style-type:none">
+
+                {% for department in user_departments %}
+
+                    <li><a href={% url 'фильтр по отделу' department.id %}>{{ department.name }}</a></li>
+
+                {% endfor %}
+            </ul>
+        </div>
+
+        <div class="groups_authors_select">
+
+                                    {% if multirole == True %}
+
+                                        <div class="groups_authors_url_list">
+                                            <div class="groups_authors">
+                                                <ul class="" style="list-style-type:none">
+
+                                                        {% for group_author in groups_authors_list %}
+
+                                                            <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
+
+                                                        {% endfor %}
+                                                </ul>
+                                            </div>
+                                        </div>
+
+                                    {% else %}
+
+
+                                        <ul id="group_author" style="list-style-type:none">
+
+                                            {% for group_author in groups_authors_list %}
+
+                                                <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
+
+                                            {% endfor %}
+                                        </ul>
+
+
+
+                                    {% endif %}
+
+
+                                </div>
+
+    </div>
+{% endblock %}

@@ -1,0 +1,109 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}
+    <title>Журнал 360</title>
+{% endblock %}
+
+{% block content  %}
+
+    <link href="{% static 'css/datepicker.min.css' %}" rel="stylesheet" type="text/css">
+    <script src="{% static 'js/datepicker.min.js' %}"></script>
+
+
+    <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
+        <div class="header" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
+
+
+
+                    <div class="add_note">
+                        <a class="authorization" href="{% url 'добавить заметку' %}">Начать запись +</a>
+                    </div>
+
+                    <div class="logo">
+
+                        <a href="/" >
+                            <img src={% static 'images/360_International_white.png'%}>
+                        </a>
+
+
+                    </div>
+
+                    <div class="logout">
+                            {% if request.user.is_authenticated %}
+
+                                <p>{{ current_user }}&nbsp{{ roles }}&nbsp{{ user_departments_list }}</p>
+
+                                <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
+                                ></a>
+
+                            {% endif %}
+                    </div>
+
+                    <div class="mobile_menu">
+                        <img class="mobile_menu_image" src="{% static 'images/bm.png'%}">
+
+
+                        <ul class="mobile_menu_list">
+                            <li><a href={% url 'по дате мобильный' %}>Найти по дате/тексту</a></li>
+                            <li><a href="{% url 'фильтр по отделу мобильный' %}">Отдел/Группа</a></li>
+                            <li><a href="{% url 'logout' %}">Выйти</a></li>
+
+                        </ul>
+                    </div>
+
+            </div>
+
+
+    </div>
+
+    <div class="find">
+
+        <div>
+            <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
+                                  id='datepicker' method="get" style="z-index: 2 !important">
+
+                <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
+                                          style="visibility: hidden" />
+                <input type="submit" value="Найти" id="submit_button"  style="visibility: hidden" />
+
+
+
+
+            </form>
+
+        </div>
+
+        <script type="application/javascript">
+
+
+
+                    window.onload = function() {
+
+                        let el = document.getElementById('datepick');
+                        console.log(el)
+                        el.addEventListener("click", delay);
+
+
+                    }
+
+                    function delay(el) {
+                        console.log(el)
+                        setTimeout(send_date, 0.5);
+                    }
+
+                    function send_date() {
+                        document.forms['sdate'].submit()
+                    }
+                    </script>
+
+        <div >
+            <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
+                                    <input name="q" type="text" id="textbox" placeholder="В тексте...">
+                                    <br>
+                                    <input id="search_text" type="submit" value="Найти">
+            </form>
+        </div>
+    </div>
+
+{% endblock %}

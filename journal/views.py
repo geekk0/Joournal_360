@@ -235,7 +235,7 @@ def detect_admin_groups():
 
 
 @login_required
-def rec_list(request):
+def rec_list(request, *device):
 
     admin_groups = detect_admin_groups()
 
@@ -279,6 +279,8 @@ def rec_list(request):
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list}
+
+
 
     return render(request, 'rec_list.html', context)
 
@@ -384,6 +386,11 @@ def find_by_date(request):
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records}
+
+    user_agent = request.META['HTTP_USER_AGENT']
+
+    if 'Mobile' in user_agent:
+        return render(request, 'search_result.html', context)
 
     return render(request, 'search_result.html', context)
 
@@ -581,6 +588,51 @@ def sort_by_department(request, department_id):
                'user_departments_list': user_departments_list }
 
     return render (request, 'search_result.html', context)
+
+
+def by_date_view(request):
+    return render(request, 'mobile_by_date.html')
+
+
+def by_group_view(request):
+    admin_groups = detect_admin_groups()
+
+    multirole = False
+
+    roles = str(get_roles(request))
+    user_groups = request.user.groups.all()
+
+    user_departments_list = []
+
+    for group in user_groups:
+
+        deps = Department.objects.filter(groups=group)
+
+        for dep_objects in deps:
+            user_departments_list.append(dep_objects.name)
+
+    if len(user_departments_list) > 1:
+        multirole = True
+    current_user = request.user
+    match_authors_list = []
+
+    user_departments = Department.objects.filter(groups__in=user_groups)
+
+    for dep in user_departments:
+        for group in Group.objects.filter(department=dep):
+            for author in User.objects.filter(groups__name=group):
+                match_authors_list.append(author)
+    groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
+        exclude(name__in=admin_groups)
+
+    user_agent = request.META['HTTP_USER_AGENT']
+
+    print(user_agent)
+
+    context = {'groups_authors_list': groups_authors_list, 'current_user': current_user, 'multirole': multirole,
+               'roles': roles, 'user_departments': user_departments}
+
+    return render(request, 'mobile_by_group.html', context)
 
 
 
