@@ -14,9 +14,9 @@
 
     <div class="col-md-6 offset-md-3">
 
-        <h3 class="text-center">Редактировать запись</h3>
+        <h3 style="color:white" class="text-center">Редактировать запись</h3>
         <hr style="">
-        <form action ='' method="POST">
+        <form style="color:white" action ='' method="POST">
             {% csrf_token %}
             {{ form|crispy }}
             <input type="submit" class="btn btn-success" value="Сохранить">

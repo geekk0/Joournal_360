@@ -35,7 +35,7 @@
 
     </head>
 
-    <body>
+    <body style="background-size:cover;background-attachment:fixed; background-image: url({% static 'images/bg3.png'%})">
     <!--<div class="logo">
 
             <h3 style='display:inline-block; padding-right:20px'>Журнал</h3>
@@ -44,7 +44,7 @@
 
         </div>-->
 
-        <div class="register">
+        <div style="" class="register">
             {% if not request.user.is_authenticated %}
 
                 <a class="authorization" href="{% url 'регистрация' %}">Регистрация</a>

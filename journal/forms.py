@@ -1,5 +1,8 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.contrib.auth.password_validation import validate_password
+from django.contrib import messages
+
 from .models import Images, Comments, Notes, Record
 
 
@@ -114,5 +117,46 @@ class AddComment(forms.ModelForm):
         fields = ['text']
 
 
+class ResetPassword(forms.ModelForm):
+
+    old_password = forms.CharField(label='Введите старый пароль', widget=forms.PasswordInput)
+    new_password = forms.CharField(label='Введите новый пароль', widget=forms.PasswordInput)
+    confirm_new_password = forms.CharField(label='Повторите новый пароль', widget=forms.PasswordInput)
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['old_password'].label = 'Введите старый пароль'
+        self.fields['new_password'].label = 'Введите новый пароль'
+
+
+    def clean(self):
+
+
+        old_password = self.cleaned_data['old_password']
+        new_password = self.cleaned_data['new_password']
+
+
+        confirm_new_password = self.cleaned_data['confirm_new_password']
+
+        if new_password == old_password:
+            raise forms.ValidationError(f'Новый пароль не отличается от старого')
+
+        if new_password != confirm_new_password:
+            raise forms.ValidationError(f'Введенные пароли не совпадают')
+
+        username = self.cleaned_data['username']
+        user = User.objects.get(username=username)
+
+        if not user.check_password(old_password):
+            raise forms.ValidationError(f'Неверный пароль')
+
+        validate_password(new_password, user=user, password_validators=None)
+
+        return self.cleaned_data
+
+    class Meta:
+
+        model = User
+        fields = ['username', 'old_password', 'new_password', 'confirm_new_password']
 
 

@@ -8,6 +8,14 @@
 
 }
 
+.body a {
+    color:white;
+}
+
+.body p {
+    color:white !important;
+}
+
 .note_controls {
     width:60%;
     margin-left:auto;
@@ -106,13 +114,13 @@
 }
 
 .logout {
-    width: 30%;
     display: block;
     float: right;
-    padding-top: 1%;
     text-align: right;
     height:10%;
     margin-right: 3%;
+    width: 25%;
+    padding-top: 1.5%;
 }
 
 .logout p {

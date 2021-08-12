@@ -1,6 +1,5 @@
 .content {
     padding-top:108px;
-    background:white;
 }
 
 .logo {
@@ -8,10 +7,31 @@
     margin-left: 20%;
 }
 
+.reset_password {
+    width: 10%;
+    display: inline-block;
+    padding-top: 2.7%;
+    margin-left: 5%;
+}
+
+
+.content p {
+    color:white;
+}
+
+.content a {
+    color:white;
+}
 
 .logo img {
     width:100% !important;
     padding-top: 1%;
+}
+
+.add_comment_button {
+    width: 20%;
+    display: inline-block;
+    padding-bottom: 1%;
 }
 
 .template a {
@@ -48,14 +68,12 @@
 .records {
     width: 80%;
     margin-left: 18%;
-    background:white;
     margin-right: 2.5%;
 
 }
 
 .searched_records {
     width: 80%;
-    background:white;
     margin-right: 2.5%;
     margin-left: 18%;
 
@@ -66,7 +84,7 @@
 .record_layout {
 
     margin-top:1%;
-    border: 1.5px solid black;
+    border: 1.5px solid white;
     margin-left: auto;
     margin-right: auto;
     padding-left: 0.8rem; !important;
@@ -78,7 +96,14 @@
     margin-left:auto !important;
     margin-right:auto !important;
     padding-top: 30px;
+    width:90%;
 
+}
+
+.datepicker-inline .datepicker {
+    width:90%;
+    margin-top: 8%;
+    color:black;
 }
 
 div.datepicker-inline:nth-child(3) {
@@ -88,7 +113,7 @@ div.datepicker-inline:nth-child(3) {
 
 .bar {
     padding-top: 1.5%;
-    width: 280px;
+    width: 350px;
     float: left;
     position: fixed;
     left: 0;
@@ -125,13 +150,13 @@ table th {
 
 table td {
     padding: 3px;
-    border: 1px solid black;
+    border: 1px solid white;
 
 }
 
 table th {
     padding: 3px;
-    border: 1px solid black;
+    border: 1px solid white;
 
 }
 
@@ -163,7 +188,6 @@ table th {
 .notes {
     width: 80%;
     margin-left: 18%;
-    background:white;
     margin-right: 2.5%;
 
 }
@@ -304,6 +328,23 @@ width: 90%;
     font-size: 20pt;
 }
 
+.groups_authors_select {
+    padding-top:8%;
+}
+
+#hint_id_username {
+display: none;
+}
+
+#div_id_username {
+ padding-top: 6%;
+}
+
+#div_id_password {
+ padding-top: 2%;
+}
+
+
 .groups_authors_select a {
     color:white;
     font-size: 14pt;
@@ -324,7 +365,6 @@ width: 90%;
     left: 250;
     z-index: 3;
     color: black;
-    background: white;
 }
 
 #check {

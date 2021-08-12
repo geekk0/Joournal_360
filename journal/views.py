@@ -2,6 +2,7 @@ import itertools
 import datetime
 
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.password_validation import validate_password
 from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
@@ -11,6 +12,7 @@ from django.views.generic import TemplateView, ListView
 from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
+from django import forms
 
 
 
@@ -18,7 +20,7 @@ from itertools import *
 from operator import *
 
 from .models import Notes, Record, Images, Comments, Department
-from .forms import LoginForm, RegistrationForm, AddNote, AddComment
+from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword
 
 
 class LoginView(View):
@@ -38,6 +40,25 @@ class LoginView(View):
                 login(request, user)
                 return HttpResponseRedirect('/')
         return render(request, 'login.html', {'form': form})
+
+
+class ResetPasswordView(View):
+
+    def get(self, request, *args, **kwargs):
+        form = ResetPassword(request.POST or None)
+        form.initial['username'] = request.user.username
+        context = {'form': form}
+        return render(request, 'password_reset.html', context)
+
+    def post(self, request, *args, **kwargs):
+        current_user = request.user
+        form = ResetPassword(request.POST or None)
+
+        if form.is_valid():
+            current_user.set_password(form.cleaned_data['new_password'])
+            current_user.save()
+            return HttpResponseRedirect('/')
+        return render(request, 'password_reset.html', {'form': form})
 
 
 class RegistrationView(View):
@@ -226,7 +247,6 @@ def detect_admin_groups():
         if user.has_perm('journal.change_record'):
             group_name = Group.objects.get(user=user.id)
             group_names.append(group_name)
-    print(group_names)
     return group_names
 
 

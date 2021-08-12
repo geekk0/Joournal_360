@@ -55,7 +55,7 @@
 
                     c.style.display = 'none';
                     a.innerHTML = a.getAttribute('text_before');
-                    a.style.background = 'white';
+                    <!--a.style.background = 'white';-->
                 }
              }
 
@@ -64,12 +64,12 @@
 
 
 
-    <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.png'%}); background-size: cover">
-        <div class="header" style="background-image: url({% static 'images/back+logo_3840х2160-01.png'%}); background-size: cover">
+    <div class="template">
+        <div class="header">
 
 
                     <div class="add_note">
-                        <a class="authorization" href="{% url 'добавить заметку' %}">Начать запись +</a>
+                        <a class="authorization" href="{% url 'добавить заметку' %}">Новая запись +</a>
                     </div>
 
                     <div class="logo">
@@ -106,7 +106,7 @@
 
             </div>
 
-        <div class="bar" id="bar" style="background-image: url({% static 'images/back+logo_3840х2160-01.png'%}); background-size: cover">
+        <div class="bar" id="bar">
 
                     <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
                           id='datepicker' method="get" style="z-index: 2 !important">
@@ -216,7 +216,7 @@
                         <div class="comments">
                              <p style="display:none ">{{ recs.get_comments_count }}</p>
                              {% if recs.comments_count > 0 %}
-                                <a id="comms_link">Комментарии:({{ recs.comments_count }})</a>
+                                <a style="color:white" id="comms_link">Комментарии:({{ recs.comments_count }})</a>
                                 <div class="comments_layout" style="display: none">
 
                                     {% for Comments in recs.comments_set.all %}
@@ -244,14 +244,14 @@
 
         <div class="records">
                 {% for recs in all_records %}
-                    <div class="record_layout" style="border: 2px solid black;">
+                    <div class="record_layout" style="border: 2px solid white;">
                          <p style="">{{ recs.report_date }}&nbsp{{ recs.author_group }}&nbsp{{ recs.author }}</p>
                          <p style="">{{recs.text|linebreaks }}</p>
 
                          <div class="comments">
                      <p style="display:none ">{{ recs.get_comments_count }}</p>
                      {% if recs.comments_count > 0 %}
-                        <a id="comms_link">Комментарии:({{ recs.comments_count }})</a>
+                        <a style="color:white" id="comms_link">Комментарии:({{ recs.comments_count }})</a>
                         <div class="comments_layout" style="display: none">
 
                             {% for Comments in recs.comments_set.all %}

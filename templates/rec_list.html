@@ -63,7 +63,7 @@
 
                     c.style.display = 'none';
                     a.innerHTML = a.getAttribute('text_before');
-                    a.style.background = 'white';
+                    <!--a.style.background = 'white';-->
 
 
 
@@ -76,13 +76,13 @@
 
     </script>
 
-    <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
-        <div class="header" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
+    <div class="template">
+        <div class="header">
 
 
 
                     <div class="add_note">
-                        <a class="authorization" href="{% url 'добавить заметку' %}">Начать запись +</a>
+                        <a class="authorization" href="{% url 'добавить заметку' %}">Новая запись +</a>
                     </div>
 
                     <div class="logo">
@@ -93,6 +93,12 @@
 
 
                     </div>
+
+                    <div class="reset_password">
+
+                        <a href="{% url 'сменить пароль' %}">Сменить пароль</a>
+                    </div>
+
 
                     <div class="logout">
                             {% if request.user.is_authenticated %}
@@ -121,7 +127,7 @@
 
             </div>
 
-        <div class="bar" id="bar" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
+        <div class="bar" id="bar">
 
             <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
                           id='datepicker' method="get" style="z-index: 2 !important">
@@ -193,7 +199,7 @@
                                 {% else %}
 
 
-                                    <ul id="group_author" style="list-style-type:none">
+                                    <ul id="group_author" style="list-style-type:none; padding-top: 8%;">
 
                                         {% for group_author in groups_authors_list %}
 
@@ -220,7 +226,7 @@
             </div>
     </div>
 
-    <div class="content">
+    <div class="content" style="background: fixed">
         <div class="notes">
 
 
@@ -261,7 +267,7 @@
             <div class="comments">
                      <p style="display:none ">{{ recs.get_comments_count }}</p>
                      {% if recs.comments_count > 0 %}
-                        <a id="comms_link">Комментарии:({{ recs.comments_count }})</a>
+                        <a style="color:white" id="comms_link">Комментарии:({{ recs.comments_count }})</a>
                         <div class="comments_layout" style="display: none">
 
                             {% for Comments in recs.comments_set.all %}
@@ -271,9 +277,11 @@
                             {% endfor %}
                         </div>
                      {% else %}
-                         <button id="tp_add_comment">Добавить коммент +</button>
+                         <div style="" class="add_comment_button">
+                            <button style="color:black; border-radius: 4px;" id="tp_add_comment">Добавить коммент +</button>
+                         </div>
                      {% endif %}
-                                <form class="add_comment" style="width:80%;margin-left:0;display:none" action="{% url 'добавить комментарий' recs.id %}">
+                                <form class="add_comment" style="width:60%;margin-left:0;display:none" action="{% url 'добавить комментарий' recs.id %}">
                                         <input name="input_text" type="text" id="box" placeholder="Добавить комментарий...">
                                         <br>
                                         <input type="submit" value="Найти" style="display: none">
