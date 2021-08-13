@@ -1,5 +1,7 @@
 import itertools
 import datetime
+import json
+
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
@@ -291,10 +293,13 @@ def rec_list(request, *device):
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct().\
         exclude(name__in=admin_groups)
 
+    shifts_dates = shifts_match()
+
+
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
-               'user_departments_list': user_departments_list}
+               'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates)}
 
 
 
@@ -398,10 +403,13 @@ def find_by_date(request):
     notes = Notes.objects.order_by('-created_date')
     comments = Comments.objects.all()
 
+    shifts_dates = shifts_match()
+
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
-               'user_departments_list': user_departments_list, 'all_records': all_records}
+               'user_departments_list': user_departments_list, 'all_records': all_records,
+               'shifts_dates': json.dumps(shifts_dates)}
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -649,6 +657,65 @@ def by_group_view(request):
                'roles': roles, 'user_departments': user_departments}
 
     return render(request, 'mobile_by_group.html', context)
+
+
+def create_shift_dates(start_date):
+
+    shift_dates = []
+
+    end_date = datetime.date(2024, 6, 15)
+
+    delta = datetime.timedelta(days=4)
+
+    while start_date <= end_date:
+        shift_dates.append(str(start_date))
+
+        start_date += delta
+    return shift_dates
+
+
+def check_dates_in_shifts(shift_dates, shift_name):
+
+    start_check_date = datetime.date(2020, 6, 15)
+
+    end_check_date = datetime.date(2024, 6, 15)
+
+    shift_dates_dict = {}
+
+    delta = datetime.timedelta(days=1)
+
+    counter = 0
+
+    while start_check_date <= end_check_date:
+
+        if str(start_check_date) in shift_dates:
+            shift_dates_dict.update({str(start_check_date): shift_name})
+        start_check_date += delta
+        counter += 1
+
+    print(counter)
+
+    return shift_dates_dict
+
+
+def shifts_match():
+    shift_1_dates = create_shift_dates(datetime.date(2020, 6, 6))
+    shift_2_dates = create_shift_dates(datetime.date(2020, 6, 7))
+    shift_3_dates = create_shift_dates(datetime.date(2020, 6, 8))
+    shift_4_dates = create_shift_dates(datetime.date(2020, 6, 9))
+
+    match_dates_shift1 = check_dates_in_shifts(shift_1_dates, 'shift_1_dates')
+    match_dates_shift2 = check_dates_in_shifts(shift_2_dates, 'shift_2_dates')
+    match_dates_shift3 = check_dates_in_shifts(shift_3_dates, 'shift_3_dates')
+    match_dates_shift4 = check_dates_in_shifts(shift_4_dates, 'shift_4_dates')
+
+    match_dates_shift1.update(match_dates_shift2)
+    match_dates_shift1.update(match_dates_shift3)
+    match_dates_shift1.update(match_dates_shift4)
+
+    all_shifts_match = match_dates_shift1
+
+    return all_shifts_match
 
 
 

@@ -22,8 +22,6 @@
 
     function show_comments(e) {
 
-        console.log(e.target)
-        console.log(e.currentTarget)
         let add = e.currentTarget.querySelector('.add_comment');
         let input = e.currentTarget.querySelector('.add_comment input[name=input_text]')
         let c = e.currentTarget.querySelector('.comments_layout');
@@ -39,19 +37,12 @@
 
             if (c !== null) {
 
-                console.log(c)
 
                 c.style.display = 'block';
                 a.setAttribute('text_before', a.innerHTML);
                 a.innerHTML = '';
 
-
-
-
-
             }
-
-
         }
 
         else {
@@ -142,12 +133,61 @@
             </form>
                 <script type="application/javascript">
 
+                document.addEventListener("DOMContentLoaded", init_colors)
+
+                function init_colors() {
+                    let cells = document.getElementsByClassName('datepicker--cell-day')
+
+                    for (let i = 0; i < cells.length; i++) {
+                        let day = cells[i].getAttribute('data-date')
+                        let month = cells[i].getAttribute('data-month')
+                        month = Number(month) + 1
+                        month = String(month)
+                        if (month.length < 2) {
+                            month = '0' + month
+                        }
+                        if (day.length < 2) {
+                            day = '0' + day
+                        }
+                        let year = cells[i].getAttribute('data-year')
+                        let check_date = year + '-' + month + '-' + day
+
+                        let shift_dates_list = {{ shifts_dates|safe }};
+
+                        if (check_date in shift_dates_list) {
+                            let shift = shift_dates_list[check_date]
+                            color_date(cells[i], shift)
+                        }
+                        else {
+                            console.log(check_date+' даты нет')
+                        }
+                    }
+                }
+
+                function color_date(cell, shift) {
+                    if (shift === 'shift_4_dates') {
+                            cell.style.background = 'rgb(0, 200, 0)' ;
+                        }
+                    if (shift === 'shift_3_dates') {
+                            cell.style.background = 'rgb(200, 0, 0)';
+                        }
+                    if (shift === 'shift_2_dates') {
+                            cell.style.background =  'rgb(0, 0, 200)';
+                        }
+                    if (shift === 'shift_1_dates') {
+                            cell.style.background = 'rgb(200, 200, 0)';
+                        }
+                }
+
 
 
                 window.onload = function() {
 
                     let el = document.getElementById('datepick');
                     el.addEventListener("click", delay);
+
+                    let elem = document.getElementsByClassName('datepicker--nav')[0]
+                    elem.addEventListener("click", init_colors)
 
                 }
 
