@@ -633,7 +633,12 @@ def sort_by_department(request, department_id):
 
 
 def by_date_view(request):
-    return render(request, 'mobile_by_date.html')
+
+    shifts_dates = shifts_match()
+
+    context = {'shifts_dates': shifts_dates}
+
+    return render(request, 'mobile_by_date.html', context)
 
 
 def by_group_view(request):

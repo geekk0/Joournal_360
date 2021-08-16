@@ -81,18 +81,26 @@
 
                     </div>
 
-                    <div class="reset_password">
+                    {% if device == 'pc' %}
+                        <div class="reset_password">
+                            <a href="{% url 'сменить пароль' %}">Сменить пароль</a>
+                        </div>
+                    {% endif %}
 
-                        <a href="{% url 'сменить пароль' %}">Сменить пароль</a>
-                    </div>
+
 
                     <div class="logout">
-                            {% if request.user.is_authenticated %}
+                        {% if request.user.is_authenticated %}
+                                {% if device == 'mobile' %}
+                                    <span><p id="username">{{ current_user }}</p></span>
+                                {% else %}
 
-                                <p>{{ current_user }}&nbsp{{ roles }}&nbsp{{ user_departments_list }}</p>
+                                    <span><p id="username">{{ current_user }}</p><p id="user_group">{{ roles }}</p>
+                                        <p id="user_department">{{ user_departments_list }}</p></span>
 
-                                <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
-                                ></a>
+                                    <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
+                                    ></a>
+                                {% endif %}
 
                             {% endif %}
                     </div>
@@ -307,7 +315,9 @@
                                     {% endfor %}
                                 </div>
                              {% else %}
-                                <button id="tp_add_comment">Добавить коммент +</button>
+                                <div style="" class="add_comment_button">
+                                    <button style="color:black; border-radius: 4px;" id="tp_add_comment">Добавить коммент +</button>
+                                </div>
                              {% endif %}
                             <form class="add_comment" style="width:60%;margin-left:auto;margin-right:auto;display:none" action="{% url 'добавить комментарий' recs.id %}">
                                     <input name="input_text" type="text" id="box" placeholder="Добавить комментарий...">
@@ -342,7 +352,9 @@
                             {% endfor %}
                         </div>
                      {% else %}
-                        <button id="tp_add_comment">Добавить коммент +</button>
+                        <div style="" class="add_comment_button">
+                            <button style="color:black; border-radius: 4px;" id="tp_add_comment">Добавить коммент +</button>
+                        </div>
                      {% endif %}
                     <form class="add_comment" style="width:60%;margin-left:auto;margin-right:auto;display:none" action="{% url 'добавить комментарий' recs.id %}">
                             <input name="input_text" type="text" id="box" placeholder="Добавить комментарий...">

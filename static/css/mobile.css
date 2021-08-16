@@ -102,6 +102,7 @@
         list-style-type: none;
         padding-left: 0px;
         min-width: 150px;
+        background: white;
     }
 
     .content {

@@ -85,17 +85,20 @@
 
                     </div>
 
-                    <div class="reset_password">
 
-                        <a href="{% url 'сменить пароль' %}">Сменить пароль</a>
-                    </div>
+
+                    {% if device == 'pc' %}
+                        <div class="reset_password">
+                            <a href="{% url 'сменить пароль' %}">Сменить пароль</a>
+                        </div>
+                    {% endif %}
+
 
 
                     <div class="logout">
-                            {% if request.user.is_authenticated %}
-
+                        {% if request.user.is_authenticated %}
                                 {% if device == 'mobile' %}
-                                    <p id="username">{{ current_user }}</p>
+                                    <span><p id="username">{{ current_user }}</p></span>
                                 {% else %}
 
                                     <span><p id="username">{{ current_user }}</p><p id="user_group">{{ roles }}</p>
@@ -229,6 +232,15 @@
                 function send_date() {
                     document.forms['sdate'].submit()
                 }
+
+
+                $('.datepicker--cell-day')
+                    .load(function(){
+                        init_colors
+                    })
+                    .error(function(){
+
+                    });
 
                 </script>
 
