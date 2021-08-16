@@ -150,7 +150,7 @@
                             console.log(check_date+' даты нет')
                         }
                     }
-
+                    groups_colors()
                 }
 
                 function color_date(cell, shift) {
@@ -168,7 +168,30 @@
                         }
                 }
 
+                function groups_colors() {
+                    let groups = document.querySelectorAll('ul#group_author > li')
 
+                    for (let i = 0; i < groups.length; i++) {
+                        let group_link = groups[i].querySelector('a')
+                        if (group_link.innerText === 'Смена Астахова' || group_link.innerText === 'IT Захаров')  {
+                            group_link.style.color = 'rgb(200, 200, 0)'
+                            console.log('shift found')
+                        }
+                        if (group_link.innerText === 'Смена Черпакова'|| group_link.innerText === 'IT Дмитриевский') {
+                            group_link.style.color = 'rgb(0, 0, 200)'
+                            console.log('shift found')
+                        }
+                        if (group_link.innerText === 'Смена Рославцева'|| group_link.innerText === 'IT Деев') {
+                            group_link.style.color = 'rgb(200, 0, 0)'
+                            console.log('shift found')
+                        }
+                        if (group_link.innerText === 'Смена Бороздина'|| group_link.innerText === 'IT Крутихин') {
+                            group_link.style.color = 'rgb(0, 200, 0)'
+                            console.log('shift found')
+                        }
+                    }
+
+                }
 
                $('#calendar').datepicker().data('datepicker').selectDate(new Date({{ set_date }}));
 

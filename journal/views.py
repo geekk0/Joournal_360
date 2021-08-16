@@ -453,7 +453,6 @@ def sort_by_group(request, group_id):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
 
-    print(match_authors_list)
 
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
@@ -572,11 +571,15 @@ def find_by_text(request):
 
     comments = Comments.objects.all().order_by('-created')
 
+    groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
+        exclude(name__in=admin_groups)
+
     shifts_dates = shifts_match()
 
     context = {'comments': comments, 'current_user': current_user, 'multirole': multirole,
                'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
-               'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates)}
+               'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates),
+               'groups_authors_list': groups_authors_list,}
 
     return render(request, 'search_result.html', context)
 
@@ -659,7 +662,6 @@ def by_group_view(request):
 
     user_agent = request.META['HTTP_USER_AGENT']
 
-    print(user_agent)
 
     context = {'groups_authors_list': groups_authors_list, 'current_user': current_user, 'multirole': multirole,
                'roles': roles, 'user_departments': user_departments}
@@ -700,8 +702,6 @@ def check_dates_in_shifts(shift_dates, shift_name):
             shift_dates_dict.update({str(start_check_date): shift_name})
         start_check_date += delta
         counter += 1
-
-    print(counter)
 
     return shift_dates_dict
 
