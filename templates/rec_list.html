@@ -94,11 +94,16 @@
                     <div class="logout">
                             {% if request.user.is_authenticated %}
 
-                                <span><p id="username">{{ current_user }}</p><p id="user_group">{{ roles }}</p>
-                                    <p id="user_department">{{ user_departments_list }}</p></span>
+                                {% if device == 'mobile' %}
+                                    <p id="username">{{ current_user }}</p>
+                                {% else %}
 
-                                <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
-                                ></a>
+                                    <span><p id="username">{{ current_user }}</p><p id="user_group">{{ roles }}</p>
+                                        <p id="user_department">{{ user_departments_list }}</p></span>
+
+                                    <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
+                                    ></a>
+                                {% endif %}
 
                             {% endif %}
                     </div>
@@ -174,7 +179,7 @@
                             cell.style.background = 'rgb(200, 0, 0)';
                         }
                     if (shift === 'shift_2_dates') {
-                            cell.style.background =  'rgb(0, 0, 200)';
+                            cell.style.background =  'rgb(0, 90, 255)';
                         }
                     if (shift === 'shift_1_dates') {
                             cell.style.background = 'rgb(200, 200, 0)';
@@ -191,7 +196,7 @@
                             console.log('shift found')
                         }
                         if (group_link.innerText === 'Смена Черпакова'|| group_link.innerText === 'IT Дмитриевский') {
-                            group_link.style.color = 'rgb(0, 0, 200)'
+                            group_link.style.color = 'rgb(0, 90, 255)'
                             console.log('shift found')
                         }
                         if (group_link.innerText === 'Смена Рославцева'|| group_link.innerText === 'IT Деев') {

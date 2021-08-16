@@ -296,11 +296,18 @@ def rec_list(request, *device):
 
     shifts_dates = shifts_match()
 
+    user_agent = request.META['HTTP_USER_AGENT']
+
+    if 'Mobile' in user_agent:
+        device = 'mobile'
+    else:
+        device = 'pc'
 
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
-               'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates)}
+               'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
+               'device': device}
 
 
 
