@@ -421,6 +421,9 @@ def find_by_date(request):
 
 def sort_by_group(request, group_id):
 
+    shifts_dates = shifts_match()
+
+
     admin_groups = detect_admin_groups()
 
     multirole = False
@@ -472,7 +475,7 @@ def sort_by_group(request, group_id):
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
-               'user_departments_list': user_departments_list, 'all_records': all_records}
+               'user_departments_list': user_departments_list, 'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates)}
 
     return render(request, 'search_result.html', context)
 
@@ -577,6 +580,8 @@ def find_by_text(request):
 
 def sort_by_department(request, department_id):
 
+    shifts_dates = shifts_match()
+
     admin_groups = detect_admin_groups()
 
     author_groups_list = Group.objects.filter(department=department_id)
@@ -609,7 +614,7 @@ def sort_by_department(request, department_id):
 
     context = {'all_records': records, 'comments': comments, 'groups_authors_list': groups_authors_list,
                'current_user': current_user, 'roles': roles, 'user_departments': user_departments,
-               'user_departments_list': user_departments_list }
+               'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates) }
 
     return render (request, 'search_result.html', context)
 
