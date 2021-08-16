@@ -357,10 +357,11 @@ display: none;
 
 .groups_authors{
     display:none;
+
 }
 
 .groups_authors a{
-    color:black;
+    color:white;
 }
 
 .groups_authors_url_list:hover .groups_authors{

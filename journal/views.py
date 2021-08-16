@@ -245,6 +245,7 @@ def detect_admin_groups():
 
     group_names = []
 
+
     for user in all_users:
         if user.has_perm('journal.change_record'):
             group_name = Group.objects.get(user=user.id)
@@ -571,9 +572,11 @@ def find_by_text(request):
 
     comments = Comments.objects.all().order_by('-created')
 
+    shifts_dates = shifts_match()
+
     context = {'comments': comments, 'current_user': current_user, 'multirole': multirole,
                'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
-               'all_records': all_records}
+               'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates)}
 
     return render(request, 'search_result.html', context)
 
