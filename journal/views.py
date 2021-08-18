@@ -292,7 +292,7 @@ def rec_list(request, *device):
     comments = Comments.objects.all().order_by('-created')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct().\
-        exclude(name__in=admin_groups)
+        exclude(name__in=admin_groups).order_by('id')
 
     shifts_dates = shifts_match()
 
@@ -389,7 +389,7 @@ def find_by_date(request):
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups)
+        exclude(name__in=admin_groups).order_by('id')
 
     if date:
         date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
@@ -570,7 +570,7 @@ def find_by_text(request):
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct().\
-        exclude(name__in=admin_groups)
+        exclude(name__in=admin_groups).order_by('id')
 
     search_query = records.filter(text__icontains=input_text).order_by('-created_date')
 
@@ -579,7 +579,7 @@ def find_by_text(request):
     comments = Comments.objects.all().order_by('-created')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups)
+        exclude(name__in=admin_groups).order_by('id')
 
     shifts_dates = shifts_match()
 

@@ -193,16 +193,16 @@
 
                     for (let i = 0; i < groups.length; i++) {
                         let group_link = groups[i].querySelector('a')
-                        if (group_link.innerText === 'Смена Астахов и Козлов' || group_link.innerText === 'IT Захаров')  {
+                        if (group_link.innerText === 'Астахов и Козлов' || group_link.innerText === 'IT Захаров')  {
                             group_link.style.color = 'rgb(200, 200, 0)'
                         }
-                        if (group_link.innerText === 'Смена Черпаков и Долгов'|| group_link.innerText === 'IT Дмитриевский') {
+                        if (group_link.innerText === 'Черпаков и Долгов'|| group_link.innerText === 'IT Дмитриевский') {
                             group_link.style.color = 'rgb(0, 160, 255)'
                         }
-                        if (group_link.innerText === 'Смена Рославцев и Сидоренко'|| group_link.innerText === 'IT Деев') {
+                        if (group_link.innerText === 'Рославцев и Сидоренко'|| group_link.innerText === 'IT Деев') {
                             group_link.style.color = 'rgb(200, 0, 0)'
                         }
-                        if (group_link.innerText === 'Смена Бороздин и Литвиненко'|| group_link.innerText === 'IT Крутихин') {
+                        if (group_link.innerText === 'Бороздин и Литвиненко'|| group_link.innerText === 'IT Крутихин') {
                             group_link.style.color = 'rgb(0, 200, 0)'
                         }
                     }
@@ -303,7 +303,7 @@
 
                                         {% for group_author in groups_authors_list %}
 
-                                            <li><a href={% url 'фильтр по группе' group_author.id department_id %}>{{ group_author.name }}</a></li>
+                                            <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
 
                                         {% endfor %}
                                     </ul>
@@ -362,7 +362,7 @@
             <div class="record_layout" id="record">
                 <p style="display: none">{{ recs.get_author_group }}</p>
                 <p style="display: none">{{ recs.get_author_names }}</p>
-                 <p style="">{{ recs.report_date }}&nbsp{{ recs.author_group }}&nbsp{{ recs.author_name }}</p>
+                 <p class="author_name">{{ recs.report_date }}&nbsp{{ recs.author_name }}</p>
                  <p id="record_text" style="">{{recs.text|linebreaks }}</p>
             <div class="comments">
                      <p style="display:none ">{{ recs.get_comments_count }}</p>
@@ -388,6 +388,29 @@
                                 </form>
 
             </div>
+
+        <script type="application/javascript">
+            document.addEventListener("DOMContentLoaded", color_author_name)
+
+            function color_author_name() {
+                let author_name = document.getElementsByClassName('author_name')
+                for (let i = 0; i < author_name.length; i++) {
+                    if (author_name[i].innerText.includes('Литвиненко') || author_name[i].innerText.includes('Бороздин')) {
+                        author_name[i].style.color = 'rgb(0, 200, 0)'
+                    }
+                    if (author_name[i].innerText.includes('Черпаков') || author_name[i].innerText.includes("Долгов")) {
+                        author_name[i].style.color = 'rgb(0, 160, 255)'
+                    }
+                    if (author_name[i].innerText.includes('Рославцев') || author_name[i].innerText.includes("Сидоренко")) {
+                        author_name[i].style.color = 'rgb(200, 0, 0)'
+                    }
+                    if (author_name[i].innerText.includes('Астахов') || author_name[i].innerText.includes("Козлов")) {
+                        author_name[i].style.color = 'rgb(200, 200, 0)'
+                    }
+                }
+            }
+
+        </script>
 
 
 
