@@ -362,18 +362,24 @@
             function color_author_name() {
                 let author_name = document.getElementsByClassName('author_name')
                 for (let i = 0; i < author_name.length; i++) {
-                    if (author_name[i].innerText.includes('Литвиненко') || author_name[i].innerText.includes('Бороздин')) {
+                    for (let i = 0; i < author_name.length; i++) {
+                    if (author_name[i].innerText.includes('Литвиненко') || author_name[i].innerText.includes('Бороздин')
+                    || author_name[i].innerText.includes('Крутихин')) {
                         author_name[i].style.color = 'rgb(0, 200, 0)'
                     }
-                    if (author_name[i].innerText.includes('Черпаков') || author_name[i].innerText.includes("Долгов")) {
+                    if (author_name[i].innerText.includes('Черпаков') || author_name[i].innerText.includes("Долгов")
+                    || author_name[i].innerText.includes('Дмитриевский')) {
                         author_name[i].style.color = 'rgb(0, 160, 255)'
                     }
-                    if (author_name[i].innerText.includes('Рославцев') || author_name[i].innerText.includes("Сидоренко")) {
+                    if (author_name[i].innerText.includes('Рославцев') || author_name[i].innerText.includes("Сидоренко")
+                    || author_name[i].innerText.includes('Деев')) {
                         author_name[i].style.color = 'rgb(200, 0, 0)'
                     }
-                    if (author_name[i].innerText.includes('Астахов') || author_name[i].innerText.includes("Козлов")) {
+                    if (author_name[i].innerText.includes('Астахов') || author_name[i].innerText.includes("Козлов")
+                    || author_name[i].innerText.includes('Захаров')) {
                         author_name[i].style.color = 'rgb(200, 200, 0)'
                     }
+                }
                 }
             }
 
