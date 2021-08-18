@@ -210,6 +210,12 @@
                 }
 
 
+                $('#calendar').datepicker({
+                    onChangeMonth: function(month, year) {
+                        console.log(month, year)
+                    }
+                })
+
                 window.onload = function() {
 
                     let el = document.getElementById('datepick');

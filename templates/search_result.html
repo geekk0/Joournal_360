@@ -202,6 +202,12 @@
                $('#calendar').datepicker().data('datepicker').selectDate(new Date({{ set_date }}));
 
 
+                $('#my-datepicker').datepicker({
+                    onChangeMonth: function(month, year) {
+                        console.log(month, year)
+                    }
+                })
+
                 window.onload = function() {
 
                     let el = document.getElementById('datepick');

@@ -303,6 +303,8 @@ def rec_list(request, *device):
     else:
         device = 'pc'
 
+    print(user_agent)
+
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
@@ -413,11 +415,20 @@ def find_by_date(request):
 
     shifts_dates = shifts_match()
 
+    user_agent = request.META['HTTP_USER_AGENT']
+
+    if 'Mobile' in user_agent:
+        device = 'mobile'
+    else:
+        device = 'pc'
+
+    print(user_agent)
+
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
-               'shifts_dates': json.dumps(shifts_dates)}
+               'shifts_dates': json.dumps(shifts_dates), 'device': device}
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -479,10 +490,20 @@ def sort_by_group(request, group_id):
 
     comments = Comments.objects.all()
 
+    user_agent = request.META['HTTP_USER_AGENT']
+
+    if 'Mobile' in user_agent:
+        device = 'mobile'
+    else:
+        device = 'pc'
+
+    print(user_agent)
+
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
-               'user_departments_list': user_departments_list, 'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates)}
+               'user_departments_list': user_departments_list, 'all_records': all_records,
+               'shifts_dates': json.dumps(shifts_dates), 'device': device}
 
     return render(request, 'search_result.html', context)
 
@@ -525,11 +546,20 @@ def find_by_author(request, author_id):
 
     comments = Comments.objects.all()
 
+    user_agent = request.META['HTTP_USER_AGENT']
+
+    if 'Mobile' in user_agent:
+        device = 'mobile'
+    else:
+        device = 'pc'
+
+    print(user_agent)
+
 
     context = {'search_query': search_query,  'role': role, "author_list": author_list,
                "author": author, "all_records": all_records, 'multirole': multirole, 'roles': roles,
                'current_group': current_group, 'group_list': group_list, 'current_group_name': current_group_name,
-               'comments': comments}
+               'comments': comments, 'device': device}
 
     return render(request, 'search_result.html', context)
 
@@ -583,10 +613,18 @@ def find_by_text(request):
 
     shifts_dates = shifts_match()
 
+    user_agent = request.META['HTTP_USER_AGENT']
+
+    if 'Mobile' in user_agent:
+        device = 'mobile'
+    else:
+        device = 'pc'
+
+
     context = {'comments': comments, 'current_user': current_user, 'multirole': multirole,
                'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
                'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates),
-               'groups_authors_list': groups_authors_list,}
+               'groups_authors_list': groups_authors_list, 'device': device}
 
     return render(request, 'search_result.html', context)
 
@@ -625,9 +663,18 @@ def sort_by_department(request, department_id):
 
     comments = Comments.objects.all().order_by('-created')
 
+    user_agent = request.META['HTTP_USER_AGENT']
+
+    if 'Mobile' in user_agent:
+        device = 'mobile'
+    else:
+        device = 'pc'
+
+    print(user_agent)
+
     context = {'all_records': records, 'comments': comments, 'groups_authors_list': groups_authors_list,
                'current_user': current_user, 'roles': roles, 'user_departments': user_departments,
-               'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates) }
+               'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates), 'device': device }
 
     return render (request, 'search_result.html', context)
 
