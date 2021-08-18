@@ -439,6 +439,8 @@ def sort_by_group(request, group_id):
     roles = str(get_roles(request))
     user_groups = request.user.groups.all()
 
+    selected_group = Group.objects.get(id=group_id)
+
     user_departments_list = []
 
     for group in user_groups:
@@ -448,12 +450,10 @@ def sort_by_group(request, group_id):
         for dep_objects in deps:
             user_departments_list.append(dep_objects.name)
 
-    if len(user_departments_list) > 1:
-        multirole = True
     current_user = request.user.username
     match_authors_list = []
 
-    user_departments = Department.objects.filter(groups__in=user_groups)
+    user_departments = Department.objects.filter(groups=selected_group)
 
     for dep in user_departments:
         for group in Group.objects.filter(department=dep):
@@ -468,7 +468,7 @@ def sort_by_group(request, group_id):
     comments = Comments.objects.all().order_by('-created')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups)
+        exclude(name__in=admin_groups).order_by('id')
 
 
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')

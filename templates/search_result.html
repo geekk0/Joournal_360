@@ -40,8 +40,6 @@
 
             if (c !== null) {
 
-                console.log(c)
-
                 c.style.display = 'block';
                 a.setAttribute('text_before', a.innerHTML);
                 a.innerHTML = '';
@@ -160,7 +158,6 @@
                             color_date(cells[i], shift)
                         }
                         else {
-                            console.log(check_date+' даты нет')
                         }
                     }
                     groups_colors()
@@ -186,21 +183,17 @@
 
                     for (let i = 0; i < groups.length; i++) {
                         let group_link = groups[i].querySelector('a')
-                        if (group_link.innerText === 'Смена Астахова' || group_link.innerText === 'IT Захаров')  {
+                        if (group_link.innerText === 'Смена Астахов и Козлов' || group_link.innerText === 'IT Захаров')  {
                             group_link.style.color = 'rgb(200, 200, 0)'
-                            console.log('shift found')
                         }
-                        if (group_link.innerText === 'Смена Черпакова'|| group_link.innerText === 'IT Дмитриевский') {
+                        if (group_link.innerText === 'Смена Черпаков и Долгов'|| group_link.innerText === 'IT Дмитриевский') {
                             group_link.style.color = 'rgb(0, 160, 255)'
-                            console.log('shift found')
                         }
-                        if (group_link.innerText === 'Смена Рославцева'|| group_link.innerText === 'IT Деев') {
+                        if (group_link.innerText === 'Смена Рославцев и Сидоренко'|| group_link.innerText === 'IT Деев') {
                             group_link.style.color = 'rgb(200, 0, 0)'
-                            console.log('shift found')
                         }
-                        if (group_link.innerText === 'Смена Бороздина'|| group_link.innerText === 'IT Крутихин') {
+                        if (group_link.innerText === 'Смена Бороздин и Литвиненко'|| group_link.innerText === 'IT Крутихин') {
                             group_link.style.color = 'rgb(0, 200, 0)'
-                            console.log('shift found')
                         }
                     }
 

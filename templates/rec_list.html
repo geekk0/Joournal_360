@@ -168,7 +168,6 @@
 
                         }
                         else {
-                            console.log(check_date+' даты нет')
                         }
                     }
                     groups_colors()
@@ -194,21 +193,17 @@
 
                     for (let i = 0; i < groups.length; i++) {
                         let group_link = groups[i].querySelector('a')
-                        if (group_link.innerText === 'Смена Астахова' || group_link.innerText === 'IT Захаров')  {
+                        if (group_link.innerText === 'Смена Астахов и Козлов' || group_link.innerText === 'IT Захаров')  {
                             group_link.style.color = 'rgb(200, 200, 0)'
-                            console.log('shift found')
                         }
-                        if (group_link.innerText === 'Смена Черпакова'|| group_link.innerText === 'IT Дмитриевский') {
+                        if (group_link.innerText === 'Смена Черпаков и Долгов'|| group_link.innerText === 'IT Дмитриевский') {
                             group_link.style.color = 'rgb(0, 160, 255)'
-                            console.log('shift found')
                         }
-                        if (group_link.innerText === 'Смена Рославцева'|| group_link.innerText === 'IT Деев') {
+                        if (group_link.innerText === 'Смена Рославцев и Сидоренко'|| group_link.innerText === 'IT Деев') {
                             group_link.style.color = 'rgb(200, 0, 0)'
-                            console.log('shift found')
                         }
-                        if (group_link.innerText === 'Смена Бороздина'|| group_link.innerText === 'IT Крутихин') {
+                        if (group_link.innerText === 'Смена Бороздин и Литвиненко'|| group_link.innerText === 'IT Крутихин') {
                             group_link.style.color = 'rgb(0, 200, 0)'
-                            console.log('shift found')
                         }
                     }
 
@@ -225,6 +220,27 @@
 
                 }
 
+
+
+                let els = document.getElementsByClassName('datepicker--cell.datepicker--cell-month.-focus-')[0]
+
+                $(els).ready(function() {
+                    console.log(els)
+                    delay_months()
+
+                })
+
+                function delay_months() {
+                   if (typeof els !== 'undefined') {
+                       console.log('months')
+                       els.addEventListener("click", get_months);
+                   }
+                }
+
+                function get_months() {
+                    console.log('month clicked')
+                }
+
                 function delay() {
                 setTimeout(send_date, 0.5);
                 }
@@ -233,14 +249,15 @@
                     document.forms['sdate'].submit()
                 }
 
-
-                $('.datepicker--cell-day')
-                    .load(function(){
-                        init_colors
-                    })
-                    .error(function(){
-
-                    });
+                $(document).ready(function(){
+                  $('body').on('click', '*', function(e){
+                    console.log($(this));
+                    if ($(this).hasClass('datepicker--cell.datepicker--cell-month.-focus-')) {
+                        console.log('month clicked')
+                    }
+                    e.stopPropagation();
+                  });
+                });
 
                 </script>
 
@@ -286,7 +303,7 @@
 
                                         {% for group_author in groups_authors_list %}
 
-                                            <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
+                                            <li><a href={% url 'фильтр по группе' group_author.id department_id %}>{{ group_author.name }}</a></li>
 
                                         {% endfor %}
                                     </ul>
