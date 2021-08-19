@@ -119,12 +119,13 @@
 
         <div class="bar" id="bar">
 
-                    <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
+                    <form name='sdate' class="selector-filter" action="{% url 'найти по дате'  %}"
                           id='datepicker' method="get" style="z-index: 2 !important">
 
 
                                 <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
                                   style="visibility: hidden" />
+                                <input name="d" type="text" style="display: none" value={{ selected_department }}>
                                 <input type="submit" value="Найти" id="submit_button"  style="visibility: hidden" />
 
 
@@ -199,14 +200,8 @@
 
                 }
 
-               $('#calendar').datepicker().data('datepicker').selectDate(new Date({{ set_date }}));
 
-
-                $('#my-datepicker').datepicker({
-                    onChangeMonth: function(month, year) {
-                        console.log(month, year)
-                    }
-                })
+                $('#calendar').datepicker().data('datepicker').selectDate(new Date({{ set_date }}));
 
                 window.onload = function() {
 
@@ -237,7 +232,7 @@
 
                                             {% for department in user_departments %}
 
-                                                <li><a href={% url 'фильтр по отделу' department.id %}>{{ department.name }}</a></li>
+                                                <li ><a href={% url 'фильтр по отделу' department.id %}>{{ department.name }} </a></li>
 
                                             {% endfor %}
                                         </ul>
@@ -247,21 +242,7 @@
 
                                 {% if multirole == True %}
 
-                                    <div class="groups_authors_url_list">
-                                        <p id="check">Отчет от:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp></p>
 
-
-                                        <div class="groups_authors">
-                                            <ul class="" style="list-style-type:none; background: black; width: 250px">
-
-                                                    {% for group_author in groups_authors_list %}
-
-                                                        <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
-
-                                                    {% endfor %}
-                                            </ul>
-                                        </div>
-                                    </div>
 
                                 {% else %}
 
@@ -281,12 +262,12 @@
 
 
                             </div>
-
                        <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
-                            <input name="q" type="text" id="box" placeholder="В тексте...">
-                            <br>
-                            <input type="submit" value="Найти">
-                        </form>
+                           <input name="q" type="text" id="box" placeholder="В тексте...">
+                           <input name="d" type="text" style="display: none" value={{ selected_department }}>
+                           <br>
+                           <input type="submit" value="Найти">
+                       </form>
 
                 </div>
 

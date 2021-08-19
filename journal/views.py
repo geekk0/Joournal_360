@@ -339,6 +339,7 @@ def comments_count(request, record_id):
 
 def convert_date(date):
 
+
     set_year = date[:4]
     month = int(date[5:7])
     set_month = str(month - 1)
@@ -406,6 +407,8 @@ def find_by_date(request):
 
     set_date = convert_date(date)
 
+    print(set_date)
+
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
     search_query = records.filter(report_date=date)
@@ -414,6 +417,17 @@ def find_by_date(request):
     comments = Comments.objects.all()
 
     shifts_dates = shifts_match()
+
+    selected_department = request.GET.get('d')
+
+    if selected_department:
+        multirole = False
+        try:
+            groups_authors_list = Group.objects.filter(department__exact=selected_department).distinct(). \
+            exclude(name__in=admin_groups).order_by('id')
+        except:
+            multirole = True
+
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -428,7 +442,7 @@ def find_by_date(request):
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
-               'shifts_dates': json.dumps(shifts_dates), 'device': device}
+               'shifts_dates': json.dumps(shifts_dates), 'device': device, 'selected_department': selected_department}
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -497,8 +511,6 @@ def sort_by_group(request, group_id):
     else:
         device = 'pc'
 
-    print(user_agent)
-
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
@@ -564,7 +576,7 @@ def find_by_author(request, author_id):
     return render(request, 'search_result.html', context)
 
 
-def find_by_text(request):
+def find_by_text(request, *args, **kwargs):
 
     admin_groups = detect_admin_groups()
 
@@ -599,9 +611,6 @@ def find_by_text(request):
 
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
-    groups_authors_list = Group.objects.filter(department__in=user_departments).distinct().\
-        exclude(name__in=admin_groups).order_by('id')
-
     search_query = records.filter(text__icontains=input_text).order_by('-created_date')
 
     all_records = records
@@ -613,6 +622,8 @@ def find_by_text(request):
 
     shifts_dates = shifts_match()
 
+    user_departments = Department.objects.filter(groups__in=user_groups)
+
     user_agent = request.META['HTTP_USER_AGENT']
 
     if 'Mobile' in user_agent:
@@ -620,11 +631,21 @@ def find_by_text(request):
     else:
         device = 'pc'
 
+    selected_department = request.GET.get('d')
+
+    if selected_department:
+        multirole = False
+        try:
+            groups_authors_list = Group.objects.filter(department__exact=selected_department).distinct(). \
+                exclude(name__in=admin_groups).order_by('id')
+        except:
+            multirole = True
 
     context = {'comments': comments, 'current_user': current_user, 'multirole': multirole,
                'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
                'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates),
-               'groups_authors_list': groups_authors_list, 'device': device}
+               'groups_authors_list': groups_authors_list, 'device': device, 'user_departments': user_departments,
+               'selected_department': selected_department}
 
     return render(request, 'search_result.html', context)
 
@@ -636,6 +657,8 @@ def sort_by_department(request, department_id):
     admin_groups = detect_admin_groups()
 
     author_groups_list = Group.objects.filter(department=department_id)
+
+    selected_department = department_id
 
     authors_list = User.objects.filter(groups__in=author_groups_list)
 
@@ -670,13 +693,12 @@ def sort_by_department(request, department_id):
     else:
         device = 'pc'
 
-    print(user_agent)
-
     context = {'all_records': records, 'comments': comments, 'groups_authors_list': groups_authors_list,
                'current_user': current_user, 'roles': roles, 'user_departments': user_departments,
-               'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates), 'device': device }
+               'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
+               'device': device, 'selected_department': selected_department}
 
-    return render (request, 'search_result.html', context)
+    return render(request, 'search_result.html', context)
 
 
 def by_date_view(request):

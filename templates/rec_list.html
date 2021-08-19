@@ -210,11 +210,7 @@
                 }
 
 
-                $('#calendar').datepicker({
-                    onChangeMonth: function(month, year) {
-                        console.log(month, year)
-                    }
-                })
+
 
                 window.onload = function() {
 
@@ -286,21 +282,7 @@
 
                                 {% if multirole == True %}
 
-                                    <div class="groups_authors_url_list">
-                                        <p id="check">Отчет от:&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp></p>
 
-
-                                        <div class="groups_authors">
-                                            <ul class="" style="list-style-type:none; background: black; width: 250px;">
-
-                                                    {% for group_author in groups_authors_list %}
-
-                                                        <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
-
-                                                    {% endfor %}
-                                            </ul>
-                                        </div>
-                                    </div>
 
                                 {% else %}
 
@@ -323,7 +305,6 @@
 
                        <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
                             <input name="q" type="text" id="box" placeholder="В тексте...">
-                            <br>
                             <input type="submit" value="Найти">
                         </form>
 
