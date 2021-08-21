@@ -21,7 +21,7 @@ from django import forms
 from itertools import *
 from operator import *
 
-from .models import Notes, Record, Images, Comments, Department
+from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus
 from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword
 
 
@@ -303,13 +303,22 @@ def rec_list(request, *device):
     else:
         device = 'pc'
 
-    print(user_agent)
+    objectives = Objectives.objects.filter(author__in=match_authors_list).order_by('-created_date')
+
+
+    if request.user.has_perm('journal.change_record'):
+        user_is_admin = True
+    else:
+        user_is_admin = False
+
+
+
 
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
-               'device': device}
+               'device': device, 'objectives': objectives, 'user_is_admin': user_is_admin}
 
 
 
@@ -807,5 +816,58 @@ def shifts_match():
     return all_shifts_match
 
 
+def add_objective(request):
+
+    objective_name = request.GET.get('new_objective_name')
+
+    author = request.user
+
+    created_date = timezone.now()
+
+    if Objectives.objects.all().count() < 7:
+        Objectives.objects.create(author=author, created_date=created_date, name=objective_name)
+
+    return HttpResponseRedirect('/')
 
 
+def add_status(request, objective_id):
+
+    objective = Objectives.objects.get(id=objective_id)
+
+    status_text = request.GET.get('input_text')
+
+
+    status = ObjectivesStatus.objects.create(author_id=request.user.id, objective_id=objective)
+    status.created = timezone.now()
+    status.status = status_text
+    status.save()
+
+    return HttpResponseRedirect('/')
+
+
+def finalize_objective(request, objective_id):
+
+    objective = Objectives.objects.get(id=objective_id)
+
+    print(objective.name)
+
+
+    objective_done = ObjectivesDone.objects.create(author_id=request.user.id)
+    objective_done.name = str(objective.name)
+    objective_done.created = timezone.now()
+    objective_done_reports = ''
+
+    all_objective_reports = ObjectivesStatus.objects.filter(objective_id=objective_id)
+
+    for report in all_objective_reports:
+        objective_done_reports = objective_done_reports+'\n'+(str(report.created))[:19]+' '+str(report.author) + \
+                                 ':''     ' + str(report.status)
+
+    print(objective_done_reports)
+
+    objective_done.reports = objective_done_reports
+    objective_done.save()
+
+    Objectives.objects.get(id=objective_id).delete()
+
+    return HttpResponseRedirect('/')

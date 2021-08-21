@@ -65,6 +65,10 @@ class Comments(models.Model):
     record_id = models.ForeignKey(Record, on_delete=models.CASCADE, verbose_name='К посту:')
     text = models.TextField(max_length=500, verbose_name='Текст коммента')
     created = models.DateField(default=timezone.now, verbose_name='')
+    author_group = models.CharField(blank=True, null=True, editable=False, verbose_name='Группа автора коммента',
+                                    max_length=64)
+    author_name = models.CharField(blank=True, null=True, editable=False, verbose_name='Имя и фамилия автора коммента',
+                                   max_length=64)
 
     def publish(self):
         self.created = timezone.now()
@@ -72,6 +76,17 @@ class Comments(models.Model):
 
     def __str__(self):
         return str(self.created)+' '+str(self.author)
+
+    def get_author_group(self):
+        auth_group = Group.objects.get(user=self.author)
+        self.author_group = auth_group.name
+        self.save()
+
+    def get_author_names(self):
+        author_firstname = User.objects.get(username=self.author).first_name
+        author_lastname = User.objects.get(username=self.author).last_name
+        self.author_name = author_firstname+' '+author_lastname
+        self.save()
 
     class Meta:
         verbose_name = 'Комменатрий'
@@ -91,6 +106,97 @@ class Department(models.Model):
     class Meta:
         verbose_name = 'Отдел'
         verbose_name_plural = 'Отделы'
+
+
+class Objectives(models.Model):
+    name = models.TextField(verbose_name='Что сделать')
+    created_date = models.DateField(default=timezone.now, verbose_name='Дата создания задачи')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                               verbose_name='Автор задачи')
+    author_group = models.CharField(blank=True, null=True, editable=False, verbose_name='Группа автора отчета',
+                                    max_length=64)
+    author_name = models.CharField(blank=True, null=True, editable=False, verbose_name='Имя и фамилия автора отчета',
+                                   max_length=64)
+    status_count = models.IntegerField(default=0, editable=False, verbose_name='Количество добавлений статуса')
+
+    def publish(self):
+        self.created = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return str(self.name)
+
+    def get_author_group(self):
+        auth_group = Group.objects.get(user=self.author)
+        self.author_group = auth_group.name
+        self.save()
+
+    def get_author_names(self):
+        author_firstname = User.objects.get(username=self.author).first_name
+        author_lastname = User.objects.get(username=self.author).last_name
+        self.author_name = author_firstname+' '+author_lastname
+        self.save()
+
+    def get_status_count(self):
+        self.status_count = len(ObjectivesStatus.objects.filter(objective_id=self.id))
+        self.save()
+
+    class Meta:
+        verbose_name = 'Задача'
+        verbose_name_plural = 'Задачи'
+
+
+class ObjectivesStatus(models.Model):
+    objective_id = models.ForeignKey(Objectives, on_delete=models.CASCADE, verbose_name='К задаче:')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                               verbose_name='Автор обновления статуса')
+    status = models.TextField(blank=True, null=True, verbose_name='Что сделано')
+    created = models.DateTimeField(default=timezone.now, verbose_name='')
+    author_group = models.CharField(blank=True, null=True, editable=False, verbose_name='Группа автора отчета',
+                                    max_length=64)
+    author_name = models.CharField(blank=True, null=True, editable=False, verbose_name='Имя и фамилия автора отчета',
+                                   max_length=64)
+
+    def __str__(self):
+        return str(self.author)
+
+    def publish(self):
+        self.created = timezone.now()
+        self.save()
+
+    def get_author_group(self):
+        auth_group = Group.objects.get(user=self.author)
+        self.author_group = auth_group.name
+        self.save()
+
+    def get_author_names(self):
+        author_firstname = User.objects.get(username=self.author).first_name
+        author_lastname = User.objects.get(username=self.author).last_name
+        self.author_name = author_firstname+' '+author_lastname
+        self.save()
+
+    class Meta:
+        verbose_name = 'Отчет по задаче'
+        verbose_name_plural = 'Отчеты по задаче'
+
+
+class ObjectivesDone(models.Model):
+    name = models.TextField(blank=True, verbose_name='Что сделать')
+    author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
+                               verbose_name='Автор задачи')
+    created_date = models.DateField(default=timezone.now, verbose_name='Дата завершения задачи')
+    reports = models.TextField(blank=True, null=True, verbose_name='Отчеты по задаче')
+
+    def publish(self):
+        self.created = timezone.now()
+        self.save()
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        verbose_name = 'Выполненная задача'
+        verbose_name_plural = 'Выполненные задачи'
 
 
 class Images(models.Model):

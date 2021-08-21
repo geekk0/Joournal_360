@@ -289,7 +289,8 @@
                                 <div class="comments_layout" style="display: none">
 
                                     {% for Comments in recs.comments_set.all %}
-                                        <p id="comments_author">{{ Comments.author }}</p>
+                                        <p style="display: none" {{ Comments.get_author_names }}></p>
+                                                <p id="comments_author">{{ Comments.author_name }}:</p>
                                                 <p id="comments_text">{{ Comments.text }}</p>
                                                 <p id="comments_created">{{ Comments.created }}</p>
                                     {% endfor %}

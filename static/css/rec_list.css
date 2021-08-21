@@ -273,7 +273,7 @@ div.search-label-icon {
 .bar {
 }
 
-textarea {
+.controls textarea {
  resize:vertical;
  width: 80% !important;
 }
@@ -387,4 +387,173 @@ display: none;
 
 .comments:hover #tp_add_comment {
     display:inline-block;
+}
+
+.objectives {
+    width: 70%;
+    margin-left:auto;
+    margin-right: 2.5%;
+    height:15%;
+    margin-top: 2%;
+}
+
+.objectives:hover {
+}
+
+.objectives_layout{
+    word-wrap: break-word;
+    margin-left: 3%;
+    text-overflow: fade;
+    display: inline-block;
+    border: 2px solid white;
+    border-radius: 15px;
+    background: #28425d;
+    text-align: center;
+    opacity : 0.7;
+    transition: 0.5s;
+    vertical-align: top;
+    min-height: 100%;
+    box-sizing: content-box;
+}
+
+.objectives_layout .status_layout{
+    visibility: hidden;
+}
+
+.objectives_layout button{
+    visibility: hidden;
+}
+
+/*.objectives_layout:hover {
+    width:100%;
+    z-index:2;
+}*/
+
+.objective-active{
+    word-wrap: break-word;
+    text-overflow: fade;
+    display: inline-block;
+    border: 2px solid white;
+    border-radius: 30px;
+    background: #28425d;
+    text-align: start;
+    box-sizing: content-box;
+
+}
+
+.objective-active .status_layout{
+    visibility: visible;
+}
+
+.objective-active form{
+    visibility: visible;
+}
+
+.objective-active p{
+    margin: 3%;
+}
+
+.objective-active form{
+    width:80%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.objective-active button{
+    visibility: visible;
+    position:relative;
+    left: 80%;
+    top: 0;
+
+}
+
+.objective-active #status_counter {
+    visibility: hidden;
+}
+
+#add_objective {
+    display:inline-block;
+    width: 8%;
+    margin-left: 20%;
+    float: left;
+    height: 18%;
+
+}
+
+#label {
+    display:inline-block;
+    margin-top: 60%;
+
+}
+
+.add_objective:hover #input_name{
+    visibility: visible;
+    padding-bottom:2%;
+}
+
+.add_objective:hover #label{
+    visibility: hidden;
+}
+
+.add_object_active{
+    border: 2px solid white;
+    position: absolute;
+    left: 19%;
+    top: 14%;
+    right: 20px;
+    visibility: visible;
+    width: 30%;
+    height: 160px;
+    background: #28425d;
+    color: white;
+    display: inline-block;
+    opacity : 0.9;
+
+}
+
+
+#add_objective_button{
+    width:5%;
+    visibility: hidden;
+    display:inline-block;
+    position: absolute;
+    left: 52%;
+    top: 18%;
+    right: 20px;
+
+}
+
+#add_objective_button img{
+    width:80%;
+}
+
+#button_add_obj{
+    width:4%;
+    display:inline-block;
+    position: absolute;
+    left: 52%;
+    top: 18%;
+    right: 20px;
+}
+
+#button_add_obj img{
+    width:10%;
+}
+
+#status_box {
+    width:100%;
+    text-align: start;
+}
+
+#send_button{
+    text-align: center;
+
+}
+
+.add_status {
+    visibility: hidden;
+}
+
+.status {
+    visibility: hidden;
 }

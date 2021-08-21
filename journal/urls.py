@@ -15,6 +15,9 @@ urlpatterns = [
     path('найти по дате/', views.find_by_date, name='найти по дате'),
     path('выбор автора/<int:author_id>', views.find_by_author, name='выбор автора'),
     path('найти по тексту/', views.find_by_text, name='найти по тексту'),
+    path('добавить задачу/', views.add_objective, name='добавить задачу'),
+    path('добавить статус/<int:objective_id>', views.add_status, name='добавить статус'),
+    path('завершить задание/<int:objective_id>', views.finalize_objective, name='завершить задание'),
 
     path('фильтр по отделу/<int:department_id>', views.sort_by_department, name='фильтр по отделу'),
     path('фильтр по группе/<int:group_id>', views.sort_by_group, name='фильтр по группе'),

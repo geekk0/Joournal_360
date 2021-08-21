@@ -227,20 +227,17 @@
                 let els = document.getElementsByClassName('datepicker--cell.datepicker--cell-month.-focus-')[0]
 
                 $(els).ready(function() {
-                    console.log(els)
                     delay_months()
 
                 })
 
                 function delay_months() {
                    if (typeof els !== 'undefined') {
-                       console.log('months')
                        els.addEventListener("click", get_months);
                    }
                 }
 
                 function get_months() {
-                    console.log('month clicked')
                 }
 
                 function delay() {
@@ -253,9 +250,7 @@
 
                 $(document).ready(function(){
                   $('body').on('click', '*', function(e){
-                    console.log($(this));
                     if ($(this).hasClass('datepicker--cell.datepicker--cell-month.-focus-')) {
-                        console.log('month clicked')
                     }
                     e.stopPropagation();
                   });
@@ -314,6 +309,154 @@
     </div>
 
     <div class="content" style="background: fixed">
+
+        <div id="add_objective">
+                <p id="label">Добавить задачу<br> (максимум 7 задач)</p>
+                <form name="new_objective" style="visibility: hidden"
+                            action="{% url 'добавить задачу' %}" method="get">
+                    <label for="input_name"></label>
+                    <textarea id="input_name" name="new_objective_name"
+                            placeholder="Что надо сделать..." style="border: 2px solid white;width:30%;"></textarea>
+                    <input id="button_add_obj" type="image" alt="Прикрепить задачу"
+                           title="Прикрепить задачу" style="visibility: hidden" src="{% static 'images/arrow400.png'%}">
+                </form>
+                <a id="add_objective_button" style="visibility: hidden" href=''>
+                    <img src="{% static 'images/arrow400.png'%}" title="Прикрепить задачу"></a>
+        </div>
+
+        <div class = "objectives" id="objectives">
+
+            {% for objective in objectives %}
+                <div class = "objectives_layout" style="width:10%;height:100%;overflow: hidden;
+                 word-wrap: break-word;white-space: nowrap;">
+                    <p style="display:none"{{ objective.get_author_names }}></p>
+
+                    <p class="objective_author">{{ objective.created_date }}<br>{{ objective.author_name }}:</p>
+                    <p class="objective_name" style="text-overflow: ellipsis">{{ objective.name | linebreaks}}</p>
+                    <p style="display:none ">{{ objective.get_status_count }}</p>
+                    {% if objective.status_count > 0 %}
+
+                        <p id="status_counter">Отчеты:{{ objective.status_count }}</p>
+
+
+                    {% endif %}
+                    {% if user_is_admin == True %}
+                        <button onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
+                    {% endif %}
+
+
+
+
+
+
+
+                    <div class="status">
+                        {% for status in objective.objectivesstatus_set.all %}
+
+                                <div class="status_layout" style="">
+                                    <p style="display: none" {{ status.get_author_names }}></p>
+
+                                    <p id="">{{ status.created }}&nbsp{{ status.author_name }}:</p>
+                                    <p id="">{{ status.status | linebreaks }}</p>
+                                </div>
+
+                        {% endfor %}
+                    </div>
+
+
+                    <form class="add_status" style="" action="{% url 'добавить статус' objective.id %}">
+                        <textarea name="input_text" type="text" id="status_box" placeholder="Добавить отчет..."></textarea>
+                        <br>
+                        <input name="status_text" id="send_button" type="submit" value="Отправить">
+                    </form>
+                </div>
+            {% endfor %}
+
+        </div>
+
+        <script type="text/javascript">
+
+
+            document.addEventListener("DOMContentLoaded", () => {
+                let add_obj = document.getElementById('add_objective')
+                add_obj.addEventListener("mouseenter", add_objective)
+                add_obj.addEventListener("mouseleave", esc_add_objective)
+            })
+
+            function add_objective(e) {
+
+                e.target.style.width = '40%';
+                document.getElementById('label').style.visibility = 'hidden';
+                let input = document.getElementById('input_name');
+                let button = document.getElementById('button_add_obj')
+                button.style.visibility = 'visible';
+                input.style.visibility = 'visible';
+                input.classList.add('add_object_active')
+                let stickers = document.getElementById('objectives')
+                stickers.style.width = '35%';
+
+            }
+
+            function esc_add_objective(e) {
+                e.target.style.width = '8%';
+                let input = document.getElementById('input_name');
+                let button = document.getElementById('button_add_obj')
+                button.style.visibility = 'hidden';
+                input.classList.remove('add_object_active')
+                let stickers = document.getElementById('objectives')
+                document.getElementById('input_name').style.visibility = 'hidden';
+                document.getElementById('label').style.visibility = 'visible';
+                stickers.style.width = '70%';
+
+            }
+
+
+            document.addEventListener("DOMContentLoaded", () => {
+                document.querySelectorAll('.objectives_layout').forEach(item => {
+                    item.addEventListener('mouseenter', active_objective)
+                    item.addEventListener('mouseleave', inactive_objective)
+                })
+            })
+
+
+
+            function active_objective(e) {
+
+                e.target.classList.remove('objectives_layout');
+                let other_stickers = document.getElementsByClassName('objectives_layout')
+                    for (let i = 0; i < other_stickers.length; i++) {
+                        other_stickers[i].style.width = '4%';
+                        other_stickers[i].style.marginLeft = '1%';
+                    }
+                e.target.classList.add('objective-active')    ;
+                e.target.classList.add('objectives_layout');
+                e.target.style.width = '60%';
+                e.target.style.height = 'auto';
+                e.target.style.opacity = '0.9';
+
+
+            }
+
+            function inactive_objective(e) {
+
+                    e.target.classList.remove('objective-active');
+                    e.target.classList.add('objectives_layout');
+                    let other_stickers = document.getElementsByClassName('objectives_layout')
+                    for (let i = 0; i < other_stickers.length; i++) {
+                        other_stickers[i].style.width = '10%';
+                        other_stickers[i].style.marginLeft = '3%';
+                    }
+                    e.target.style.height = '100%';
+                    e.target.style.opacity = '0.7';
+            }
+
+
+        </script>
+
+
+
+
+
         <div class="notes">
 
 
