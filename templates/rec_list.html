@@ -72,9 +72,7 @@
 
 
 
-                    <div class="add_note">
-                        <a class="authorization" href="{% url 'добавить заметку' %}">Новая запись +</a>
-                    </div>
+
 
                     <div class="logo">
 
@@ -175,16 +173,16 @@
 
                 function color_date(cell, shift) {
                     if (shift === 'shift_4_dates') {
-                            cell.style.background = 'rgb(0, 200, 0)' ;
+                            cell.style.color = 'rgb(0, 200, 0)' ;
                         }
                     if (shift === 'shift_3_dates') {
-                            cell.style.background = 'rgb(200, 0, 0)';
+                            cell.style.color = 'rgb(200, 0, 0)';
                         }
                     if (shift === 'shift_2_dates') {
-                            cell.style.background =  'rgb(0, 160, 255)';
+                            cell.style.color =  'rgb(0, 160, 255)';
                         }
                     if (shift === 'shift_1_dates') {
-                            cell.style.background = 'rgb(200, 200, 0)';
+                            cell.style.color = 'rgb(200, 200, 0)';
                         }
                 }
 
@@ -300,7 +298,7 @@
 
                        <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
                             <input name="q" type="text" id="box" placeholder="В тексте...">
-                            <input type="submit" value="Найти">
+                            <input type="submit" class="btn btn-success" value="Найти">
                         </form>
 
                 </div>
@@ -311,46 +309,49 @@
     <div class="content" style="background: fixed">
 
         <div id="add_objective">
-                <p id="label">Добавить задачу<br> (максимум 7 задач)</p>
+                <p id="label">Добавить задачу<br> (максимум 5 задач)</p>
                 <form name="new_objective" style="visibility: hidden"
                             action="{% url 'добавить задачу' %}" method="get">
                     <label for="input_name"></label>
-                    <textarea id="input_name" name="new_objective_name"
+                    <textarea style="border-radius: 15px;height:140px" id="input_name" name="new_objective_name"
                             placeholder="Что надо сделать..." style="border: 2px solid white;width:30%;"></textarea>
                     <input id="button_add_obj" type="image" alt="Прикрепить задачу"
-                           title="Прикрепить задачу" style="visibility: hidden" src="{% static 'images/arrow400.png'%}">
+                           title="Прикрепить задачу" style="visibility: hidden;" src="{% static 'images/arrow400.png'%}">
                 </form>
-                <a id="add_objective_button" style="visibility: hidden" href=''>
-                    <img src="{% static 'images/arrow400.png'%}" title="Прикрепить задачу"></a>
+
         </div>
 
         <div class = "objectives" id="objectives">
 
             {% for objective in objectives %}
-                <div class = "objectives_layout" style="width:10%;height:100%;overflow: hidden;
+                <div class = "objectives_layout" style="width:15%;height:100%;overflow: hidden;
                  word-wrap: break-word;white-space: nowrap;">
                     <p style="display:none"{{ objective.get_author_names }}></p>
 
-                    <p class="objective_author">{{ objective.created_date }}<br>{{ objective.author_name }}:</p>
-                    <p class="objective_name" style="text-overflow: ellipsis">{{ objective.name | linebreaks}}</p>
-                    <p style="display:none ">{{ objective.get_status_count }}</p>
-                    {% if objective.status_count > 0 %}
-
-                        <p id="status_counter">Отчеты:{{ objective.status_count }}</p>
 
 
-                    {% endif %}
+                    <div class="objective_author">
+                        <p>{{ objective.created_date }}&nbsp{{ objective.author_name }}:</p>
+                    </div>
+
                     {% if user_is_admin == True %}
-                        <button onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
+                        <div id="finalize">
+                            <button  class="btn btn-success" onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
+                        </div>
                     {% endif %}
+                    <div class="objective_name">
+                        <p style="display:none ">{{ objective.get_status_count }}</p>
+                        {% if objective.status_count > 0 %}
+                            <p id="status_counter">Отчеты:{{ objective.status_count }}</p>
+                        {% endif %}
+                        <p style="text-overflow: ellipsis">{{ objective.name | linebreaks}}</p>
 
-
-
-
+                    </div>
 
 
 
                     <div class="status">
+                        <hr>
                         {% for status in objective.objectivesstatus_set.all %}
 
                                 <div class="status_layout" style="">
@@ -367,7 +368,7 @@
                     <form class="add_status" style="" action="{% url 'добавить статус' objective.id %}">
                         <textarea name="input_text" type="text" id="status_box" placeholder="Добавить отчет..."></textarea>
                         <br>
-                        <input name="status_text" id="send_button" type="submit" value="Отправить">
+                        <input name="status_text" id="send_button" class="btn btn-success" type="submit" value="Отправить">
                     </form>
                 </div>
             {% endfor %}
@@ -389,6 +390,10 @@
                 document.getElementById('label').style.visibility = 'hidden';
                 let input = document.getElementById('input_name');
                 let button = document.getElementById('button_add_obj')
+                let add_objective = document.getElementById('add_objective')
+                add_objective.style.border = 'none';
+                add_objective.style.background = 'none';
+                add_objective.style.opacity = '0.9';
                 button.style.visibility = 'visible';
                 input.style.visibility = 'visible';
                 input.classList.add('add_object_active')
@@ -398,9 +403,13 @@
             }
 
             function esc_add_objective(e) {
-                e.target.style.width = '8%';
+                e.target.style.width = '10%';
                 let input = document.getElementById('input_name');
                 let button = document.getElementById('button_add_obj')
+                let add_objective = document.getElementById('add_objective')
+                add_objective.style.border = '2px solid white';
+                add_objective.style.background = '#28425d';
+                add_objective.style.opacity = '0.7';
                 button.style.visibility = 'hidden';
                 input.classList.remove('add_object_active')
                 let stickers = document.getElementById('objectives')
@@ -443,7 +452,7 @@
                     e.target.classList.add('objectives_layout');
                     let other_stickers = document.getElementsByClassName('objectives_layout')
                     for (let i = 0; i < other_stickers.length; i++) {
-                        other_stickers[i].style.width = '10%';
+                        other_stickers[i].style.width = '15%';
                         other_stickers[i].style.marginLeft = '3%';
                     }
                     e.target.style.height = '100%';
@@ -453,9 +462,9 @@
 
         </script>
 
-
-
-
+        <div class="add_note">
+                        <a class="authorization" href="{% url 'добавить заметку' %}">Добавить отчет +</a>
+                    </div>
 
         <div class="notes">
 

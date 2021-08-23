@@ -4,7 +4,7 @@
 
 .logo {
     width: 10%;
-    margin-left: 20%;
+    margin-left: 45%;
 }
 
 .reset_password {
@@ -63,6 +63,7 @@
 
 #datepicker {
     height:40%;
+    margin-top: 7%;
 }
 
 /*div.datepicker--cell:nth-child(11) {
@@ -125,7 +126,6 @@ div.datepicker-inline:nth-child(3) {
     right: 0;
     top: 0;
     bottom: 0;
-    box-shadow: inset 0 4px 10px rgba(0, 0, 0, 0.25);
 
 }
 
@@ -405,7 +405,7 @@ display: none;
     margin-left: 3%;
     text-overflow: fade;
     display: inline-block;
-    border: 2px solid white;
+    border: 2px solid red;
     border-radius: 15px;
     background: #28425d;
     text-align: center;
@@ -421,24 +421,35 @@ display: none;
 }
 
 .objectives_layout button{
-    visibility: hidden;
+    display: none;
 }
 
-/*.objectives_layout:hover {
-    width:100%;
-    z-index:2;
-}*/
 
 .objective-active{
     word-wrap: break-word;
     text-overflow: fade;
     display: inline-block;
-    border: 2px solid white;
+    border: 2px solid red;
     border-radius: 30px;
     background: #28425d;
     text-align: start;
     box-sizing: content-box;
 
+}
+
+.objective-active #status_box{
+    opacity: 1;
+}
+
+.objective-active .objective_name{
+    padding-top: 0;
+    vertical-align: text-top;
+    display: inline;
+    box-sizing: border-box;
+}
+
+.objective_name{
+    padding-top: 0;
 }
 
 .objective-active .status_layout{
@@ -460,35 +471,53 @@ display: none;
 }
 
 .objective-active button{
-    visibility: visible;
+    display: inline-block;
     position:relative;
     left: 80%;
-    top: 0;
-
+    top:0;
 }
 
 .objective-active #status_counter {
-    visibility: hidden;
+    display: none;
 }
 
 #add_objective {
     display:inline-block;
-    width: 8%;
     margin-left: 20%;
     float: left;
-    height: 18%;
+    border: 2px solid white;
+    border-radius: 15px;
+    background: #28425d;
+    width: 10%;
+    height: 146px;
+    margin-top: 2%;
+    opacity : 0.7;
+    transition: 0.5s;
+
+
+
+
+
+
 
 }
 
 #label {
     display:inline-block;
-    margin-top: 60%;
+    margin-top: 20%;
+    margin-left:10%;
 
+
+
+}
+
+#input_name{
+    margin-top:1%;
 }
 
 .add_objective:hover #input_name{
     visibility: visible;
-    padding-bottom:2%;
+
 }
 
 .add_objective:hover #label{
@@ -509,6 +538,8 @@ display: none;
     display: inline-block;
     opacity : 0.9;
 
+
+
 }
 
 
@@ -524,15 +555,15 @@ display: none;
 }
 
 #add_objective_button img{
-    width:80%;
+    width:60%;
 }
 
 #button_add_obj{
-    width:4%;
+    width:3%;
     display:inline-block;
     position: absolute;
     left: 52%;
-    top: 18%;
+    top: 20%;
     right: 20px;
 }
 
@@ -543,6 +574,7 @@ display: none;
 #status_box {
     width:100%;
     text-align: start;
+
 }
 
 #send_button{
@@ -557,3 +589,25 @@ display: none;
 .status {
     visibility: hidden;
 }
+
+.objective-active .objective_author {
+    width:60%;
+    display: inline-block;
+    box-sizing: content-box;
+    padding-left:3%;
+    height:5%;
+
+}
+
+.objective-active .objective_author p{
+    width:100%;
+    display: inline;
+
+}
+
+.objective-active #finalize{
+    display: inline-block;
+    width:20%;
+    margin-top:2%;
+}
+

@@ -29,13 +29,12 @@
 .add_note {
     width: 15%;
     display: block;
-    float: left;
-    margin-left: 10%;
+    margin-left: 20%;
 }
 
 .add_note a {
     display: block;
-    font-size: 18pt;
+    font-size: 20pt;
     padding-top: 14%;
     text-decoration: none;
 }

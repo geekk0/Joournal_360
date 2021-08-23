@@ -66,10 +66,6 @@
         <div class="header">
 
 
-                    <div class="add_note">
-                        <a class="authorization" href="{% url 'добавить заметку' %}">Новая запись +</a>
-                    </div>
-
                     <div class="logo">
 
                         <a href="/" >
@@ -166,16 +162,16 @@
 
                 function color_date(cell, shift) {
                     if (shift === 'shift_4_dates') {
-                            cell.style.background = 'rgb(0, 200, 0)' ;
+                            cell.style.color = 'rgb(0, 200, 0)' ;
                         }
                     if (shift === 'shift_3_dates') {
-                            cell.style.background = 'rgb(200, 0, 0)';
+                            cell.style.color = 'rgb(200, 0, 0)';
                         }
                     if (shift === 'shift_2_dates') {
-                            cell.style.background =  'rgb(0, 160, 255)';
+                            cell.style.color =  'rgb(0, 160, 255)';
                         }
                     if (shift === 'shift_1_dates') {
-                            cell.style.background = 'rgb(200, 200, 0)';
+                            cell.style.color = 'rgb(200, 200, 0)';
                         }
                 }
 
@@ -266,7 +262,7 @@
                            <input name="q" type="text" id="box" placeholder="В тексте...">
                            <input name="d" type="text" style="display: none" value={{ selected_department }}>
                            <br>
-                           <input type="submit" value="Найти">
+                           <input type="submit" class="btn btn-success" value="Найти">
                        </form>
 
                 </div>
@@ -275,6 +271,10 @@
     </div>
 
     <div class="content">
+
+        <div class="add_note">
+                        <a class="authorization" href="{% url 'добавить заметку' %}">Добавить отчет +</a>
+                    </div>
 
         <div class="searched_records">
                 {% for recs in search_query %}

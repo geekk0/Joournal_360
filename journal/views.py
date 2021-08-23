@@ -824,7 +824,7 @@ def add_objective(request):
 
     created_date = timezone.now()
 
-    if Objectives.objects.all().count() < 7:
+    if Objectives.objects.all().count() < 5:
         Objectives.objects.create(author=author, created_date=created_date, name=objective_name)
 
     return HttpResponseRedirect('/')
