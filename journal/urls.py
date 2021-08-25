@@ -18,6 +18,7 @@ urlpatterns = [
     path('добавить задачу/', views.add_objective, name='добавить задачу'),
     path('добавить статус/<int:objective_id>', views.add_status, name='добавить статус'),
     path('завершить задание/<int:objective_id>', views.finalize_objective, name='завершить задание'),
+    path('добавить регулярное задание/', views.AddScheduledTask.as_view(), name='добавить регулярное задание'),
 
     path('фильтр по отделу/<int:department_id>', views.sort_by_department, name='фильтр по отделу'),
     path('фильтр по группе/<int:group_id>', views.sort_by_group, name='фильтр по группе'),

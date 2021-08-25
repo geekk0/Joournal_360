@@ -64,11 +64,9 @@
 #datepicker {
     height:40%;
     margin-top: 7%;
+    display: inline;
 }
 
-/*div.datepicker--cell:nth-child(11) {
- background-color: green;
-}*/
 
 
 .records {
@@ -118,19 +116,17 @@ div.datepicker-inline:nth-child(3) {
 
 
 .bar {
-    padding-top: 1.5%;
     width: 350px;
     float: left;
     position: fixed;
     left: 0;
     right: 0;
-    top: 0;
+    top: 100px;
     bottom: 0;
 
 }
 
 .bar input {
-    margin-top: 10%;
 }
 
 .bar select {
@@ -139,8 +135,10 @@ div.datepicker-inline:nth-child(3) {
 
 
 .selector-container {
-    width: 100%;
+    width: 85%;
+    margin-right: 10%;
     text-align: center;
+    float:right
 }
 
 
@@ -291,7 +289,8 @@ div.search-label-icon {
 }
 
 #box {
-width: 90%;
+    width: 80%;
+    margin-left: 5%;
 }
 
 #sep {
@@ -492,7 +491,6 @@ display: none;
     height: 146px;
     margin-top: 2%;
     opacity : 0.7;
-    transition: 0.5s;
 
 
 
@@ -517,6 +515,7 @@ display: none;
 
 .add_objective:hover #input_name{
     visibility: visible;
+
 
 }
 
@@ -611,3 +610,18 @@ display: none;
     margin-top:2%;
 }
 
+.add_task {
+    width: 10%;
+    text-align: center;
+    float: left;
+    margin-top: 3%;
+    margin-left: 4%;
+    display:inline-block;
+    position: absolute;
+}
+
+#tasks {
+    text-align: center;
+    display:none;
+    width:100%;
+}

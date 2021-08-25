@@ -65,6 +65,11 @@
     <div class="template">
         <div class="header">
 
+                    {% if user_is_admin == True %}
+                        <div class="add_task" style="">
+                            <a class="authorization" href="{% url 'добавить регулярное задание' %}">Добавить регулярное задание +</a>
+                        </div>
+                    {% endif %}
 
                     <div class="logo">
 
@@ -114,15 +119,18 @@
             </div>
 
         <div class="bar" id="bar">
-
+                    <div id="tasks">
+                        <p id="task_area" style="color:red"></p>
+                    </div>
                     <form name='sdate' class="selector-filter" action="{% url 'найти по дате'  %}"
-                          id='datepicker' method="get" style="z-index: 2 !important">
+                          id='datepicker' style="" method="get" style="z-index: 2 !important">
 
 
                                 <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
-                                  style="visibility: hidden" />
+                                  style="visibility: hidden;width:0;float:left" />
                                 <input name="d" type="text" style="display: none" value={{ selected_department }}>
-                                <input type="submit" value="Найти" id="submit_button"  style="visibility: hidden" />
+                                <input type="submit" value="Найти" id="submit_button"
+                                       style="display:none;width:0;float:left" />
 
 
 
@@ -153,11 +161,40 @@
                         if (check_date in shift_dates_list) {
                             let shift = shift_dates_list[check_date]
                             color_date(cells[i], shift)
+
                         }
-                        else {
+
+                        let sched_dates_list = {{ scheduled_dates_dict|safe }};
+
+                        if (check_date in sched_dates_list) {
+                            scheduled_dates(cells[i])
+                        }
+
+                        let task_date = "{{ task_date }}";
+
+                        if (task_date in sched_dates_list) {
+                            let task = sched_dates_list[task_date]
+                            show_task(task_date, task)
                         }
                     }
+
                     groups_colors()
+
+                }
+
+                function scheduled_dates(cell) {
+                    cell.style.border = '1px solid';
+                    cell.style.borderColor = 'red';
+                    cell.style.borderRadius = '50%';
+                    cell.style.bor = 'solid';
+                }
+
+                function show_task(task_date, task) {
+                    let task_area = document.getElementById('task_area')
+                    console.log(task)
+                    let tasks = document.getElementById('tasks')
+                    tasks.style.display = 'inline-block';
+                    task_area.innerHTML = task;
                 }
 
                 function color_date(cell, shift) {
@@ -262,7 +299,7 @@
                            <input name="q" type="text" id="box" placeholder="В тексте...">
                            <input name="d" type="text" style="display: none" value={{ selected_department }}>
                            <br>
-                           <input type="submit" class="btn btn-success" value="Найти">
+                           <input type="submit" class="btn btn-success" value="Найти" style="margin-left:10%">
                        </form>
 
                 </div>

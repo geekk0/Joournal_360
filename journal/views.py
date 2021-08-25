@@ -15,14 +15,16 @@ from django.contrib.auth.models import User, Group
 from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django import forms
+from dateutil.relativedelta import relativedelta
 
 
 
 from itertools import *
 from operator import *
 
-from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus
-from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword
+from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
+    ScheduledTasks
+from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm
 
 
 class LoginView(View):
@@ -145,6 +147,71 @@ class AddCommentView(View):
             comments_count(request, record_id)
 
             return HttpResponseRedirect('/')
+
+
+class AddScheduledTask(View):
+
+    def get(self, request, *args, **kwargs):
+
+
+        form = AddScheduledTaskForm(request.POST or None)
+        context = {'form': form}
+
+        return render(request, 'add_scheduled_task.html', context)
+
+    def post(self, request, *args, **kwargs):
+
+        form = AddScheduledTaskForm(request.POST or None)
+
+        if form.is_valid():
+            new_scheduled_task = form.save(commit=False)
+
+            new_scheduled_task.start_date = form.cleaned_data['start_date']
+            new_scheduled_task.regularity = form.cleaned_data['regularity']
+            new_scheduled_task.name = form.cleaned_data['name']
+            new_scheduled_task.text = form.cleaned_data['text']
+            new_scheduled_task.created = timezone.now()
+            new_scheduled_task.author = request.user
+
+            dates = get_task_dates(form.cleaned_data['start_date'], form.cleaned_data['regularity'])
+
+            new_scheduled_task.date_list = dates
+
+            new_scheduled_task.save()
+
+            return HttpResponseRedirect('/')
+
+
+def get_task_dates(start_date, regularity):
+
+    task_dates = []
+
+    delta = None
+
+    start_date = start_date
+
+    end_date = datetime.date(2030, 6, 15)
+
+    if regularity == 'week':
+
+        delta = relativedelta(weeks=1)
+
+    if regularity == 'month':
+
+        delta = relativedelta(months=1)
+
+    if regularity == 'None':
+
+        task_dates.append(str(start_date))
+
+        return task_dates
+
+    while start_date <= end_date:
+        date = str(start_date)
+        task_dates.append(date)
+        start_date += delta
+
+    return task_dates
 
 
 def add_comment(request, record_id):
@@ -296,6 +363,10 @@ def rec_list(request, *device):
 
     shifts_dates = shifts_match()
 
+    scheduled_dates_query = ScheduledTasks.objects.filter(author__in=match_authors_list)
+
+    scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
+
     user_agent = request.META['HTTP_USER_AGENT']
 
     if 'Mobile' in user_agent:
@@ -305,20 +376,17 @@ def rec_list(request, *device):
 
     objectives = Objectives.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
-
     if request.user.has_perm('journal.change_record'):
         user_is_admin = True
     else:
         user_is_admin = False
 
-
-
-
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
-               'device': device, 'objectives': objectives, 'user_is_admin': user_is_admin}
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'device': device, 'objectives': objectives,
+               'user_is_admin': user_is_admin, }
 
 
 
@@ -416,7 +484,7 @@ def find_by_date(request):
 
     set_date = convert_date(date)
 
-    print(set_date)
+    task_date = date
 
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
@@ -445,13 +513,16 @@ def find_by_date(request):
     else:
         device = 'pc'
 
-    print(user_agent)
+    scheduled_dates_query = ScheduledTasks.objects.filter(author__in=match_authors_list)
+
+    scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
-               'shifts_dates': json.dumps(shifts_dates), 'device': device, 'selected_department': selected_department}
+               'shifts_dates': json.dumps(shifts_dates), 'device': device, 'selected_department': selected_department,
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'task_date':task_date}
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -520,11 +591,16 @@ def sort_by_group(request, group_id):
     else:
         device = 'pc'
 
+    scheduled_dates_query = ScheduledTasks.objects.filter(author__in=match_authors_list)
+
+    scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
+
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
-               'shifts_dates': json.dumps(shifts_dates), 'device': device}
+               'shifts_dates': json.dumps(shifts_dates), 'device': device,
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict)}
 
     return render(request, 'search_result.html', context)
 
@@ -574,7 +650,6 @@ def find_by_author(request, author_id):
     else:
         device = 'pc'
 
-    print(user_agent)
 
 
     context = {'search_query': search_query,  'role': role, "author_list": author_list,
@@ -650,11 +725,15 @@ def find_by_text(request, *args, **kwargs):
         except:
             multirole = True
 
+    scheduled_dates_query = ScheduledTasks.objects.filter(author__in=match_authors_list)
+
+    scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
+
     context = {'comments': comments, 'current_user': current_user, 'multirole': multirole,
                'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
                'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates),
                'groups_authors_list': groups_authors_list, 'device': device, 'user_departments': user_departments,
-               'selected_department': selected_department}
+               'selected_department': selected_department, 'scheduled_dates_dict': json.dumps(scheduled_dates_dict)}
 
     return render(request, 'search_result.html', context)
 
@@ -681,14 +760,21 @@ def sort_by_department(request, department_id):
 
     user_departments_list = []
 
+    match_authors_list = []
+
+    user_departments = Department.objects.filter(groups__in=user_groups)
+
+    for dep in user_departments:
+        for group in Group.objects.filter(department=dep):
+            for author in User.objects.filter(groups__name=group):
+                match_authors_list.append(author)
+
     for group in user_groups:
 
         deps = Department.objects.filter(groups=group)
 
         for dep_objects in deps:
             user_departments_list.append(dep_objects.name)
-
-    user_departments = Department.objects.filter(groups__in=user_groups)
 
     groups_authors_list = Group.objects.filter(department=department_id).distinct(). \
         exclude(name__in=admin_groups)
@@ -702,10 +788,15 @@ def sort_by_department(request, department_id):
     else:
         device = 'pc'
 
+    scheduled_dates_query = ScheduledTasks.objects.filter(author__in=match_authors_list)
+
+    scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
+
     context = {'all_records': records, 'comments': comments, 'groups_authors_list': groups_authors_list,
                'current_user': current_user, 'roles': roles, 'user_departments': user_departments,
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
-               'device': device, 'selected_department': selected_department}
+               'device': device, 'selected_department': selected_department,
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict)}
 
     return render(request, 'search_result.html', context)
 
@@ -849,7 +940,6 @@ def finalize_objective(request, objective_id):
 
     objective = Objectives.objects.get(id=objective_id)
 
-    print(objective.name)
 
 
     objective_done = ObjectivesDone.objects.create(author_id=request.user.id)
@@ -863,7 +953,6 @@ def finalize_objective(request, objective_id):
         objective_done_reports = objective_done_reports+'\n'+(str(report.created))[:19]+' '+str(report.author) + \
                                  ':''     ' + str(report.status)
 
-    print(objective_done_reports)
 
     objective_done.reports = objective_done_reports
     objective_done.save()
@@ -871,3 +960,19 @@ def finalize_objective(request, objective_id):
     Objectives.objects.get(id=objective_id).delete()
 
     return HttpResponseRedirect('/')
+
+
+def create_scheduled_tasks_dict(queryset):
+
+    dictionary = {}
+
+    for task in queryset:
+        for date in task.date_list.split(','):
+            date = date.replace('[', '')
+            date = date.replace(']', '')
+            date = date.replace("'", "")
+            date = date.replace(" ", "")
+            dictionary[date] = task.text
+
+    return dictionary
+

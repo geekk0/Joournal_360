@@ -1,7 +1,7 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Record, Comments, Department, Notes, Objectives, ObjectivesDone, ObjectivesStatus
+from .models import Record, Comments, Department, Notes, Objectives, ObjectivesDone, ObjectivesStatus, ScheduledTasks
 
 
 """class ImagesInline(admin.TabularInline):
@@ -80,4 +80,6 @@ admin.site.register(Notes)
 admin.site.register(Objectives, AdminObjectives)
 admin.site.register(ObjectivesDone)
 admin.site.register(ObjectivesStatus)
+admin.site.register(ScheduledTasks)
+
 

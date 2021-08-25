@@ -1,0 +1,30 @@
+{%  extends 'base.html' %}
+{% load crispy_forms_tags %}
+{% load crispy_forms_filters %}
+
+{%  block title %}
+
+    <title style="color:white">Добавить регулярное задание</title>
+
+{%  endblock %}
+
+{%  block content %}
+
+<div class='row' style="margin-top:100px; text-align: center">
+
+    <div class="col-md-6 offset-md-3" style="line-height: 2">
+
+        <h3 style="color:white" class="text-center">Добавить регулярное задание</h3>
+        <hr style="">
+        <form style="color:white" action ='' method="POST">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input type="submit" class="btn btn-success" value="Сохранить">
+        </form>
+    </div>
+
+
+</div>
+
+
+{%  endblock %}

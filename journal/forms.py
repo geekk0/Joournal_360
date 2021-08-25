@@ -3,7 +3,7 @@ from django.contrib.auth.models import User
 from django.contrib.auth.password_validation import validate_password
 from django.contrib import messages
 
-from .models import Images, Comments, Notes, Record
+from .models import Images, Comments, Notes, Record, ScheduledTasks
 
 
 class RegistrationForm(forms.ModelForm):
@@ -158,5 +158,21 @@ class ResetPassword(forms.ModelForm):
 
         model = User
         fields = ['username', 'old_password', 'new_password', 'confirm_new_password']
+
+
+class AddScheduledTaskForm(forms.ModelForm):
+
+    start_date = forms.DateField(widget=forms.SelectDateWidget)
+    start_date.label = 'На какой день(дни) задание'
+
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+
+    def clean(self):
+        return self.cleaned_data
+
+    class Meta:
+        model = ScheduledTasks
+        fields = ['start_date', 'name', 'regularity', 'text']
 
 

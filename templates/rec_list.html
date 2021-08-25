@@ -70,8 +70,11 @@
     <div class="template">
         <div class="header">
 
-
-
+                    {% if user_is_admin == True %}
+                        <div class="add_task" style="">
+                            <a class="authorization" href="{% url 'добавить регулярное задание' %}">Добавить регулярное задание +</a>
+                        </div>
+                    {% endif %}
 
 
                     <div class="logo">
@@ -127,12 +130,12 @@
         <div class="bar" id="bar">
 
             <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
-                          id='datepicker' method="get" style="z-index: 2 !important">
+                          id='datepicker' method="get" style="width: 80%;margin-left: 13%;z-index: 2 !important">
 
 
                                 <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
-                                  style="visibility: hidden" />
-                                <input type="submit" value="Найти" id="submit_button"  style="visibility: hidden" />
+                                  style="display: none" />
+                                <input type="submit" value="Найти" id="submit_button"  style="display: none" />
 
 
 
@@ -165,10 +168,17 @@
                             color_date(cells[i], shift)
 
                         }
-                        else {
+
+                        let sched_dates_list = {{ scheduled_dates_dict|safe }};
+
+                        if (check_date in sched_dates_list) {
+                            scheduled_dates(cells[i])
                         }
+
                     }
+
                     groups_colors()
+
                 }
 
                 function color_date(cell, shift) {
@@ -184,6 +194,13 @@
                     if (shift === 'shift_1_dates') {
                             cell.style.color = 'rgb(200, 200, 0)';
                         }
+                }
+
+                function scheduled_dates(cell) {
+                    cell.style.border = '1px solid';
+                    cell.style.borderColor = 'red';
+                    cell.style.borderRadius = '50%';
+                    cell.style.bor = 'solid';
                 }
 
                 function groups_colors() {
@@ -298,7 +315,7 @@
 
                        <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
                             <input name="q" type="text" id="box" placeholder="В тексте...">
-                            <input type="submit" class="btn btn-success" value="Найти">
+                            <input type="submit" class="btn btn-success" value="Найти" style="margin-left:10%">
                         </form>
 
                 </div>
@@ -410,13 +427,13 @@
                 add_objective.style.border = '2px solid white';
                 add_objective.style.background = '#28425d';
                 add_objective.style.opacity = '0.7';
+                add_objective.style.transition = 'none';
                 button.style.visibility = 'hidden';
                 input.classList.remove('add_object_active')
                 let stickers = document.getElementById('objectives')
                 document.getElementById('input_name').style.visibility = 'hidden';
                 document.getElementById('label').style.visibility = 'visible';
                 stickers.style.width = '70%';
-
             }
 
 
