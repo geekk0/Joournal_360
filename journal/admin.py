@@ -63,10 +63,16 @@ class AdminRecords(admin.ModelAdmin):
 
 class AdminObjectives(admin.ModelAdmin):
 
-    fields = ['created_date', 'author', 'name']
+    fields = ['department', 'created_date', 'author', 'name']
 
-    list_filter = ('author', 'name')
+    list_filter = ('department', 'author', 'name')
 
+
+class AdminObjectivesDone(admin.ModelAdmin):
+
+    fields = ['department', 'created_date', 'author', 'name', 'reports']
+
+    list_filter = ('department', 'author', 'name')
 
 """admin.site.register(EngNotes, EngNotesAdmin)
 admin.site.register(DirNotes, DirNotesAdmin)
@@ -78,7 +84,7 @@ admin.site.register(Record)
 admin.site.register(Department)
 admin.site.register(Notes)
 admin.site.register(Objectives, AdminObjectives)
-admin.site.register(ObjectivesDone)
+admin.site.register(ObjectivesDone, AdminObjectivesDone)
 admin.site.register(ObjectivesStatus)
 admin.site.register(ScheduledTasks)
 

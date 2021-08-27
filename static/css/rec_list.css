@@ -88,7 +88,8 @@
 .record_layout {
 
     margin-top:1%;
-    border: 1.5px solid white;
+    border-radius: 14px;
+    border: 1px solid white;
     margin-left: auto;
     margin-right: auto;
     padding-left: 0.8rem; !important;
@@ -108,6 +109,9 @@
     width:90%;
     margin-top: 8%;
     color:black;
+    border-radius: 5%;
+    border: 1.9px solid white;
+
 }
 
 div.datepicker-inline:nth-child(3) {
@@ -530,7 +534,7 @@ display: none;
     top: 14%;
     right: 20px;
     visibility: visible;
-    width: 30%;
+    width: 20%;
     height: 160px;
     background: #28425d;
     color: white;
@@ -561,7 +565,7 @@ display: none;
     width:3%;
     display:inline-block;
     position: absolute;
-    left: 52%;
+    left: 53%;
     top: 20%;
     right: 20px;
 }
@@ -624,4 +628,24 @@ display: none;
     text-align: center;
     display:none;
     width:100%;
+}
+
+#department_select {
+    position: absolute;
+    left: 40%;
+    top: 18%;
+    right: 20px;
+    background: none;
+    line-height: 130%;
+    border: none;
+    padding:10px;
+    scrollbar-width: none;
+
+}
+
+#department_select option{
+    font-size: 16pt;
+    color:white;
+
+
 }

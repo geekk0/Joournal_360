@@ -172,6 +172,8 @@ class AddScheduledTask(View):
             new_scheduled_task.text = form.cleaned_data['text']
             new_scheduled_task.created = timezone.now()
             new_scheduled_task.author = request.user
+            new_scheduled_task.department = form.cleaned_data['department']
+
 
             dates = get_task_dates(form.cleaned_data['start_date'], form.cleaned_data['regularity'])
 
@@ -363,7 +365,7 @@ def rec_list(request, *device):
 
     shifts_dates = shifts_match()
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(author__in=match_authors_list)
+    scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
@@ -374,12 +376,13 @@ def rec_list(request, *device):
     else:
         device = 'pc'
 
-    objectives = Objectives.objects.filter(author__in=match_authors_list).order_by('-created_date')
+    objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
 
     if request.user.has_perm('journal.change_record'):
         user_is_admin = True
     else:
         user_is_admin = False
+
 
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
@@ -464,8 +467,6 @@ def find_by_date(request):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
 
-
-
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
@@ -517,12 +518,15 @@ def find_by_date(request):
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
+    objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
+
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
                'shifts_dates': json.dumps(shifts_dates), 'device': device, 'selected_department': selected_department,
-               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'task_date':task_date}
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'task_date':task_date,
+               'objectives': objectives}
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -595,12 +599,15 @@ def sort_by_group(request, group_id):
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
+    objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
+
+
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
                'shifts_dates': json.dumps(shifts_dates), 'device': device,
-               'scheduled_dates_dict': json.dumps(scheduled_dates_dict)}
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives':objectives}
 
     return render(request, 'search_result.html', context)
 
@@ -729,11 +736,15 @@ def find_by_text(request, *args, **kwargs):
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
+    objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
+
+
     context = {'comments': comments, 'current_user': current_user, 'multirole': multirole,
                'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
                'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates),
                'groups_authors_list': groups_authors_list, 'device': device, 'user_departments': user_departments,
-               'selected_department': selected_department, 'scheduled_dates_dict': json.dumps(scheduled_dates_dict)}
+               'selected_department': selected_department, 'scheduled_dates_dict': json.dumps(scheduled_dates_dict),
+               'objectives':objectives}
 
     return render(request, 'search_result.html', context)
 
@@ -792,11 +803,13 @@ def sort_by_department(request, department_id):
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
+    objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
+
     context = {'all_records': records, 'comments': comments, 'groups_authors_list': groups_authors_list,
                'current_user': current_user, 'roles': roles, 'user_departments': user_departments,
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'device': device, 'selected_department': selected_department,
-               'scheduled_dates_dict': json.dumps(scheduled_dates_dict)}
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives': objectives}
 
     return render(request, 'search_result.html', context)
 
@@ -911,12 +924,21 @@ def add_objective(request):
 
     objective_name = request.GET.get('new_objective_name')
 
+
+    department_id = request.GET.get('department')
+
+    if department_id:
+        department = Department.objects.get(id=department_id)
+    else:
+        user_group = Group.objects.get(user=request.user)
+        department = Department.objects.get(groups=user_group)
+
     author = request.user
 
     created_date = timezone.now()
 
     if Objectives.objects.all().count() < 5:
-        Objectives.objects.create(author=author, created_date=created_date, name=objective_name)
+        Objectives.objects.create(author=author, created_date=created_date, name=objective_name, department=department)
 
     return HttpResponseRedirect('/')
 
@@ -940,9 +962,7 @@ def finalize_objective(request, objective_id):
 
     objective = Objectives.objects.get(id=objective_id)
 
-
-
-    objective_done = ObjectivesDone.objects.create(author_id=request.user.id)
+    objective_done = ObjectivesDone.objects.create(author_id=request.user.id, department=objective.department)
     objective_done.name = str(objective.name)
     objective_done.created = timezone.now()
     objective_done_reports = ''
@@ -956,6 +976,7 @@ def finalize_objective(request, objective_id):
 
     objective_done.reports = objective_done_reports
     objective_done.save()
+
 
     Objectives.objects.get(id=objective_id).delete()
 

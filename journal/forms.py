@@ -173,6 +173,6 @@ class AddScheduledTaskForm(forms.ModelForm):
 
     class Meta:
         model = ScheduledTasks
-        fields = ['start_date', 'name', 'regularity', 'text']
+        fields = ['department', 'start_date', 'name', 'regularity', 'text']
 
 

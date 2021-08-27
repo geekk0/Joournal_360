@@ -102,8 +102,7 @@
                                     <span><p id="username">{{ current_user }}</p></span>
                                 {% else %}
 
-                                    <span><p id="username">{{ current_user }}</p><p id="user_group">{{ roles }}</p>
-                                        <p id="user_department">{{ user_departments_list }}</p></span>
+                                    <span><p id="username">{{ current_user }}</p></span>
 
                                     <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
                                     ></a>
@@ -330,8 +329,22 @@
                 <form name="new_objective" style="visibility: hidden"
                             action="{% url 'добавить задачу' %}" method="get">
                     <label for="input_name"></label>
-                    <textarea style="border-radius: 15px;height:140px" id="input_name" name="new_objective_name"
+                    <textarea style="border-radius: 15px;height:140px;display: inline-block" id="input_name" name="new_objective_name"
                             placeholder="Что надо сделать..." style="border: 2px solid white;width:30%;"></textarea>
+                    {% if multirole == True %}
+                        <label for="department_select">Задание для:</label>
+                        <select size="3" multiple="multiple" name="department" id="department_select" style="display:inline;visibility: hidden">
+                            {% for department in user_departments %}
+                                <option name="department" value="{{ department.id }}">{{ department.name }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <select size="3" multiple="multiple" name="department" id="department_select" style="display:none;visibility: hidden">
+                            {% for department in user_departments %}
+                                <option name="department" value="{{ department.id }}">{{ department.name }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
                     <input id="button_add_obj" type="image" alt="Прикрепить задачу"
                            title="Прикрепить задачу" style="visibility: hidden;" src="{% static 'images/arrow400.png'%}">
                 </form>
@@ -403,11 +416,14 @@
 
             function add_objective(e) {
 
-                e.target.style.width = '40%';
+                e.target.style.width = '30%';
                 document.getElementById('label').style.visibility = 'hidden';
                 let input = document.getElementById('input_name');
                 let button = document.getElementById('button_add_obj')
                 let add_objective = document.getElementById('add_objective')
+                let dep = document.getElementById('department_select');
+                dep.style.visibility = 'visible';
+                add_objective.style.width = '40%';
                 add_objective.style.border = 'none';
                 add_objective.style.background = 'none';
                 add_objective.style.opacity = '0.9';
@@ -424,6 +440,11 @@
                 let input = document.getElementById('input_name');
                 let button = document.getElementById('button_add_obj')
                 let add_objective = document.getElementById('add_objective')
+                let dep = document.getElementById('department_select');
+                let select = document.getElementById('department_select')
+                select.blur()
+                dep.style.visibility = 'hidden';
+                add_objective.style.width = '10%'
                 add_objective.style.border = '2px solid white';
                 add_objective.style.background = '#28425d';
                 add_objective.style.opacity = '0.7';
