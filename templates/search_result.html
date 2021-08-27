@@ -185,7 +185,7 @@
                 function scheduled_dates(cell) {
                     cell.style.border = '1px solid';
                     cell.style.borderColor = 'red';
-                    cell.style.borderRadius = '50%';
+                    cell.style.borderRadius = '20%';
                     cell.style.bor = 'solid';
                 }
 
@@ -194,7 +194,7 @@
                     console.log(task)
                     let tasks = document.getElementById('tasks')
                     tasks.style.display = 'inline-block';
-                    task_area.innerHTML = task;
+                    task_area.innerText = task;
                 }
 
                 function color_date(cell, shift) {
@@ -316,14 +316,20 @@
                     <label for="input_name"></label>
                     <textarea style="border-radius: 15px;height:140px;display: inline-block" id="input_name" name="new_objective_name"
                             placeholder="Что надо сделать..." style="border: 2px solid white;width:30%;"></textarea>
-                    <label for="department_select">Задание для:</label>
-
-                    <select size="3" multiple="multiple" name="department" id="department_select" style="display:inline;visibility: hidden">
-                        {% for department in user_departments %}
-                            <option name="department" value="{{ department.id }}">{{ department.name }}</option>
-
-                        {% endfor %}
-                    </select>
+                    {% if multirole == True %}
+                        <label for="department_select">Задание для:</label>
+                        <select size="3" multiple="multiple" name="department" id="department_select" style="display:inline;visibility: hidden">
+                            {% for department in user_departments %}
+                                <option name="department" value="{{ department.id }}">{{ department.name }}</option>
+                            {% endfor %}
+                        </select>
+                    {% else %}
+                        <select size="3" multiple="multiple" name="department" id="department_select" style="display:none;visibility: hidden">
+                            {% for department in user_departments %}
+                                <option name="department" value="{{ department.id }}">{{ department.name }}</option>
+                            {% endfor %}
+                        </select>
+                    {% endif %}
                     <input id="button_add_obj" type="image" alt="Прикрепить задачу"
                            title="Прикрепить задачу" style="visibility: hidden;" src="{% static 'images/arrow400.png'%}">
                 </form>

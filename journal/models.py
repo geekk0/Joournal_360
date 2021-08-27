@@ -215,7 +215,8 @@ class ScheduledTasks(models.Model):
     REGULARITY_OPTIONS = [
         ('week', 'Неделя'),
         ('month', 'Месяц'),
-        ('None', 'Не повторять')
+        ('None', 'Не повторять'),
+        ('on weekends', 'По выходным')
         ]
     regularity = models.CharField(max_length=64, choices=REGULARITY_OPTIONS, default=None, verbose_name='С какой периодичностью выполнять задание')
     date_list = models.TextField(blank=True, null=True, verbose_name='Все даты задания:')

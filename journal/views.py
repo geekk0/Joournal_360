@@ -155,6 +155,7 @@ class AddScheduledTask(View):
 
 
         form = AddScheduledTaskForm(request.POST or None)
+        form.initial['start_date'] = timezone.now()
         context = {'form': form}
 
         return render(request, 'add_scheduled_task.html', context)
@@ -173,7 +174,6 @@ class AddScheduledTask(View):
             new_scheduled_task.created = timezone.now()
             new_scheduled_task.author = request.user
             new_scheduled_task.department = form.cleaned_data['department']
-
 
             dates = get_task_dates(form.cleaned_data['start_date'], form.cleaned_data['regularity'])
 
@@ -201,6 +201,22 @@ def get_task_dates(start_date, regularity):
     if regularity == 'month':
 
         delta = relativedelta(months=1)
+
+    if regularity == 'on weekends':
+
+        satuday = start_date+relativedelta(weekday=5)
+        sunday = start_date+relativedelta(weekday=6)
+        delta = relativedelta(weeks=1)
+
+        while (satuday <= end_date) & (sunday <= end_date):
+            satuday_str = str(satuday)
+            task_dates.append(satuday_str)
+            satuday += delta
+            sunday_str = str(sunday)
+            task_dates.append(sunday_str)
+            sunday += delta
+
+        return task_dates
 
     if regularity == 'None':
 
@@ -517,6 +533,7 @@ def find_by_date(request):
     scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
+
 
     objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
 
@@ -985,15 +1002,33 @@ def finalize_objective(request, objective_id):
 
 def create_scheduled_tasks_dict(queryset):
 
-    dictionary = {}
+    all_tasks_dictionary = {}
 
     for task in queryset:
-        for date in task.date_list.split(','):
-            date = date.replace('[', '')
-            date = date.replace(']', '')
-            date = date.replace("'", "")
-            date = date.replace(" ", "")
-            dictionary[date] = task.text
+        task_dict = clean_task_format(task)
+        for key, value in task_dict.items():
+            if key in all_tasks_dictionary:
+                all_tasks_dictionary[key] = f'- {all_tasks_dictionary.get(key)}\n - {task_dict.get(key)}'
+            else:
+                all_tasks_dictionary[key] = task_dict.get(key)
 
-    return dictionary
+    print(all_tasks_dictionary)
+    return all_tasks_dictionary
 
+
+def scheduled_tasks_dict(queryset):
+    dictionary = {}
+
+
+def clean_task_format(task):
+
+    task_dict = {}
+
+    for date in task.date_list.split(','):
+        date = date.replace('[', '')
+        date = date.replace(']', '')
+        date = date.replace("'", "")
+        date = date.replace(" ", "")
+        task_dict[date] = task.text
+
+    return task_dict
