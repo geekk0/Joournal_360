@@ -514,7 +514,7 @@ def find_by_date(request):
     else:
         device = 'pc'
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(author__in=match_authors_list)
+    scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
@@ -595,7 +595,7 @@ def sort_by_group(request, group_id):
     else:
         device = 'pc'
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(author__in=match_authors_list)
+    scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
@@ -732,7 +732,7 @@ def find_by_text(request, *args, **kwargs):
         except:
             multirole = True
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(author__in=match_authors_list)
+    scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
@@ -799,7 +799,7 @@ def sort_by_department(request, department_id):
     else:
         device = 'pc'
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(author__in=match_authors_list)
+    scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
