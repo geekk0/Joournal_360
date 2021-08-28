@@ -405,7 +405,24 @@
 
         </div>
 
+        {% if user_is_admin == False %}
+            <div id="add_report">
+                    <p style="font-size: 20pt">Добавить отчет +</p>
+                    <form name="new_report" style=""
+                                action="{% url 'добавить отчет' %}" method="get">
+                        <textarea oninput="send_report()" style="" id="report_text" name="new_report"
+                                placeholder="Текст отчета..." style="border: 2px solid white;width:30%;">{{ notes.message }}</textarea>
+                    </form>
+
+            </div>
+        {% endif %}
+
         <script type="text/javascript">
+
+
+            function send_report() {
+                document.forms['new_report'].submit()
+            }
 
 
             document.addEventListener("DOMContentLoaded", () => {
@@ -459,6 +476,25 @@
 
 
             document.addEventListener("DOMContentLoaded", () => {
+               let add_obj = document.getElementById('add_report')
+                add_obj.addEventListener("mouseenter", add_report)
+                add_obj.addEventListener("mouseleave", leave)
+            })
+
+            function add_report(e) {
+                let record_text = document.getElementById('report_text')
+                record_text.style.display = 'inline-block';
+            }
+
+            function leave(e) {
+                let record_text = document.getElementById('report_text')
+                record_text.style.display = 'none';
+
+
+            }
+
+
+            document.addEventListener("DOMContentLoaded", () => {
                 document.querySelectorAll('.objectives_layout').forEach(item => {
                     item.addEventListener('mouseenter', active_objective)
                     item.addEventListener('mouseleave', inactive_objective)
@@ -499,40 +535,6 @@
 
 
         </script>
-
-        <div class="add_note">
-                        <a class="authorization" href="{% url 'добавить заметку' %}">Добавить отчет +</a>
-                    </div>
-
-        <div class="notes">
-
-
-
-        {% for note in notes %}
-            <div class="notes_layout" style="border: 2px solid red;">
-                <p style="">{{ note.report_date }} {{ note.author }}</p>
-                <p style="">{{ note.message|linebreaks }}</p>
-
-                {% if note.author == current_user %}
-
-                        <div class="note_controls">
-
-                            <a class="edit_note" href="{% url 'редактировать запись' note.id %}">
-                                <img src="{% static 'images/edit.png'%}" title="Редактировать"></a>
-                            <a style="" href="{% url 'удалить запись' %}"><img src="{% static 'images/delete.png'%}"></a>
-                            <a style="" href="{% url 'отправить отчет' %}"><img src="{% static 'images/send.png'%}"
-                                                           title="Отправить"></a>
-                        </div>
-
-                {% endif %}
-            </div>
-
-
-        {% endfor %}
-
-
-
-    </div>
 
         <div class="records">
         {% for recs in records %}

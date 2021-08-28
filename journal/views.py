@@ -6,7 +6,7 @@ import json
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
 from django.forms import modelformset_factory
-from django.http import HttpResponseRedirect
+from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render
 from django.utils import timezone
 from django.views.generic import DetailView, View
@@ -372,7 +372,7 @@ def rec_list(request, *device):
 
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
-    notes = Notes.objects.filter(author__in=match_authors_list)
+    notes = prepare_note(request)
 
     comments = Comments.objects.all().order_by('-created')
 
@@ -1012,7 +1012,6 @@ def create_scheduled_tasks_dict(queryset):
             else:
                 all_tasks_dictionary[key] = task_dict.get(key)
 
-    print(all_tasks_dictionary)
     return all_tasks_dictionary
 
 
@@ -1032,3 +1031,40 @@ def clean_task_format(task):
         task_dict[date] = task.text
 
     return task_dict
+
+
+def prepare_note(request):
+    try:
+        note = Notes.objects.get(author_id=request.user.id)
+
+
+    except:
+        note = Notes.objects.create(author=request.user)
+
+        note.created_date = timezone.now()
+        note.save()
+
+    print(note.author)
+    print(note.message)
+
+    return note
+
+
+def new_edit_note(request):
+
+    note = Notes.objects.get(author_id=request.user.id)
+
+    print(note.author)
+    print(note.id)
+
+    text = request.GET.get("new_report")
+
+    print(text)
+
+    note.message = text
+
+    note.save()
+
+    return HttpResponse(status=204)
+
+
