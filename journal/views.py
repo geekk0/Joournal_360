@@ -1044,8 +1044,7 @@ def prepare_note(request):
         note.created_date = timezone.now()
         note.save()
 
-    print(note.author)
-    print(note.message)
+
 
     return note
 
@@ -1054,12 +1053,7 @@ def new_edit_note(request):
 
     note = Notes.objects.get(author_id=request.user.id)
 
-    print(note.author)
-    print(note.id)
-
     text = request.GET.get("new_report")
-
-    print(text)
 
     note.message = text
 
@@ -1068,3 +1062,34 @@ def new_edit_note(request):
     return HttpResponse(status=204)
 
 
+def publish_notes_to_records():
+    all_notes = Notes.objects.all()
+    for note in all_notes:
+        if (len(note.message) > 5) and (note.status == 'initial'):
+            author = note.author
+            created_date = note.created_date
+            full_text = note.message
+            record = Record.objects.create(author=author, created_date=created_date, text=full_text)
+            note.status = 'published'
+            note.to_record = record
+            note.save()
+
+
+def update_record_from_note():
+    published_notes = Notes.objects.filter(status='published')
+    for note in published_notes:
+        record = Record.objects.get(notes=note)
+        record.text = note.message
+        note.status = 'updated'
+        record.save()
+        note.save()
+
+
+def finalize_note():
+    updated_notes = Notes.objects.filter(status='updated')
+    for note in updated_notes:
+        print(note.author)
+        print('message '+note.message)
+        note.to_record = None
+        print('to_record '+str(note.to_record))
+    updated_notes.delete()

@@ -46,6 +46,9 @@ class Notes(models.Model):
     created_date = models.DateField(default=timezone.now, verbose_name='Дата')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                verbose_name='от')
+    status = models.CharField(default='initial', null=True, blank=True, verbose_name='Статус (для финализации)',
+                              max_length=64)
+    to_record = models.OneToOneField(Record, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Какая запись создана из заметки')
 
     def publish(self):
         self.created_date = timezone.now()
