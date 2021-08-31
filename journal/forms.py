@@ -164,6 +164,10 @@ class AddScheduledTaskForm(forms.ModelForm):
 
     start_date = forms.DateField(widget=forms.SelectDateWidget)
     start_date.label = 'На какой день(дни) задание'
+    CHOICES = [(0, 'Понедельник'), (1, 'Вторник'), (2, 'Среда'), (3, 'Четверг'), (4, 'Пятница')
+               , (5, 'Суббота'), (6, 'Воскресенье')]
+    week_days = forms.MultipleChoiceField(widget=forms.CheckboxSelectMultiple, choices=CHOICES, required=False)
+    week_days.label = 'Дни недели:'
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -173,6 +177,6 @@ class AddScheduledTaskForm(forms.ModelForm):
 
     class Meta:
         model = ScheduledTasks
-        fields = ['department', 'start_date', 'name', 'regularity', 'text']
+        fields = ['department', 'start_date', 'name', 'week_days', 'regularity', 'text']
 
 

@@ -216,10 +216,11 @@ def get_images(rec_name):
 class ScheduledTasks(models.Model):
     start_date = models.DateField(blank=True, null=True, max_length=64, verbose_name='На какой день(дни) задание')
     REGULARITY_OPTIONS = [
+        ('None', 'Не повторять'),
         ('week', 'Неделя'),
         ('month', 'Месяц'),
-        ('None', 'Не повторять'),
-        ('on weekends', 'По выходным')
+        ('on weekends', 'По выходным'),
+        ('on workdays', 'По будням'),
         ]
     regularity = models.CharField(max_length=64, choices=REGULARITY_OPTIONS, default=None, verbose_name='С какой периодичностью выполнять задание')
     date_list = models.TextField(blank=True, null=True, verbose_name='Все даты задания:')

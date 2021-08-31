@@ -16,6 +16,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from django.contrib.auth.decorators import login_required
 from django import forms
 from dateutil.relativedelta import relativedelta
+from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
 
 
 
@@ -164,6 +165,7 @@ class AddScheduledTask(View):
 
         form = AddScheduledTaskForm(request.POST or None)
 
+
         if form.is_valid():
             new_scheduled_task = form.save(commit=False)
 
@@ -175,24 +177,42 @@ class AddScheduledTask(View):
             new_scheduled_task.author = request.user
             new_scheduled_task.department = form.cleaned_data['department']
 
-            dates = get_task_dates(form.cleaned_data['start_date'], form.cleaned_data['regularity'])
+            week_days = form.cleaned_data['week_days']
+
+            dates = get_task_dates(form.cleaned_data['start_date'], form.cleaned_data['regularity'], week_days)
 
             new_scheduled_task.date_list = dates
 
             new_scheduled_task.save()
 
             return HttpResponseRedirect('/')
+        else:
+            print(form.errors)
 
 
-def get_task_dates(start_date, regularity):
+def get_task_dates(start_date, regularity, week_days):
+
 
     task_dates = []
 
     delta = None
 
-    start_date = start_date
+    print(type(start_date))
 
     end_date = datetime.date(2030, 6, 15)
+
+    if week_days:
+        for date in week_days:
+            date = int(date)
+            cycle_start_date = start_date + relativedelta(weekday=date)
+            print(cycle_start_date)
+            delta = relativedelta(weeks=1)
+            while cycle_start_date <= end_date:
+                task_dates.append(str(cycle_start_date))
+                cycle_start_date += delta
+            print(cycle_start_date)
+            print(len(task_dates))
+        return task_dates
 
     if regularity == 'week':
 
