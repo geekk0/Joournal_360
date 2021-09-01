@@ -121,7 +121,7 @@ class Objectives(models.Model):
     author_name = models.CharField(blank=True, null=True, editable=False, verbose_name='Имя и фамилия автора отчета',
                                    max_length=64)
     status_count = models.IntegerField(default=0, editable=False, verbose_name='Количество добавлений статуса')
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, verbose_name='Задание для отдела:')
+    departments = models.ManyToManyField(Department, blank=True, verbose_name='Задание для отдела:')
 
     def publish(self):
         self.created = timezone.now()
@@ -190,7 +190,7 @@ class ObjectivesDone(models.Model):
                                verbose_name='Автор задачи')
     created_date = models.DateField(default=timezone.now, verbose_name='Дата завершения задачи')
     reports = models.TextField(blank=True, null=True, verbose_name='Отчеты по задаче')
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, verbose_name='Задание для отдела:')
+    departments = models.ManyToManyField(Department, blank=True, verbose_name='Задание для отдела:')
 
     def publish(self):
         self.created = timezone.now()
@@ -229,7 +229,7 @@ class ScheduledTasks(models.Model):
     created = models.DateTimeField(default=timezone.now, verbose_name='Дата создания')
     author = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, blank=True, on_delete=models.CASCADE,
                                verbose_name='Автор задачи')
-    department = models.ForeignKey(Department, on_delete=models.CASCADE, verbose_name='Задание для отдела:')
+    departments = models.ManyToManyField(Department, blank=True, verbose_name='Задание для отдела:')
 
     def __str__(self):
         return str(self.name)

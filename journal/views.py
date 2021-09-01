@@ -165,7 +165,6 @@ class AddScheduledTask(View):
 
         form = AddScheduledTaskForm(request.POST or None)
 
-
         if form.is_valid():
             new_scheduled_task = form.save(commit=False)
 
@@ -401,7 +400,7 @@ def rec_list(request, *device):
 
     shifts_dates = shifts_match()
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
+    scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments)
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
@@ -412,13 +411,12 @@ def rec_list(request, *device):
     else:
         device = 'pc'
 
-    objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
+    objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
 
     if request.user.has_perm('journal.change_record'):
         user_is_admin = True
     else:
         user_is_admin = False
-
 
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
@@ -426,8 +424,6 @@ def rec_list(request, *device):
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'device': device, 'objectives': objectives,
                'user_is_admin': user_is_admin, }
-
-
 
     return render(request, 'rec_list.html', context)
 
@@ -499,7 +495,7 @@ def find_by_date(request):
     user_departments = Department.objects.filter(groups__in=user_groups)
 
     for dep in user_departments:
-        for group in Group.objects.filter(department=dep):
+        for group in Group.objects.filter(departments=dep):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
 
@@ -961,21 +957,22 @@ def add_objective(request):
 
     objective_name = request.GET.get('new_objective_name')
 
+    departments_id_list = request.GET.getlist('department')
 
-    department_id = request.GET.get('department')
+    departments = Department.objects.filter(id__in=departments_id_list)
 
-    if department_id:
-        department = Department.objects.get(id=department_id)
-    else:
-        user_group = Group.objects.get(user=request.user)
-        department = Department.objects.get(groups=user_group)
+    department_to_create = Department.objects.get(id=departments_id_list[0])
 
     author = request.user
 
     created_date = timezone.now()
 
     if Objectives.objects.all().count() < 5:
-        Objectives.objects.create(author=author, created_date=created_date, name=objective_name, department=department)
+        new_objective = Objectives.objects.create(author=author, created_date=created_date, name=objective_name)
+
+        new_objective.departments.set(departments)
+
+        new_objective.save()
 
     return HttpResponseRedirect('/')
 
@@ -985,7 +982,6 @@ def add_status(request, objective_id):
     objective = Objectives.objects.get(id=objective_id)
 
     status_text = request.GET.get('input_text')
-
 
     status = ObjectivesStatus.objects.create(author_id=request.user.id, objective_id=objective)
     status.created = timezone.now()
@@ -999,10 +995,12 @@ def finalize_objective(request, objective_id):
 
     objective = Objectives.objects.get(id=objective_id)
 
-    objective_done = ObjectivesDone.objects.create(author_id=request.user.id, department=objective.department)
+    objective_done = ObjectivesDone.objects.create(author_id=request.user.id)
     objective_done.name = str(objective.name)
     objective_done.created = timezone.now()
     objective_done_reports = ''
+
+    departments = Department.objects.filter(objectives=objective)
 
     all_objective_reports = ObjectivesStatus.objects.filter(objective_id=objective_id)
 
@@ -1010,10 +1008,11 @@ def finalize_objective(request, objective_id):
         objective_done_reports = objective_done_reports+'\n'+(str(report.created))[:19]+' '+str(report.author) + \
                                  ':''     ' + str(report.status)
 
-
     objective_done.reports = objective_done_reports
-    objective_done.save()
 
+    objective_done.departments.set(departments)
+
+    objective_done.save()
 
     Objectives.objects.get(id=objective_id).delete()
 

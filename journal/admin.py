@@ -63,16 +63,16 @@ class AdminRecords(admin.ModelAdmin):
 
 class AdminObjectives(admin.ModelAdmin):
 
-    fields = ['department', 'created_date', 'author', 'name']
+    fields = ['departments', 'created_date', 'author', 'name']
 
-    list_filter = ('department', 'author', 'name')
+    list_filter = ('departments', 'author', 'name')
 
 
 class AdminObjectivesDone(admin.ModelAdmin):
 
-    fields = ['department', 'created_date', 'author', 'name', 'reports']
+    fields = ['departments', 'created_date', 'author', 'name', 'reports']
 
-    list_filter = ('department', 'author', 'name')
+    list_filter = ('departments', 'author', 'name')
 
 """admin.site.register(EngNotes, EngNotesAdmin)
 admin.site.register(DirNotes, DirNotesAdmin)
