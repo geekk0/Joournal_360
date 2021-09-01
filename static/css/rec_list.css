@@ -108,10 +108,7 @@
 
 .datepicker-inline .datepicker {
     width:90%;
-    margin-top: 8%;
     color:black;
-    border-radius: 5%;
-    border: 2px solid white;
 
 }
 
@@ -126,7 +123,7 @@ div.datepicker-inline:nth-child(3) {
     position: fixed;
     left: 0;
     right: 0;
-    top: 100px;
+    top: 145px;
     bottom: 0;
 
 }
@@ -143,7 +140,8 @@ div.datepicker-inline:nth-child(3) {
     width: 85%;
     margin-right: 10%;
     text-align: center;
-    float:right
+    float:right;
+    margin-top: 10%;
 }
 
 
@@ -332,13 +330,28 @@ div.search-label-icon {
     text-align: center;
 }
 
+.group_select {
+ text-align: center;
+}
+
+#group {
+    width: 80%;
+    margin-left: 5%;
+}
+
+
 .group_select a {
     color:white;
     font-size: 20pt;
+
 }
 
 .groups_authors_select {
     padding-top:8%;
+    text-align: center;
+    display: inline-block;
+    width: 80%;
+    margin-left: 6%;
 }
 
 #hint_id_username {
@@ -629,6 +642,7 @@ display: none;
     text-align: center;
     display:none;
     width:100%;
+    margin-top:10%;
 }
 
 #department_select {
@@ -693,3 +707,13 @@ display: none;
 #id_departments {
     scrollbar-width: none;
 }
+
+.wrapper {
+    border: solid white 1px;
+    border-radius: 15px;
+    background-color: rgba(255, 255, 255, 0.1);
+    width:90%;
+    margin-right:auto;
+    margin-left:auto;
+}
+

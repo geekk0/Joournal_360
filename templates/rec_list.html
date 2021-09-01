@@ -123,203 +123,209 @@
                         </ul>
                     </div>
 
-            </div>
+        </div>
 
         <div class="bar" id="bar">
 
-            <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
-                          id='datepicker' method="get" style="width: 80%;margin-left: 13%;z-index: 2 !important">
+            <div class="wrapper">
 
+                <div id="tasks">
+                                <p id="task_area" style="color:red"></p>
 
-                                <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
-                                  style="display: none" />
-                                <input type="submit" value="Найти" id="submit_button"  style="display: none" />
+                </div>
 
+                <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
+                          id='datepicker' method="get" style="width: 100%;z-index: 2 !important">
+                        <input type='text' name='date' id='calendar' class="datepicker-here" data-inline="True"
+                                          style="display: none" />
+                        <input type="submit" value="Найти" id="submit_button"  style="display: none" />
+                </form>
 
+                {% if multirole == True %}
+                    <br>
+                    <div class="group_select">
+                        <ul id="group" style="list-style-type:none">
 
-            </form>
-                <script type="application/javascript">
+                                                    {% for department in user_departments %}
 
-                document.addEventListener("DOMContentLoaded", init_colors)
+                                                        <li><a href={% url 'фильтр по отделу' department.id %}>{{ department.name }}</a></li>
 
-                function init_colors() {
-                    let cells = document.getElementsByClassName('datepicker--cell-day')
+                                                    {% endfor %}
+                                                </ul>
+                    </div>
 
-                    for (let i = 0; i < cells.length; i++) {
-                        let day = cells[i].getAttribute('data-date')
-                        let month = cells[i].getAttribute('data-month')
-                        month = Number(month) + 1
-                        month = String(month)
-                        if (month.length < 2) {
-                            month = '0' + month
-                        }
-                        if (day.length < 2) {
-                            day = '0' + day
-                        }
-                        let year = cells[i].getAttribute('data-year')
-                        let check_date = year + '-' + month + '-' + day
+                {% endif %}
+                <div class="groups_authors_select">
+                    {% if multirole != True %}
+                        <ul id="group_author" style="list-style-type:none;">
 
-                        let shift_dates_list = {{ shifts_dates|safe }};
+                                                {% for group_author in groups_authors_list %}
 
-                        if (check_date in shift_dates_list) {
-                            let shift = shift_dates_list[check_date]
-                            color_date(cells[i], shift)
+                                                    <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
 
-                        }
+                                                {% endfor %}
+                                            </ul>
+                    {% endif %}
+                </div>
+            </div>
+            <div class="selector-container">
 
-                        let sched_dates_list = {{ scheduled_dates_dict|safe }};
-
-                        if (check_date in sched_dates_list) {
-                            scheduled_dates(cells[i])
-                        }
-
-                    }
-
-                    groups_colors()
-
-                }
-
-                function color_date(cell, shift) {
-                    if (shift === 'shift_4_dates') {
-                            cell.style.color = 'rgb(0, 200, 0)' ;
-                        }
-                    if (shift === 'shift_3_dates') {
-                            cell.style.color = 'rgb(200, 0, 0)';
-                        }
-                    if (shift === 'shift_2_dates') {
-                            cell.style.color =  'rgb(0, 160, 255)';
-                        }
-                    if (shift === 'shift_1_dates') {
-                            cell.style.color = 'rgb(200, 200, 0)';
-                        }
-                }
-
-                function scheduled_dates(cell) {
-                    cell.style.border = '1px solid';
-                    cell.style.borderColor = 'red';
-                    cell.style.borderRadius = '20%';
-                    cell.style.bor = 'solid';
-                }
-
-                function groups_colors() {
-                    let groups = document.querySelectorAll('ul#group_author > li')
-
-                    for (let i = 0; i < groups.length; i++) {
-                        let group_link = groups[i].querySelector('a')
-                        if (group_link.innerText === 'Астахов и Козлов' || group_link.innerText === 'IT Захаров')  {
-                            group_link.style.color = 'rgb(200, 200, 0)'
-                        }
-                        if (group_link.innerText === 'Черпаков и Долгов'|| group_link.innerText === 'IT Дмитриевский') {
-                            group_link.style.color = 'rgb(0, 160, 255)'
-                        }
-                        if (group_link.innerText === 'Рославцев и Сидоренко'|| group_link.innerText === 'IT Деев') {
-                            group_link.style.color = 'rgb(200, 0, 0)'
-                        }
-                        if (group_link.innerText === 'Бороздин и Литвиненко'|| group_link.innerText === 'IT Крутихин') {
-                            group_link.style.color = 'rgb(0, 200, 0)'
-                        }
-                    }
-
-                }
-
-
-
-
-                window.onload = function() {
-
-                    let el = document.getElementById('datepick');
-                    el.addEventListener("click", delay);
-
-                    let elem = document.getElementsByClassName('datepicker--nav')[0]
-                    elem.addEventListener("click", init_colors)
-
-                }
-
-
-
-                let els = document.getElementsByClassName('datepicker--cell.datepicker--cell-month.-focus-')[0]
-
-                $(els).ready(function() {
-                    delay_months()
-
-                })
-
-                function delay_months() {
-                   if (typeof els !== 'undefined') {
-                       els.addEventListener("click", get_months);
-                   }
-                }
-
-                function get_months() {
-                }
-
-                function delay() {
-                setTimeout(send_date, 0.5);
-                }
-
-                function send_date() {
-                    document.forms['sdate'].submit()
-                }
-
-                $(document).ready(function(){
-                  $('body').on('click', '*', function(e){
-                    if ($(this).hasClass('datepicker--cell.datepicker--cell-month.-focus-')) {
-                    }
-                    e.stopPropagation();
-                  });
-                });
-
-                </script>
-
-                <div class="selector-container">
-
-                        {% if multirole == True %}
-                                <br>
-                                <div class="group_select">
-                                        <ul id="group" style="list-style-type:none">
-
-                                            {% for department in user_departments %}
-
-                                                <li><a href={% url 'фильтр по отделу' department.id %}>{{ department.name }}</a></li>
-
-                                            {% endfor %}
-                                        </ul>
-                                </div>
-                        {% endif %}
-                            <div class="groups_authors_select">
-
-                                {% if multirole == True %}
-
-
-
-                                {% else %}
-
-
-                                    <ul id="group_author" style="list-style-type:none; padding-top: 8%;">
-
-                                        {% for group_author in groups_authors_list %}
-
-                                            <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
-
-                                        {% endfor %}
-                                    </ul>
-
-
-
-                                {% endif %}
-
-
-                            </div>
-
-                       <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
+                <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
                             <input name="q" type="text" id="box" placeholder="В тексте...">
                             <input type="submit" class="btn btn-success" value="Найти" style="margin-left:10%">
                         </form>
 
-                </div>
-
             </div>
+
+        </div>
     </div>
+
+    <script type="application/javascript">
+
+                        document.addEventListener("DOMContentLoaded", init_colors)
+
+                        function init_colors() {
+                            let cells = document.getElementsByClassName('datepicker--cell-day')
+
+                            for (let i = 0; i < cells.length; i++) {
+                                let day = cells[i].getAttribute('data-date')
+                                let month = cells[i].getAttribute('data-month')
+                                month = Number(month) + 1
+                                month = String(month)
+                                if (month.length < 2) {
+                                    month = '0' + month
+                                }
+                                if (day.length < 2) {
+                                    day = '0' + day
+                                }
+                                let year = cells[i].getAttribute('data-year')
+                                let check_date = year + '-' + month + '-' + day
+
+                                let shift_dates_list = {{ shifts_dates|safe }};
+
+                                if (check_date in shift_dates_list) {
+                                    let shift = shift_dates_list[check_date]
+                                    color_date(cells[i], shift)
+
+                                }
+
+                                let sched_dates_list = {{ scheduled_dates_dict|safe }};
+
+                                if (check_date in sched_dates_list) {
+                                    scheduled_dates(cells[i])
+                                }
+
+                                let task_date = "{{ task_date }}";
+
+                                if (task_date in sched_dates_list) {
+                                    let task = sched_dates_list[task_date]
+                                    show_task(task_date, task)
+                                }
+
+                            }
+
+                            groups_colors()
+
+                        }
+
+                        function color_date(cell, shift) {
+                            if (shift === 'shift_4_dates') {
+                                    cell.style.color = 'rgb(0, 200, 0)' ;
+                                }
+                            if (shift === 'shift_3_dates') {
+                                    cell.style.color = 'rgb(200, 0, 0)';
+                                }
+                            if (shift === 'shift_2_dates') {
+                                    cell.style.color =  'rgb(0, 160, 255)';
+                                }
+                            if (shift === 'shift_1_dates') {
+                                    cell.style.color = 'rgb(200, 200, 0)';
+                                }
+                        }
+
+                        function scheduled_dates(cell) {
+                            cell.style.border = '1px solid';
+                            cell.style.borderColor = 'red';
+                            cell.style.borderRadius = '20%';
+                            cell.style.bor = 'solid';
+                        }
+
+                        function show_task(task_date, task) {
+                            let task_area = document.getElementById('task_area')
+                            let tasks = document.getElementById('tasks')
+                            tasks.style.display = 'inline-block';
+                            task_area.innerText = task;
+                        }
+
+                        function groups_colors() {
+                            let groups = document.querySelectorAll('ul#group_author > li')
+
+                            for (let i = 0; i < groups.length; i++) {
+                                let group_link = groups[i].querySelector('a')
+                                if (group_link.innerText === 'Астахов и Козлов' || group_link.innerText === 'IT Захаров')  {
+                                    group_link.style.color = 'rgb(200, 200, 0)'
+                                }
+                                if (group_link.innerText === 'Черпаков и Долгов'|| group_link.innerText === 'IT Дмитриевский') {
+                                    group_link.style.color = 'rgb(0, 160, 255)'
+                                }
+                                if (group_link.innerText === 'Рославцев и Сидоренко'|| group_link.innerText === 'IT Деев') {
+                                    group_link.style.color = 'rgb(200, 0, 0)'
+                                }
+                                if (group_link.innerText === 'Бороздин и Литвиненко'|| group_link.innerText === 'IT Крутихин') {
+                                    group_link.style.color = 'rgb(0, 200, 0)'
+                                }
+                            }
+
+                        }
+
+
+
+
+                        window.onload = function() {
+
+                            let el = document.getElementById('datepick');
+                            el.addEventListener("click", delay);
+
+                            let elem = document.getElementsByClassName('datepicker--nav')[0]
+                            elem.addEventListener("click", init_colors)
+
+                        }
+
+
+
+                        let els = document.getElementsByClassName('datepicker--cell.datepicker--cell-month.-focus-')[0]
+
+                        $(els).ready(function() {
+                            delay_months()
+
+                        })
+
+                        function delay_months() {
+                           if (typeof els !== 'undefined') {
+                               els.addEventListener("click", get_months);
+                           }
+                        }
+
+                        function get_months() {
+                        }
+
+                        function delay() {
+                        setTimeout(send_date, 0.5);
+                        }
+
+                        function send_date() {
+                            document.forms['sdate'].submit()
+                        }
+
+                        $(document).ready(function(){
+                          $('body').on('click', '*', function(e){
+                            if ($(this).hasClass('datepicker--cell.datepicker--cell-month.-focus-')) {
+                            }
+                            e.stopPropagation();
+                          });
+                        });
+
+                        </script>
 
     <div class="content" style="background: fixed">
 

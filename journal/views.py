@@ -204,21 +204,16 @@ def get_task_dates(start_date, regularity, week_days):
 
     delta = None
 
-    print(type(start_date))
-
     end_date = datetime.date(2030, 6, 15)
 
     if week_days:
         for date in week_days:
             date = int(date)
             cycle_start_date = start_date + relativedelta(weekday=date)
-            print(cycle_start_date)
             delta = relativedelta(weeks=1)
             while cycle_start_date <= end_date:
                 task_dates.append(str(cycle_start_date))
                 cycle_start_date += delta
-            print(cycle_start_date)
-            print(len(task_dates))
         return task_dates
 
     if regularity == 'week':
@@ -408,9 +403,11 @@ def rec_list(request, *device):
 
     shifts_dates = shifts_match()
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments)
+    scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments).distinct()
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
+
+    task_date = str(datetime.date.today())
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -431,7 +428,7 @@ def rec_list(request, *device):
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'device': device, 'objectives': objectives,
-               'user_is_admin': user_is_admin, }
+               'user_is_admin': user_is_admin, 'task_date': task_date}
 
     return render(request, 'rec_list.html', context)
 
@@ -635,18 +632,20 @@ def sort_by_group(request, group_id):
     else:
         device = 'pc'
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
+    task_date = str(datetime.date.today())
+
+    scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments).distinct()
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
-    objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
+    objectives = Objectives.objects.filter(departments__in=user_departments).order_by('-created_date')
 
 
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
-               'shifts_dates': json.dumps(shifts_dates), 'device': device,
+               'shifts_dates': json.dumps(shifts_dates), 'device': device, 'task_date': task_date,
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives':objectives}
 
     return render(request, 'search_result.html', context)
@@ -717,7 +716,6 @@ def find_by_text(request, *args, **kwargs):
 
     input_text = request.GET.get('q')
 
-
     user_departments_list = []
 
     for group in user_groups:
@@ -726,7 +724,6 @@ def find_by_text(request, *args, **kwargs):
 
         for dep_objects in deps:
             user_departments_list.append(dep_objects.name)
-
 
     if len(user_departments_list) > 1:
         multirole = True
@@ -772,19 +769,20 @@ def find_by_text(request, *args, **kwargs):
         except:
             multirole = True
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
+    task_date = str(datetime.date.today())
+
+    scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments).distinct()
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
-    objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
-
+    objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
 
     context = {'comments': comments, 'current_user': current_user, 'multirole': multirole,
                'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
-               'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates),
+               'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates), 'task_date': task_date,
                'groups_authors_list': groups_authors_list, 'device': device, 'user_departments': user_departments,
                'selected_department': selected_department, 'scheduled_dates_dict': json.dumps(scheduled_dates_dict),
-               'objectives':objectives}
+               'objectives': objectives}
 
     return render(request, 'search_result.html', context)
 
@@ -813,6 +811,11 @@ def sort_by_department(request, department_id):
 
     match_authors_list = []
 
+    multirole = False
+
+    if len(user_departments_list) > 1:
+        multirole = True
+
     user_departments = Department.objects.filter(groups__in=user_groups)
 
     for dep in user_departments:
@@ -839,17 +842,22 @@ def sort_by_department(request, department_id):
     else:
         device = 'pc'
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
+    task_date = str(datetime.date.today())
+
+    scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments).distinct()
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
-    objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
+    objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
 
     context = {'all_records': records, 'comments': comments, 'groups_authors_list': groups_authors_list,
                'current_user': current_user, 'roles': roles, 'user_departments': user_departments,
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
-               'device': device, 'selected_department': selected_department,
-               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives': objectives}
+               'device': device, 'selected_department': selected_department, 'multirole': multirole,
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives': objectives,
+               'task_date': task_date}
+
+
 
     return render(request, 'search_result.html', context)
 
@@ -1114,8 +1122,5 @@ def update_record_from_note():
 def finalize_note():
     updated_notes = Notes.objects.filter(status='updated')
     for note in updated_notes:
-        print(note.author)
-        print('message '+note.message)
         note.to_record = None
-        print('to_record '+str(note.to_record))
     updated_notes.delete()
