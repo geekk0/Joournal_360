@@ -405,7 +405,7 @@
         </div>
 
         {% if user_is_admin == False %}
-            <div id="add_report">
+            <div id="add_report" style="display: inline-block;">
                     <p style="font-size: 20pt">Добавить отчет +</p>
                     <form name="new_report" style=""
                                 action="{% url 'добавить отчет' %}" method="get">
@@ -472,12 +472,13 @@
                 stickers.style.width = '70%';
             }
 
-
             document.addEventListener("DOMContentLoaded", () => {
-               let add_obj = document.getElementById('add_report')
-                add_obj.addEventListener("mouseenter", add_report)
-                add_obj.addEventListener("mouseleave", leave)
-            })
+                    let add_obj = document.getElementById('add_report')
+                    if (add_obj !== null) {
+                        add_obj.addEventListener("mouseenter", add_report)
+                        add_obj.addEventListener("mouseleave", leave)
+                        }
+                })
 
             function add_report(e) {
                 let record_text = document.getElementById('report_text')

@@ -174,13 +174,21 @@ class AddScheduledTask(View):
             new_scheduled_task.text = form.cleaned_data['text']
             new_scheduled_task.created = timezone.now()
             new_scheduled_task.author = request.user
-            new_scheduled_task.department = form.cleaned_data['department']
+
+            """department_to_create = form.cleaned_data['departments'][0]"""
+            departments = form.cleaned_data['departments']
 
             week_days = form.cleaned_data['week_days']
 
             dates = get_task_dates(form.cleaned_data['start_date'], form.cleaned_data['regularity'], week_days)
 
             new_scheduled_task.date_list = dates
+
+            new_scheduled_task.save()
+
+            for dep in departments:
+
+                new_scheduled_task.departments.add(dep)
 
             new_scheduled_task.save()
 
@@ -495,7 +503,7 @@ def find_by_date(request):
     user_departments = Department.objects.filter(groups__in=user_groups)
 
     for dep in user_departments:
-        for group in Group.objects.filter(departments=dep):
+        for group in Group.objects.filter(department=dep):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
 
@@ -546,19 +554,18 @@ def find_by_date(request):
     else:
         device = 'pc'
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(department__in=user_departments)
+    scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments).distinct()
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
-
-    objectives = Objectives.objects.filter(department__in=user_departments).order_by('-created_date')
+    objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
 
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
                'shifts_dates': json.dumps(shifts_dates), 'device': device, 'selected_department': selected_department,
-               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'task_date':task_date,
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'task_date': task_date,
                'objectives': objectives}
 
     user_agent = request.META['HTTP_USER_AGENT']

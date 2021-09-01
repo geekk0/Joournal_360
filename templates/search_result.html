@@ -191,7 +191,6 @@
 
                 function show_task(task_date, task) {
                     let task_area = document.getElementById('task_area')
-                    console.log(task)
                     let tasks = document.getElementById('tasks')
                     tasks.style.display = 'inline-block';
                     task_area.innerText = task;
@@ -457,8 +456,10 @@
 
             document.addEventListener("DOMContentLoaded", () => {
                let add_obj = document.getElementById('add_report')
-                add_obj.addEventListener("mouseenter", add_report)
-                add_obj.addEventListener("mouseleave", leave)
+                    if (add_obj !== null) {
+                        add_obj.addEventListener("mouseenter", add_report)
+                        add_obj.addEventListener("mouseleave", leave)
+                        }
             })
 
             function add_report(e) {
