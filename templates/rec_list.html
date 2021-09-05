@@ -213,7 +213,6 @@
                                     cells[i].style.background =  'cyan';
                                 }
 
-                                console.log(check_date.className)
 
 
 
@@ -421,11 +420,22 @@
                     <p style="font-size: 20pt">Добавить отчет +</p>
                     <form name="new_report" style=""
                                 action="{% url 'добавить отчет' %}" method="get">
-                        <textarea oninput="send_report()" style="" id="report_text" name="new_report"
+                        <textarea oninput="send_report()" class="note_text" style="" id="report_text" name="new_report"
                                 placeholder="Текст отчета..." style="border: 2px solid white;width:30%;">{{ notes.message }}</textarea>
                     </form>
 
+                    <div id="tags" class="tags">
+                        <div id="tags_layout">
+                            {% for tag in tags %}
+
+                                <button value="{{ tag.text }}" id="tagname" onclick="extend_report(value)" >{{ tag.name }} </button>
+
+                            {% endfor %}
+                        </div>
+                    </div>
             </div>
+
+
 
         {% endif %}
 
@@ -434,6 +444,15 @@
             function send_report() {
                 document.forms['new_report'].submit()
             }
+
+            function extend_report(text) {
+
+                let current_note = document.getElementById('report_text')
+                    current_note.value = String(current_note.value+'\n'+text)
+
+            }
+
+
 
             document.addEventListener("DOMContentLoaded", () => {
                 let add_obj = document.getElementById('add_objective')
@@ -495,11 +514,15 @@
             function add_report(e) {
                 let record_text = document.getElementById('report_text')
                 record_text.style.display = 'inline-block';
+                let tags = document.getElementById('tags')
+                tags.style.display = 'inline-block'
             }
 
             function leave(e) {
                 let record_text = document.getElementById('report_text')
                 record_text.style.display = 'none';
+                let tags = document.getElementById('tags')
+                tags.style.display = 'none'
 
 
             }

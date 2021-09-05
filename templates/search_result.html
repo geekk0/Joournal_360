@@ -413,7 +413,7 @@
                     <form name="new_report" style=""
                                 action="{% url 'добавить отчет' %}" method="get">
                         <textarea oninput="send_report()" style="" id="report_text" name="new_report"
-                                placeholder="Текст отчета..." style="border: 2px solid white;width:30%;">{{ notes.message }}</textarea>
+                                placeholder="Текст отчета..." style="resize:vertical;border: 2px solid white;width:30%;">{{ notes.message }}</textarea>
                     </form>
 
             </div>

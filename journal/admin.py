@@ -1,7 +1,8 @@
 from django.contrib import admin
 from django.utils.safestring import mark_safe
 
-from .models import Record, Comments, Department, Notes, Objectives, ObjectivesDone, ObjectivesStatus, ScheduledTasks
+from .models import Record, Comments, Department, Notes, Objectives, ObjectivesDone, ObjectivesStatus, ScheduledTasks, \
+    RecordTags
 
 
 """class ImagesInline(admin.TabularInline):
@@ -74,6 +75,13 @@ class AdminObjectivesDone(admin.ModelAdmin):
 
     list_filter = ('departments', 'author', 'name')
 
+class AdminRecordTags(admin.ModelAdmin):
+
+    fields = ['name', 'departments', 'text']
+
+    list_filter = ['departments']
+
+
 """admin.site.register(EngNotes, EngNotesAdmin)
 admin.site.register(DirNotes, DirNotesAdmin)
 admin.site.register(EngRec, EngRecAdmin)
@@ -87,5 +95,7 @@ admin.site.register(Objectives, AdminObjectives)
 admin.site.register(ObjectivesDone, AdminObjectivesDone)
 admin.site.register(ObjectivesStatus)
 admin.site.register(ScheduledTasks)
+admin.site.register(RecordTags, AdminRecordTags)
+
 
 

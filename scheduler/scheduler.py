@@ -32,9 +32,9 @@ def start():
     scheduler = BackgroundScheduler()
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
-    start_publisher = datetime.strptime('Aug 31 2021  1:52PM', '%b %d %Y %I:%M%p')
-    start_updater = datetime.strptime('Aug 31 2021  1:53PM', '%b %d %Y %I:%M%p')
-    start_finalizer = datetime.strptime('Aug 31 2021  1:54PM', '%b %d %Y %I:%M%p')
+    start_publisher = datetime.strptime('Aug 31 2022  1:52PM', '%b %d %Y %I:%M%p')
+    start_updater = datetime.strptime('Aug 31 2022  1:53PM', '%b %d %Y %I:%M%p')
+    start_finalizer = datetime.strptime('Aug 31 2022  1:54PM', '%b %d %Y %I:%M%p')
 
     scheduler.add_job(publisher, 'interval', minutes=5, start_date=start_publisher, name='publish note',
                       jobstore='default')

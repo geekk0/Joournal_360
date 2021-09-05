@@ -243,9 +243,19 @@ class ScheduledTasks(models.Model):
         verbose_name_plural = 'Запланированные задачи'
 
 
+class RecordTags(models.Model):
+    name = models.CharField(max_length=64, null=True, blank=True, verbose_name='Название категории')
+    text = models.TextField(blank=True, null=True, verbose_name='Что вставляется в отчет')
+    departments = models.ManyToManyField(Department, blank=True, verbose_name='Относится к отделу:')
 
+    def __str__(self):
+        return str(self.name)
 
+    def publish(self):
+        self.created = timezone.now()
+        self.save()
 
-
-
+    class Meta:
+        verbose_name = 'Категория для отчета'
+        verbose_name_plural = 'Категории для отчета'
 

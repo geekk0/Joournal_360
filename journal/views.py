@@ -24,7 +24,7 @@ from itertools import *
 from operator import *
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
-    ScheduledTasks
+    ScheduledTasks, RecordTags
 from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm
 
 
@@ -409,6 +409,8 @@ def rec_list(request, *device):
 
     task_date = str(datetime.date.today())
 
+    tags = RecordTags.objects.filter(departments__in=user_departments).distinct()
+
     user_agent = request.META['HTTP_USER_AGENT']
 
     if 'Mobile' in user_agent:
@@ -428,7 +430,7 @@ def rec_list(request, *device):
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'device': device, 'objectives': objectives,
-               'user_is_admin': user_is_admin, 'task_date': task_date}
+               'user_is_admin': user_is_admin, 'task_date': task_date, 'tags': tags}
 
     return render(request, 'rec_list.html', context)
 
@@ -1123,3 +1125,5 @@ def finalize_note():
     for note in updated_notes:
         note.to_record = None
     updated_notes.delete()
+
+
