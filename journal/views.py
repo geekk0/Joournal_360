@@ -512,7 +512,6 @@ def find_by_date(request):
     if date:
         date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
 
-
     else:
         return HttpResponseRedirect('/')
 
