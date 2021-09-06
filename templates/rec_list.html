@@ -89,7 +89,7 @@
 
                     {% if device == 'pc' %}
                         <div class="reset_password">
-                            <a href="{% url 'сменить пароль' %}">Сменить пароль</a>
+                            <!--<a href="{% url 'сменить пароль' %}">Сменить пароль</a>-->
                         </div>
                     {% endif %}
 
@@ -102,7 +102,7 @@
                                 {% else %}
 
                                     <span><p id="username">{{ current_user }}</p></span>
-
+                                    &nbsp<a href="{% url 'сменить пароль' %}">Сменить пароль</a>
                                     <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
                                     ></a>
                                 {% endif %}
