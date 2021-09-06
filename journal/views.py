@@ -372,6 +372,7 @@ def rec_list(request, *device):
 
     user_departments_list = []
 
+
     for group in user_groups:
 
         deps = Department.objects.filter(groups=group)
@@ -420,6 +421,13 @@ def rec_list(request, *device):
 
     objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
 
+    objectives_sliced = objectives[:5]
+
+    objectives_full = False
+
+    if len(objectives) > 5:
+        objectives_full = True
+
     if request.user.has_perm('journal.change_record'):
         user_is_admin = True
     else:
@@ -430,7 +438,8 @@ def rec_list(request, *device):
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'device': device, 'objectives': objectives,
-               'user_is_admin': user_is_admin, 'task_date': task_date, 'tags': tags}
+               'user_is_admin': user_is_admin, 'task_date': task_date, 'tags': tags, 'objectives_full': objectives_full,
+               'objectives_sliced': objectives_sliced}
 
     return render(request, 'rec_list.html', context)
 
@@ -558,13 +567,20 @@ def find_by_date(request):
 
     objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
 
+    objectives_sliced = objectives[:5]
+
+    objectives_full = False
+
+    if len(objectives) > 5:
+        objectives_full = True
+
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
                'shifts_dates': json.dumps(shifts_dates), 'device': device, 'selected_department': selected_department,
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'task_date': task_date,
-               'objectives': objectives}
+               'objectives_full': objectives_full, 'objectives': objectives, 'objectives_sliced': objectives_sliced}
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -778,12 +794,19 @@ def find_by_text(request, *args, **kwargs):
 
     objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
 
+    objectives_sliced = objectives[:5]
+
+    objectives_full = False
+
+    if len(objectives) > 5:
+        objectives_full = True
+
     context = {'comments': comments, 'current_user': current_user, 'multirole': multirole,
                'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
                'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates), 'task_date': task_date,
                'groups_authors_list': groups_authors_list, 'device': device, 'user_departments': user_departments,
                'selected_department': selected_department, 'scheduled_dates_dict': json.dumps(scheduled_dates_dict),
-               'objectives': objectives}
+               'objectives': objectives, 'objectives_full': objectives_full, 'objectives_sliced': objectives_sliced }
 
     return render(request, 'search_result.html', context)
 
@@ -797,6 +820,8 @@ def sort_by_department(request, department_id):
     author_groups_list = Group.objects.filter(department=department_id)
 
     selected_department = department_id
+
+    selected_dep = Department.objects.get(id=selected_department)
 
     authors_list = User.objects.filter(groups__in=author_groups_list)
 
@@ -831,7 +856,7 @@ def sort_by_department(request, department_id):
         for dep_objects in deps:
             user_departments_list.append(dep_objects.name)
 
-    groups_authors_list = Group.objects.filter(department=department_id).distinct(). \
+    groups_authors_list = Group.objects.filter(department=selected_department).distinct(). \
         exclude(name__in=admin_groups)
 
     comments = Comments.objects.all().order_by('-created')
@@ -849,7 +874,7 @@ def sort_by_department(request, department_id):
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
-    objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
+    objectives = Objectives.objects.filter(departments=selected_dep).distinct().order_by('-created_date')
 
     context = {'all_records': records, 'comments': comments, 'groups_authors_list': groups_authors_list,
                'current_user': current_user, 'roles': roles, 'user_departments': user_departments,
@@ -857,8 +882,6 @@ def sort_by_department(request, department_id):
                'device': device, 'selected_department': selected_department, 'multirole': multirole,
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives': objectives,
                'task_date': task_date}
-
-
 
     return render(request, 'search_result.html', context)
 
@@ -975,20 +998,29 @@ def add_objective(request):
 
     departments_id_list = request.GET.getlist('department')
 
-    departments = Department.objects.filter(id__in=departments_id_list)
+    if len(departments_id_list) == 0:
 
-    department_to_create = Department.objects.get(id=departments_id_list[0])
+        user_groups = Group.objects.filter(user=request.user)
+
+        departments = Department.objects.filter(groups__in=user_groups)
+
+    else:
+        departments = Department.objects.filter(id__in=departments_id_list)
+
+    """department_to_create = Department.objects.get(id=departments_id_list[0])"""
 
     author = request.user
 
     created_date = timezone.now()
 
-    if Objectives.objects.all().count() < 5:
-        new_objective = Objectives.objects.create(author=author, created_date=created_date, name=objective_name)
+    for dep in departments:
 
-        new_objective.departments.set(departments)
+        if Objectives.objects.filter(departments=dep).count() < 5:
+            new_objective = Objectives.objects.create(author=author, created_date=created_date, name=objective_name)
 
-        new_objective.save()
+            new_objective.departments.add(dep)
+
+            new_objective.save()
 
     return HttpResponseRedirect('/')
 
