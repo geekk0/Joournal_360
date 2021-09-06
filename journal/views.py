@@ -7,7 +7,7 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
 from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect, HttpResponse
-from django.shortcuts import render
+from django.shortcuts import render, redirect
 from django.utils import timezone
 from django.views.generic import DetailView, View
 from django.views.generic import TemplateView, ListView
@@ -17,6 +17,7 @@ from django.contrib.auth.decorators import login_required
 from django import forms
 from dateutil.relativedelta import relativedelta
 from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
+from django.contrib import messages
 
 
 
@@ -1018,9 +1019,18 @@ def add_objective(request):
         if Objectives.objects.filter(departments=dep).count() < 5:
             new_objective = Objectives.objects.create(author=author, created_date=created_date, name=objective_name)
 
-            new_objective.departments.add(dep)
+            if Objectives.objects.filter(name=objective_name).count() > 1:
 
-            new_objective.save()
+                new_objective.delete()
+                created_objective = Objectives.objects.get(name=objective_name)
+                created_objective.departments.add(dep)
+            else:
+
+                new_objective.departments.add(dep)
+                new_objective.save()
+        else:
+            messages.warning(request, "Задание не было создано - превышено количество заданий для отдела: "+str(dep))
+            return HttpResponseRedirect('/')
 
     return HttpResponseRedirect('/')
 

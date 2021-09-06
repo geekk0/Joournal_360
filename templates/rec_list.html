@@ -334,9 +334,22 @@
 
     <div class="content" style="background: fixed">
 
-        <div id="add_objective">
+        {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li style="width:max-content;display:block;font-size: 14pt;color:white;margin-top:3%;
+                background: #a21919;margin-left:auto; margin-right:auto;overflow: visible;padding: 0.3%;"
+                class="{{ message.tags }}">
+                {{ message|safe }}
+                <a href="" class="close">✖</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
+
+        <div id="add_objective" style="margin-top: 2%;">
                 <p id="label">Добавить задачу<br> (максимум 5 задач для отдела)</p>
-                <form name="new_objective" style="visibility: hidden"
+                <form name="new_objective" style="visibility: hidden;"
                             action="{% url 'добавить задачу' %}" method="get">
                     <label for="input_name"></label>
                     <textarea style="border-radius: 15px;height:140px;display: inline-block" id="input_name" name="new_objective_name"
@@ -569,6 +582,11 @@
                         add_obj.addEventListener("mouseenter", add_report)
                         add_obj.addEventListener("mouseleave", leave)
                         }
+                    let messages = document.getElementsByClassName('messages')
+                    if (messages.length > 0) {
+                        let add_objective = document.getElementById('add_objective')
+                        add_objective.style.marginTop = '1.2%'
+                    }
                 })
 
             function add_report(e) {
