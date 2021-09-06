@@ -549,6 +549,13 @@
                 button.style.visibility = 'visible';
                 input.style.visibility = 'visible';
                 input.classList.add('add_object_active')
+
+                let messages = document.getElementsByClassName('messages')
+                    if (messages.length > 0) {
+                        input.style.top = '24%'
+                        dep.style.top = '28%'
+                        button.style.top = '28%'
+                    }
                 let stickers = document.getElementById('objectives')
                 stickers.style.width = '35%';
 
