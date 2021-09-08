@@ -574,13 +574,21 @@ def find_by_date(request):
     if len(objectives) > 5:
         objectives_full = True
 
+    if request.user.has_perm('journal.change_record'):
+        user_is_admin = True
+    else:
+        user_is_admin = False
+
+
+
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
                'shifts_dates': json.dumps(shifts_dates), 'device': device, 'selected_department': selected_department,
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'task_date': task_date,
-               'objectives_full': objectives_full, 'objectives': objectives, 'objectives_sliced': objectives_sliced}
+               'objectives_full': objectives_full, 'objectives': objectives, 'objectives_sliced': objectives_sliced,
+               'user_is_admin': user_is_admin}
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -649,6 +657,11 @@ def sort_by_group(request, group_id):
     else:
         device = 'pc'
 
+    if request.user.has_perm('journal.change_record'):
+        user_is_admin = True
+    else:
+        user_is_admin = False
+
     task_date = str(datetime.date.today())
 
     scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments).distinct()
@@ -663,7 +676,8 @@ def sort_by_group(request, group_id):
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
                'shifts_dates': json.dumps(shifts_dates), 'device': device, 'task_date': task_date,
-               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives':objectives}
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives':objectives,
+               'user_is_admin': user_is_admin}
 
     return render(request, 'search_result.html', context)
 
@@ -801,12 +815,18 @@ def find_by_text(request, *args, **kwargs):
     if len(objectives) > 5:
         objectives_full = True
 
+    if request.user.has_perm('journal.change_record'):
+        user_is_admin = True
+    else:
+        user_is_admin = False
+
     context = {'comments': comments, 'current_user': current_user, 'multirole': multirole,
                'group_list': user_groups, 'author_list': match_authors_list, 'search_query': search_query,
                'all_records': all_records, 'shifts_dates': json.dumps(shifts_dates), 'task_date': task_date,
                'groups_authors_list': groups_authors_list, 'device': device, 'user_departments': user_departments,
                'selected_department': selected_department, 'scheduled_dates_dict': json.dumps(scheduled_dates_dict),
-               'objectives': objectives, 'objectives_full': objectives_full, 'objectives_sliced': objectives_sliced }
+               'objectives': objectives, 'objectives_full': objectives_full, 'objectives_sliced': objectives_sliced,
+               'user_is_admin': user_is_admin }
 
     return render(request, 'search_result.html', context)
 
@@ -876,12 +896,17 @@ def sort_by_department(request, department_id):
 
     objectives = Objectives.objects.filter(departments=selected_dep).distinct().order_by('-created_date')
 
+    if request.user.has_perm('journal.change_record'):
+        user_is_admin = True
+    else:
+        user_is_admin = False
+
     context = {'all_records': records, 'comments': comments, 'groups_authors_list': groups_authors_list,
                'current_user': current_user, 'roles': roles, 'user_departments': user_departments,
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'device': device, 'selected_department': selected_department, 'multirole': multirole,
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives': objectives,
-               'task_date': task_date}
+               'task_date': task_date, 'user_is_admin': user_is_admin}
 
     return render(request, 'search_result.html', context)
 
