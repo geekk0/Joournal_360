@@ -32,15 +32,15 @@ def start():
     scheduler = BackgroundScheduler()
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
-    start_publisher = datetime.strptime('Aug 31 2022  1:52PM', '%b %d %Y %I:%M%p')
-    start_updater = datetime.strptime('Aug 31 2022  1:53PM', '%b %d %Y %I:%M%p')
-    start_finalizer = datetime.strptime('Aug 31 2022  1:54PM', '%b %d %Y %I:%M%p')
+    start_publisher = datetime.strptime('Sep 08 2022  5:28PM', '%b %d %Y %I:%M%p')
+    start_updater = datetime.strptime('Sep 08 2022  5:29PM', '%b %d %Y %I:%M%p')
+    start_finalizer = datetime.strptime('Sep 08 2022  5:30PM', '%b %d %Y %I:%M%p')
 
-    scheduler.add_job(publisher, 'interval', minutes=5, start_date=start_publisher, name='publish note',
+    scheduler.add_job(publisher, 'interval', minutes=50, start_date=start_publisher, name='publish note',
                       jobstore='default')
-    scheduler.add_job(updater, 'interval', minutes=5, start_date=start_updater, name='update record',
+    scheduler.add_job(updater, 'interval', minutes=50, start_date=start_updater, name='update record',
                       jobstore='default')
-    scheduler.add_job(finalizer, 'interval', minutes=5, start_date=start_finalizer, name='finalize note',
+    scheduler.add_job(finalizer, 'interval', minutes=50, start_date=start_finalizer, name='finalize note',
                       jobstore='default')
 
     register_events(scheduler)

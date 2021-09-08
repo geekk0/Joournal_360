@@ -100,7 +100,7 @@
                                 {% if device == 'mobile' %}
                                     <span><p id="username">{{ current_user }}</p></span>
                                 {% else %}
-
+                                    <a href="{% url 'отправить email' %}">Отправить Email</a>
                                     <span><p id="username">{{ current_user }}</p></span>
                                     &nbsp<a href="{% url 'сменить пароль' %}">Сменить пароль</a>
                                     <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"

@@ -1,7 +1,10 @@
 import itertools
 import datetime
 import json
-
+import smtplib
+import ssl
+from email.header import Header
+from email.utils import formataddr
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
@@ -19,6 +22,7 @@ from dateutil.relativedelta import relativedelta
 from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
 from django.contrib import messages
 from django.core.mail import send_mail
+from email.message import EmailMessage
 from itertools import *
 from operator import *
 
@@ -1186,6 +1190,7 @@ def update_record_from_note():
         note.save()
 
 
+
 def finalize_note():
     updated_notes = Notes.objects.filter(status='updated')
     for note in updated_notes:
@@ -1193,4 +1198,62 @@ def finalize_note():
     updated_notes.delete()
 
 
+def send_email(*args, **kwargs):
 
+    """send_mail('Тема тестового письма', 'Текст тестового письма', from_email='gekk0dw@gmail.com',
+              recipient_list=['e.epov@360tv.ru'], fail_silently=False, auth_user='gekk0dw@gmail.com',
+              auth_password='Frq93AdfsJVjHjTA')
+
+    updated_notes = Notes.objects.filter(status='updated')
+    for note in updated_notes:
+        record = Record.objects.create(notes=note, author=note.author)
+        record.text = note.message
+
+        date = (datetime.datetime.strptime(str(record.created_date.date()), "%Y-%m-%d").strftime("%d.%m.%Y"))
+
+        department = Department.objects.filter(groups__in=Group.objects.filter(user=record.author))
+
+        group = Group.objects.get(user=record.author)
+
+        send_mail(subject='Отчет за '+date, message=record.text+'\n'+'\n'+'\n'+'С уважением,'+'\n'+
+                    record.author.first_name+'\n'+record.author.last_name+'\n'+'Отдел: '+str(department[0].name)+'\n'+
+                                                    'Смена: '+str(group),
+                  from_email='gekk0dw@gmail.com', recipient_list=['o.litvinenko@360tv.ru'], fail_silently=False,
+                  auth_user='gekk0dw@gmail.com', auth_password='Frq93AdfsJVjHjTA')"""
+
+    return HttpResponseRedirect('/')
+
+
+def send_email_with_smptlib(*args, **kwargs):
+    updated_notes = Notes.objects.filter(status='updated')
+    for note in updated_notes:
+
+        record = Record.objects.create(notes=note, author=note.author)
+
+        record.text = note.message
+
+        date = (datetime.datetime.strptime(str(record.created_date.date()), "%Y-%m-%d").strftime("%d.%m.%Y"))
+
+        department = Department.objects.filter(groups__in=Group.objects.filter(user=record.author))
+
+        group = Group.objects.get(user=record.author)
+
+        hostname = "smtp.office365.com"
+        username = "journal360@outlook.com"
+        password = "3P4cnprkBzWxB9zK"
+
+        msg = EmailMessage()
+        msg.set_content(record.text+'\n'+'\n'+'\n'+'С уважением,'+'\n'+record.author.first_name+'\n'+
+                        record.author.last_name+'\n'+'Отдел: '+str(department[0].name)+'\n'+'Смена: '+str(group))
+
+        msg['Subject'] = 'Отчет за '+date
+        msg['From'] = formataddr(('Журнал 360', 'journal360@outlook.com'))
+        msg['To'] = ["o.litvinenko@360tv.ru", 'litvinenkostudy@gmail.com']
+
+        server = smtplib.SMTP(hostname, 587)
+        server.starttls(context=ssl.create_default_context())  # Secure the connection
+        server.login(username, password)
+        server.send_message(msg)
+        server.quit()
+
+    return HttpResponseRedirect('/')
