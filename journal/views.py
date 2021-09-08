@@ -1168,7 +1168,4 @@ def finalize_note():
     updated_notes.delete()
 
 
-def send_email(*args, **kwargs):
-    send_mail('Тема тестового письма', 'Текст тестового письма', None, None, fail_silently=False)
 
-    return HttpResponseRedirect('/')
