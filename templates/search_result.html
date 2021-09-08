@@ -375,6 +375,7 @@
                             <button  class="btn btn-success" onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
                         </div>
                     {% endif %}
+
                     <div class="objective_name">
                         <p style="display:none ">{{ objective.get_status_count }}</p>
                         {% if objective.status_count > 0 %}

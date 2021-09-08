@@ -96,6 +96,7 @@
 
 
                     <div class="logout">
+                        <a href="{% url 'отправить email' %}">Отправить Email</a>
                         {% if request.user.is_authenticated %}
                                 {% if device == 'mobile' %}
                                     <span><p id="username">{{ current_user }}</p></span>
@@ -488,7 +489,6 @@
 
         </div>
 
-        {% if user_is_admin == False %}
             <div id="add_report" style="display: inline-block;">
                     <p style="font-size: 20pt">Добавить отчет +</p>
                     <form name="new_report" style=""
@@ -510,7 +510,6 @@
 
 
 
-        {% endif %}
 
         <script type="text/javascript">
 

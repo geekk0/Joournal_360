@@ -18,11 +18,10 @@ from django import forms
 from dateutil.relativedelta import relativedelta
 from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
 from django.contrib import messages
-
-
-
+from django.core.mail import send_mail
 from itertools import *
 from operator import *
+
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
     ScheduledTasks, RecordTags
@@ -1169,3 +1168,7 @@ def finalize_note():
     updated_notes.delete()
 
 
+def send_email(*args, **kwargs):
+    send_mail('Тема тестового письма', 'Текст тестового письма', None, None, fail_silently=False)
+
+    return HttpResponseRedirect('/')
