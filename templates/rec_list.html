@@ -96,7 +96,6 @@
 
 
                     <div class="logout">
-                        <a href="{% url 'отправить email' %}">Отправить Email</a>
                         {% if request.user.is_authenticated %}
                                 {% if device == 'mobile' %}
                                     <span><p id="username">{{ current_user }}</p></span>
