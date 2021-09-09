@@ -489,21 +489,23 @@
 
         </div>
 
-            <div id="add_report" style="display: inline-block;">
-                    <p style="font-size: 20pt">Добавить отчет +</p>
-                    <form name="new_report" style=""
-                                action="{% url 'добавить отчет' %}" method="get">
-                        <textarea oninput="send_report()" class="note_text" style="" id="report_text" name="new_report"
-                                placeholder="Текст отчета..." style="border: 2px solid white;width:30%;">{{ notes.message }}</textarea>
-                    </form>
+            <div id="add_report" style="display: inline-block;box-sizing: border-box">
+                    <p style="font-size: 20pt;">Добавить отчет +</p>
+                    <div id="new_report_area" style="display:none;">
+                        <form name="new_report" style="width:60%;display: inline-block;box-sizing: border-box"
+                                    action="{% url 'добавить отчет' %}" method="get">
+                            <textarea oninput="send_report()" class="note_text" style="" id="report_text" name="new_report"
+                                    placeholder="Текст отчета..." style="">{{ notes.message }}</textarea>
+                        </form>
 
-                    <div id="tags" class="tags">
-                        <div id="tags_layout">
-                            {% for tag in tags %}
+                        <div id="tags" class="tags">
+                            <div id="tags_layout">
+                                {% for tag in tags %}
 
-                                <button value="{{ tag.text }}" id="tagname" onclick="extend_report(value)" >{{ tag.name }} </button>
+                                    <button value="{{ tag.text }}" id="tagname" onclick="extend_report(value)" >{{ tag.name }} </button>
 
-                            {% endfor %}
+                                {% endfor %}
+                            </div>
                         </div>
                     </div>
             </div>
@@ -598,6 +600,8 @@
             function add_report(e) {
                 let record_text = document.getElementById('report_text')
                 record_text.style.display = 'inline-block';
+                let new_report_area = document.getElementById('new_report_area')
+                new_report_area.style.display = 'inline-block';
                 let tags = document.getElementById('tags')
                 tags.style.display = 'inline-block'
             }
@@ -605,6 +609,8 @@
             function leave(e) {
                 let record_text = document.getElementById('report_text')
                 record_text.style.display = 'none';
+                let new_report_area = document.getElementById('new_report_area')
+                new_report_area.style.display = 'none';
                 let tags = document.getElementById('tags')
                 tags.style.display = 'none'
 

@@ -472,7 +472,7 @@
         {% if user_is_admin == False %}
             <div id="add_report">
                     <p style="font-size: 20pt">Добавить отчет +</p>
-                    <form name="new_report" style=""
+                    <form name="new_report" style="width:60%"
                                 action="{% url 'добавить отчет' %}" method="get">
                         <textarea oninput="send_report()" style="" id="report_text" name="new_report"
                                 placeholder="Текст отчета..." style="resize:vertical;border: 2px solid white;width:30%;">{{ notes.message }}</textarea>
