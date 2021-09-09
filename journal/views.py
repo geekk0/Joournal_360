@@ -1248,7 +1248,7 @@ def send_email_with_smptlib(*args, **kwargs):
 
         msg['Subject'] = 'Отчет за '+date
         msg['From'] = formataddr(('Журнал 360', 'journal360@outlook.com'))
-        msg['To'] = ["o.litvinenko@360tv.ru", 'litvinenkostudy@gmail.com']
+        msg['To'] = ["o.litvinenko@360tv.ru", 'i.akhtyrskiy@360tv.ru']
 
         server = smtplib.SMTP(hostname, 587)
         server.starttls(context=ssl.create_default_context())  # Secure the connection
