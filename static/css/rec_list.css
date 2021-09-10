@@ -683,7 +683,7 @@ display: none;
     min-height: 120px;
 }
 
-#add_report input:focus, textarea:focus {
+#add_report, input:focus, textarea:focus {
     outline: none !important;
     border:none;
 }

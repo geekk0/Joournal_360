@@ -1202,7 +1202,7 @@ def send_email(*args, **kwargs):
 
     """send_mail('Тема тестового письма', 'Текст тестового письма', from_email='gekk0dw@gmail.com',
               recipient_list=['e.epov@360tv.ru'], fail_silently=False, auth_user='gekk0dw@gmail.com',
-              auth_password='Frq93AdfsJVjHjTA')
+              auth_password='Frq93AdfsJVjHjTA')"""
 
     updated_notes = Notes.objects.filter(status='updated')
     for note in updated_notes:
@@ -1215,11 +1215,13 @@ def send_email(*args, **kwargs):
 
         group = Group.objects.get(user=record.author)
 
+        print('connect to smtp...')
+
         send_mail(subject='Отчет за '+date, message=record.text+'\n'+'\n'+'\n'+'С уважением,'+'\n'+
                     record.author.first_name+'\n'+record.author.last_name+'\n'+'Отдел: '+str(department[0].name)+'\n'+
-                                                    'Смена: '+str(group),
-                  from_email='gekk0dw@gmail.com', recipient_list=['o.litvinenko@360tv.ru'], fail_silently=False,
-                  auth_user='gekk0dw@gmail.com', auth_password='Frq93AdfsJVjHjTA')"""
+                    'Смена: '+str(group),
+                  from_email='Journal360@mosobltv.ru', recipient_list=['litvinenkostudy@gmail.com', 'o.litvinenko@360tv.ru'],
+                  fail_silently=False, auth_user='Journal360', auth_password='Ju123456')
 
     return HttpResponseRedirect('/')
 
@@ -1238,22 +1240,31 @@ def send_email_with_smptlib(*args, **kwargs):
 
         group = Group.objects.get(user=record.author)
 
-        hostname = "smtp.office365.com"
+        """hostname = "smtp.office365.com"
         username = "journal360@outlook.com"
-        password = "3P4cnprkBzWxB9zK"
+        password = "3P4cnprkBzWxB9zK"""""
+
+        hostname = "email.mosobltv.ru"
+        username = "Journal360"
+        password = "Ju123456"
 
         msg = EmailMessage()
         msg.set_content(record.text+'\n'+'\n'+'\n'+'С уважением,'+'\n'+record.author.first_name+'\n'+
                         record.author.last_name+'\n'+'Отдел: '+str(department[0].name)+'\n'+'Смена: '+str(group))
 
         msg['Subject'] = 'Отчет за '+date
-        msg['From'] = formataddr(('Журнал 360', 'journal360@outlook.com'))
+        msg['From'] = ('Journal360@360tv.ru')
         msg['To'] = ["o.litvinenko@360tv.ru", 'i.akhtyrskiy@360tv.ru']
 
-        server = smtplib.SMTP(hostname, 587)
-        server.starttls(context=ssl.create_default_context())  # Secure the connection
+        server = smtplib.SMTP(hostname, 25)
+        print('smtp port match')
+        server.ehlo()  # Secure the connection
+        print('starttls connected')
         server.login(username, password)
+        print('authorization succeed')
         server.send_message(msg)
+        print('message sent')
         server.quit()
+        print('quit connection')
 
     return HttpResponseRedirect('/')
