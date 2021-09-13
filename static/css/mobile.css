@@ -1,5 +1,17 @@
 @media screen and (orientation:portrait) and (max-width: 500px) and (max-height:900px) {
     /*моб верт*/
+
+    .auth_mobile_logo{
+        width:100%;
+        margin-left: auto;
+        margin-right: auto
+    }
+
+    .row{
+        width:107%;
+        margin-top: 50px;
+    }
+
     .bar {
         display: none;
     }
@@ -10,12 +22,33 @@
 
     .logo {
         width: 30%;
-        margin-left: 10%;
+        margin-left: 35%;
         margin-top: 3%;
     }
 
+    .add_task {
+        width:25%;
+    }
+
     .logout a {
+
         display: none;
+    }
+
+    .add_comment_button{
+        display:none;
+    }
+
+    .add_comment{
+        font-size: 10pt;
+    }
+
+    .objectives{
+        display:none;
+    }
+
+    .add_report {
+        display:none;
     }
 
     #user_group {
@@ -108,11 +141,45 @@
     .content {
         width: 100%;
         padding-top: 25%;
+
+    }
+
+    #add_report{
+        width: 90%;
+        margin-left: 5%;
+    }
+
+    #add_report p{
+        text-align: center;
+    }
+
+    #add_report textarea{
+        min-height: 135px;
+        font-size: 12pt;
+    }
+
+    #tags_layout{
+        display: inline;
+    }
+
+    #new_report_area{
+        width: 100%;
+    }
+
+    #new_report_area form{
+        width:100% !important;
+    }
+
+    #tags{
+        display: none;
+        width:100%;
+        opacity: 0.9;
+        vertical-align: top;
     }
 
     .record_layout {
 
-        margin-top: 1%;
+        margin-top: 3%;
         border: 1.5px solid white;
         margin-left: auto;
         margin-right: auto;
@@ -280,7 +347,7 @@
         width: 30%;
         display: block;
         float: right;
-        padding-top: 2%;
+        padding-top: 3%;
         text-align: right;
         height: 10%;
         margin-right: 5%;

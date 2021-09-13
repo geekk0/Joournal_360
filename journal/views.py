@@ -30,6 +30,7 @@ from operator import *
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
     ScheduledTasks, RecordTags
 from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm
+from django_python3_ldap.utils import format_search_filters
 
 
 class LoginView(View):
@@ -44,10 +45,16 @@ class LoginView(View):
         if form.is_valid():
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
+
             user = authenticate(username=username, password=password)
+
             if user:
                 login(request, user)
+
                 return HttpResponseRedirect('/')
+            else:
+                print('no user')
+                print(username, password)
         return render(request, 'login.html', {'form': form})
 
 
@@ -62,6 +69,7 @@ class ResetPasswordView(View):
     def post(self, request, *args, **kwargs):
         current_user = request.user
         form = ResetPassword(request.POST or None)
+        uid = request.user.username
 
         if form.is_valid():
             current_user.set_password(form.cleaned_data['new_password'])
@@ -1268,3 +1276,14 @@ def send_email_with_smptlib(*args, **kwargs):
         print('quit connection')
 
     return HttpResponseRedirect('/')
+
+
+def custom_format_search_filters(ldap_fields):
+    # Add in simple filters.
+    ldap_fields["memberOf"] = "ou=mathematicians,dc=example,dc=com"
+    # Call the base format callable.
+    search_filters = format_search_filters(ldap_fields)
+    # Advanced: apply custom LDAP filter logic.
+    search_filters.append("(|(memberOf=GroupA)(memberOf=GroupB))")
+    # All done!
+    return search_filters
