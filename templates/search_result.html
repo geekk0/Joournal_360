@@ -692,6 +692,20 @@
                 }
             }
 
+            window.onscroll=header_background
+
+            function header_background() {
+                let logout = document.getElementsByClassName('logout')[0];
+                if (logout !== null) {
+                    logout.style.display = 'none';
+                }
+                let scrollTop = window.scrollY;
+                console.log(scrollTop)
+                if (scrollTop === 0) {
+                logout.style.display = 'block';
+                }
+            }
+
         </script>
                     </div>
                 {% endfor %}
