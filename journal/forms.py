@@ -63,8 +63,8 @@ class LoginForm(forms.ModelForm):
     def clean(self):
         username = self.cleaned_data['username']
         password = self.cleaned_data['password']
-        if not User.objects.filter(username=username).exists():
-            raise forms.ValidationError(f'Пользователь с логином {username} не зарегистрирован')
+        """if not User.objects.filter(username=username).exists():
+            raise forms.ValidationError(f'Пользователь с логином {username} не зарегистрирован')"""
         user = User.objects.filter(username=username).first()
         if user:
             """if not user.check_password(password):

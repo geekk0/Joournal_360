@@ -28,7 +28,7 @@ from operator import *
 
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
-    ScheduledTasks, RecordTags
+    ScheduledTasks, RecordTags, Tiles, Docs
 from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm
 from django_python3_ldap.utils import format_search_filters
 
@@ -56,6 +56,8 @@ class LoginView(View):
                 print('no user')
                 print(username, password)
         return render(request, 'login.html', {'form': form})
+
+
 
 
 class ResetPasswordView(View):
@@ -440,6 +442,8 @@ def rec_list(request, *device):
     if len(objectives) > 5:
         objectives_full = True
 
+    tiles = Tiles.objects.filter(departments__in=user_departments)
+
     if request.user.has_perm('journal.change_record'):
         user_is_admin = True
     else:
@@ -451,7 +455,7 @@ def rec_list(request, *device):
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'device': device, 'objectives': objectives,
                'user_is_admin': user_is_admin, 'task_date': task_date, 'tags': tags, 'objectives_full': objectives_full,
-               'objectives_sliced': objectives_sliced}
+               'objectives_sliced': objectives_sliced, 'tiles': tiles}
 
     return render(request, 'rec_list.html', context)
 
@@ -1198,7 +1202,6 @@ def update_record_from_note():
         note.save()
 
 
-
 def finalize_note():
     updated_notes = Notes.objects.filter(status='updated')
     for note in updated_notes:
@@ -1287,3 +1290,16 @@ def custom_format_search_filters(ldap_fields):
     search_filters.append("(|(memberOf=GroupA)(memberOf=GroupB))")
     # All done!
     return search_filters
+
+
+def show_docs(request, tile_name):
+
+    tile = Tiles.objects.get(name=tile_name)
+
+    tile_id = tile.id
+
+    docs = Docs.objects.filter(tile_category=tile_id)
+
+    context = {'docs': docs}
+
+    return render(request, 'documents.html', context)

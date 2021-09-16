@@ -1,4 +1,7 @@
 from django.urls import path
+
+from Journal_360 import settings
+from django.conf.urls.static import static
 from . import views
 
 
@@ -25,12 +28,15 @@ urlpatterns = [
     path('фильтр по группе/<int:group_id>', views.sort_by_group, name='фильтр по группе'),
     path('сменить пароль/', views.ResetPasswordView.as_view(), name='сменить пароль'),
     path('отправить email/', views.send_email_with_smptlib, name='отправить email'),
+    path('Документы/<str:tile_name>', views.show_docs, name='Документы'),
 
     path('по дате мобильный/', views.by_date_view, name='по дате мобильный'),
     path('фильтр по отделу мобильный/', views.by_group_view, name='фильтр по отделу мобильный'),
 
 ]
 
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 
 

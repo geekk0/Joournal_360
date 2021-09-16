@@ -2,7 +2,7 @@ from django.contrib import admin
 from django.utils.safestring import mark_safe
 
 from .models import Record, Comments, Department, Notes, Objectives, ObjectivesDone, ObjectivesStatus, ScheduledTasks, \
-    RecordTags
+    RecordTags, Tiles, Docs
 
 
 """class ImagesInline(admin.TabularInline):
@@ -96,6 +96,7 @@ admin.site.register(ObjectivesDone, AdminObjectivesDone)
 admin.site.register(ObjectivesStatus)
 admin.site.register(ScheduledTasks)
 admin.site.register(RecordTags, AdminRecordTags)
-
+admin.site.register(Tiles)
+admin.site.register(Docs)
 
 

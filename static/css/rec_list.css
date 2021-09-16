@@ -762,3 +762,63 @@ display: none;
 
 }
 
+.tiles {
+    display: block;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10%;
+}
+
+
+.tile_layout{
+    display: inline-block;
+    width:32%;
+    border: solid white 1px;
+    border-radius: 15px;
+    margin-left: 12%;
+    margin-top:3%;
+}
+
+.tile_layout img{
+    width: 85%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.tile_layout figcaption{
+    text-align: center;
+    color:white;
+    font-size: 10pt;
+
+}
+
+.documents{
+    display: block;
+    width: 80%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 10%;
+}
+
+.docs_layout {
+    display: inline-block;
+    width:20%;
+    border: solid white 1px;
+    border-radius: 15px;
+    vertical-align: top;
+    margin-left:5%;
+}
+
+.docs_layout figcaption {
+    text-align: center;
+    color: white;
+}
+
+.docs_layout img {
+    width: 100%;
+    display: inline-block;
+    margin-left: auto;
+    margin-right: auto;
+}

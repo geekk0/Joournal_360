@@ -2,6 +2,7 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User, Group
+from PIL import Image
 
 
 class Record(models.Model):
@@ -259,3 +260,31 @@ class RecordTags(models.Model):
         verbose_name = 'Категория для отчета'
         verbose_name_plural = 'Категории для отчета'
 
+
+class Tiles(models.Model):
+    name = models.CharField(max_length=64, null=True, blank=True, verbose_name='Название категории документов')
+    departments = models.ManyToManyField(Department, blank=True, verbose_name='Относится к отделу:')
+    image = models.ImageField(blank=True, null=True, upload_to='images/',
+                              verbose_name='Изображение категории документов')
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        verbose_name = 'Категория документов'
+        verbose_name_plural = 'Категории документов'
+
+
+class Docs(models.Model):
+    name = models.CharField(max_length=64, null=True, blank=True, verbose_name='Название документа')
+    tile_category = models.ForeignKey(Tiles, blank=True, null=True, on_delete=models.CASCADE,
+                                      verbose_name='Относится к категории документов')
+    image = models.ImageField(blank=True, null=True, upload_to='images/',
+                              verbose_name='Изображение документа')
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        verbose_name = 'Документ'
+        verbose_name_plural = 'Документы'
