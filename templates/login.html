@@ -21,6 +21,18 @@
         <br>
 
         <h3 style="color:white" class="text-center">Авторизация</h3>
+        {% if messages %}
+    <ul class="messages">
+        {% for message in messages %}
+            <li style="width:max-content;display:block;font-size: 16pt;color:white;margin-top:6%;
+                background: #a21919;margin-left:auto; margin-right:auto;overflow: visible;padding: 0.7%;"
+                class="{{ message.tags }}">
+                {{ message|safe }}
+                <a href="" class="close" style="color:white;font-size: 16pt">✖</a>
+            </li>
+        {% endfor %}
+    </ul>
+{% endif %}
         <form style="color:white" action ='' method="POST">
             {% csrf_token %}
             {{ form|crispy }}

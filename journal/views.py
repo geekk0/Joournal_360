@@ -53,8 +53,8 @@ class LoginView(View):
 
                 return HttpResponseRedirect('/')
             else:
-                print('no user')
-                print(username, password)
+                messages.warning(request, "Неправильный логин или пароль")
+
         return render(request, 'login.html', {'form': form})
 
 
@@ -1283,11 +1283,14 @@ def send_email_with_smptlib(*args, **kwargs):
 
 def custom_format_search_filters(ldap_fields):
     # Add in simple filters.
-    ldap_fields["department"] = "ou=mathematicians,dc=example,dc=com"
-    # Call the base format callable.
+    raw_department = "Служба технического обеспечения"
+    """ldap_fields["description"] = raw_department.encode('UTF-8')"""
+
+    # Call the base format callable."""
     search_filters = format_search_filters(ldap_fields)
     # Advanced: apply custom LDAP filter logic.
-    search_filters.append("(|(memberOf=GroupA)(memberOf=GroupB))")
+    search_filters.append("(|(department=Служба технического обеспечения)(department=Отдел информационных технологий))")
+    print(search_filters)
     # All done!
     return search_filters
 
