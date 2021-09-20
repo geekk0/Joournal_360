@@ -176,18 +176,16 @@
                         </form>
 
             </div>
-            <div class="tiles">
-
-                {% for tile in tiles %}
-                    <div class="tile_layout">
-                        <a href={% url 'Документы' tile.name %}><img src="{{ tile.image.url }}" alt="{{ tile.name }}"></a>
-                        <figcaption>{{ tile.name }}</figcaption>
-                    </div>
-                {% endfor %}
-
-            </div>
-
-        </div>
+            {% if user_is_admin != True %}
+                <div class="tiles">
+                    {% for tile in tiles %}
+                        <div class="tile_layout">
+                            <a href={% url 'Документы' tile.name %}><img src="{{ tile.image.url }}" alt="{{ tile.name }}"></a>
+                            <figcaption>{{ tile.name }}</figcaption>
+                        </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
     </div>
 
     <script type="application/javascript">
@@ -678,14 +676,15 @@
                     logout.style.display = 'none';
                 }
                 let add_task = document.getElementsByClassName('add_task')[0];
-                if (add_task !== null) {
+                if (typeof add_task !== "undefined") {
                     add_task.style.display = 'none';
                 }
                 let scrollTop = window.scrollY;
-                console.log(scrollTop)
                 if (scrollTop === 0) {
-                logout.style.display = 'block';
-                add_task.style.display = 'block';
+                    logout.style.display = 'block';
+                    if (typeof add_task !== "undefined") {
+                        add_task.style.display = 'block';
+                    }
                 }
             }
         </script>

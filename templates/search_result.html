@@ -170,6 +170,17 @@
 
             </div>
 
+
+            <div class="tiles">
+
+                {% for tile in tiles %}
+                    <div class="tile_layout">
+                        <a href={% url 'Документы' tile.name %}><img src="{{ tile.image.url }}" alt="{{ tile.name }}"></a>
+                        <figcaption>{{ tile.name }}</figcaption>
+                    </div>
+                {% endfor %}
+
+            </div>
         </div>
     </div>
 

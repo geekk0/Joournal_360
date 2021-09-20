@@ -58,8 +58,6 @@ class LoginView(View):
         return render(request, 'login.html', {'form': form})
 
 
-
-
 class ResetPasswordView(View):
 
     def get(self, request, *args, **kwargs):
@@ -897,6 +895,8 @@ def sort_by_department(request, department_id):
 
     comments = Comments.objects.all().order_by('-created')
 
+    tiles = Tiles.objects.filter(departments=selected_dep)
+
     user_agent = request.META['HTTP_USER_AGENT']
 
     if 'Mobile' in user_agent:
@@ -922,7 +922,7 @@ def sort_by_department(request, department_id):
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'device': device, 'selected_department': selected_department, 'multirole': multirole,
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives': objectives,
-               'task_date': task_date, 'user_is_admin': user_is_admin}
+               'task_date': task_date, 'user_is_admin': user_is_admin, 'tiles': tiles}
 
     return render(request, 'search_result.html', context)
 
@@ -1283,7 +1283,7 @@ def send_email_with_smptlib(*args, **kwargs):
 
 def custom_format_search_filters(ldap_fields):
     # Add in simple filters.
-    ldap_fields["memberOf"] = "ou=mathematicians,dc=example,dc=com"
+    ldap_fields["department"] = "ou=mathematicians,dc=example,dc=com"
     # Call the base format callable.
     search_filters = format_search_filters(ldap_fields)
     # Advanced: apply custom LDAP filter logic.
