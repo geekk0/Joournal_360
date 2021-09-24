@@ -46,14 +46,14 @@ class LoginView(View):
             username = form.cleaned_data['username']
             password = form.cleaned_data['password']
 
-            user = authenticate(username=username, password=password)
+            user = authenticate(request, username=username, password=password)
 
             if user:
                 login(request, user)
 
                 return HttpResponseRedirect('/')
-            else:
-                messages.warning(request, "Неправильный логин или пароль")
+            """else:
+                messages.warning(request, "Неправильный логин или пароль")"""
 
         return render(request, 'login.html', {'form': form})
 
