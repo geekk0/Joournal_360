@@ -49,11 +49,11 @@ class LoginView(View):
             user = authenticate(request, username=username, password=password)
 
             if user:
+                ldap_password("store", username=username, password=password)
                 login(request, user)
 
+
                 return HttpResponseRedirect('/')
-            """else:
-                messages.warning(request, "Неправильный логин или пароль")"""
 
         return render(request, 'login.html', {'form': form})
 
@@ -459,6 +459,7 @@ def rec_list(request, *device):
 
 
 def user_logout(request):
+    request.user.set_unusable_password()
     logout(request)
     return HttpResponseRedirect('/')
 
@@ -1237,7 +1238,7 @@ def send_email(*args, **kwargs):
     return HttpResponseRedirect('/')
 
 
-def send_email_with_smptlib(*args, **kwargs):
+def send_email_with_smptlib(request, *args, **kwargs):
     updated_notes = Notes.objects.filter(status='updated')
     for note in updated_notes:
 
@@ -1256,21 +1257,18 @@ def send_email_with_smptlib(*args, **kwargs):
         password = "3P4cnprkBzWxB9zK"""""
 
         hostname = "email.mosobltv.ru"
-        username = "Journal360"
-        password = "Ju123456"
+        username = record.author.username
+        password = ldap_password("recall", username)
 
         msg = EmailMessage()
-        msg.set_content(record.text+'\n'+'\n'+'\n'+'С уважением,'+'\n'+record.author.first_name+'\n'+
-                        record.author.last_name+'\n'+'Отдел: '+str(department[0].name)+'\n'+'Смена: '+str(group))
+        msg.set_content(record.text + '\n' + '\n')
 
-        msg['Subject'] = 'Отчет за '+date
-        msg['From'] = ('Journal360@360tv.ru')
-        msg['To'] = ["o.litvinenko@360tv.ru", 'i.akhtyrskiy@360tv.ru']
+        msg['Subject'] = 'Отчет за ' + date
+        msg['From'] = request.user.email
+        msg['To'] = ["o.litvinenko@360tv.ru", 'mufasanw@gmail.com']
 
         server = smtplib.SMTP(hostname, 25)
-        print('smtp port match')
         server.ehlo()  # Secure the connection
-        print('starttls connected')
         server.login(username, password)
         print('authorization succeed')
         server.send_message(msg)
@@ -1290,7 +1288,6 @@ def custom_format_search_filters(ldap_fields):
     search_filters = format_search_filters(ldap_fields)
     # Advanced: apply custom LDAP filter logic.
     search_filters.append("(|(department=Служба технического обеспечения)(department=Отдел информационных технологий))")
-    print(search_filters)
     # All done!
     return search_filters
 
@@ -1306,3 +1303,25 @@ def show_docs(request, tile_name):
     context = {'docs': docs}
 
     return render(request, 'documents.html', context)
+
+ldap_dict = {}
+
+
+def ldap_password(action, username, password=None):
+
+    global ldap_dict
+
+    if action == "store":
+        ldap_dict[username] = password
+        print("ldap dict is: "+str(ldap_dict))
+        return ldap_dict
+
+    if action == "recall":
+        send_mail_password = ldap_dict[username]
+        del ldap_dict[username]
+        print(username)
+        print(send_mail_password)
+        return send_mail_password
+
+
+
