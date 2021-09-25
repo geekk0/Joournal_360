@@ -507,15 +507,22 @@
                                         placeholder="Текст отчета..." style="">{{ notes.message }}</textarea>
                             </form>
 
-                            <div id="tags" class="tags">
-                                <div id="tags_layout">
-                                    {% for tag in tags %}
-
-                                        <button value="{{ tag.text }}" id="tagname" onclick="extend_report(value)" >{{ tag.name }} </button>
-
-                                    {% endfor %}
+                            {% if user_network == 'internet' and notes.status == 'initial'%}
+                                <div id="tags" class="tags">
+                                    <p style="font-size: 16pt;margin-top: 5%;color:red">Отчет можно писать только из рабочей сети,<br>
+                                    отчет отправляется в 9.30, после чего доступен для редактирования через интернет</p>
                                 </div>
-                            </div>
+                            {% else %}
+                                    <div id="tags" class="tags">
+                                        <div id="tags_layout">
+                                            {% for tag in tags %}
+
+                                                <button value="{{ tag.text }}" id="tagname" onclick="extend_report(value)" >{{ tag.name }} </button>
+
+                                            {% endfor %}
+                                        </div>
+                                    </div>
+                            {% endif %}
                         </div>
                 </div>
 

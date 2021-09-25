@@ -424,6 +424,8 @@ def rec_list(request, *device):
 
     tags = RecordTags.objects.filter(departments__in=user_departments).distinct()
 
+    user_network = check_user_ip(request)
+
     user_agent = request.META['HTTP_USER_AGENT']
 
     if 'Mobile' in user_agent:
@@ -453,7 +455,7 @@ def rec_list(request, *device):
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'device': device, 'objectives': objectives,
                'user_is_admin': user_is_admin, 'task_date': task_date, 'tags': tags, 'objectives_full': objectives_full,
-               'objectives_sliced': objectives_sliced, 'tiles': tiles}
+               'objectives_sliced': objectives_sliced, 'tiles': tiles, 'user_network': user_network}
 
     return render(request, 'rec_list.html', context)
 
@@ -1171,11 +1173,32 @@ def new_edit_note(request):
 
     note = Notes.objects.get(author_id=request.user.id)
 
-    text = request.GET.get("new_report")
+    if note.status == 'initial':
 
-    note.message = text
+        if check_user_ip(request=request) == 'local':
 
-    note.save()
+            text = request.GET.get("new_report")
+
+            note.message = text
+
+            note.save()
+
+            print('editing note...')
+
+        else:
+            messages.warning(request, 'Отчет можно писать только из рабочей сети')
+            return HttpResponseRedirect('/')
+
+    else:
+
+        text = request.GET.get("new_report")
+
+        note.message = text
+
+        note.save()
+
+        print('editing note...')
+
 
     return HttpResponse(status=204)
 
@@ -1183,7 +1206,7 @@ def new_edit_note(request):
 def publish_notes_to_records():
     all_notes = Notes.objects.all()
     for note in all_notes:
-        if (len(note.message) > 5) and (note.status == 'initial'):
+        if (len(note.message) > 34) and (note.status == 'initial'):
             author = note.author
             created_date = note.created_date
             full_text = note.message
@@ -1210,37 +1233,9 @@ def finalize_note():
     updated_notes.delete()
 
 
-def send_email(*args, **kwargs):
-
-    """send_mail('Тема тестового письма', 'Текст тестового письма', from_email='gekk0dw@gmail.com',
-              recipient_list=['e.epov@360tv.ru'], fail_silently=False, auth_user='gekk0dw@gmail.com',
-              auth_password='Frq93AdfsJVjHjTA')"""
-
-    updated_notes = Notes.objects.filter(status='updated')
-    for note in updated_notes:
-        record = Record.objects.create(notes=note, author=note.author)
-        record.text = note.message
-
-        date = (datetime.datetime.strptime(str(record.created_date.date()), "%Y-%m-%d").strftime("%d.%m.%Y"))
-
-        department = Department.objects.filter(groups__in=Group.objects.filter(user=record.author))
-
-        group = Group.objects.get(user=record.author)
-
-        print('connect to smtp...')
-
-        send_mail(subject='Отчет за '+date, message=record.text+'\n'+'\n'+'\n'+'С уважением,'+'\n'+
-                    record.author.first_name+'\n'+record.author.last_name+'\n'+'Отдел: '+str(department[0].name)+'\n'+
-                    'Смена: '+str(group),
-                  from_email='Journal360@mosobltv.ru', recipient_list=['litvinenkostudy@gmail.com', 'o.litvinenko@360tv.ru'],
-                  fail_silently=False, auth_user='Journal360', auth_password='Ju123456')
-
-    return HttpResponseRedirect('/')
-
-
 def send_email_with_smptlib(request, *args, **kwargs):
-    updated_notes = Notes.objects.filter(status='updated')
-    for note in updated_notes:
+    published_notes = Notes.objects.filter(status='published')
+    for note in published_notes:
 
         record = Record.objects.create(notes=note, author=note.author)
 
@@ -1248,9 +1243,9 @@ def send_email_with_smptlib(request, *args, **kwargs):
 
         date = (datetime.datetime.strptime(str(record.created_date.date()), "%Y-%m-%d").strftime("%d.%m.%Y"))
 
-        department = Department.objects.filter(groups__in=Group.objects.filter(user=record.author))
+        """department = Department.objects.filter(groups__in=Group.objects.filter(user=record.author))
 
-        group = Group.objects.get(user=record.author)
+        group = Group.objects.get(user=record.author)"""
 
         """hostname = "smtp.office365.com"
         username = "journal360@outlook.com"
@@ -1304,6 +1299,7 @@ def show_docs(request, tile_name):
 
     return render(request, 'documents.html', context)
 
+
 ldap_dict = {}
 
 
@@ -1324,4 +1320,12 @@ def ldap_password(action, username, password=None):
         return send_mail_password
 
 
+def check_user_ip(request):
+
+    user_ip = request.META['HTTP_HOST']
+
+    if user_ip.startswith('192.168') or user_ip.startswith('127'):
+        return 'local'
+    else:
+        return 'internet'
 
