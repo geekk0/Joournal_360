@@ -275,6 +275,19 @@ class Tiles(models.Model):
         verbose_name_plural = 'Категории документов'
 
 
+class Devices(models.Model):
+    name = models.CharField(max_length=64, null=True, blank=True, verbose_name='Название устройства')
+    image = models.ImageField(blank=True, null=True, upload_to='images/',
+                              verbose_name='Изображение устройства')
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        verbose_name = 'Устройство'
+        verbose_name_plural = 'Устройства'
+
+
 class Docs(models.Model):
     name = models.CharField(max_length=64, null=True, blank=True, verbose_name='Название документа')
     tile_category = models.ForeignKey(Tiles, blank=True, null=True, on_delete=models.CASCADE,
@@ -290,3 +303,15 @@ class Docs(models.Model):
     class Meta:
         verbose_name = 'Документ'
         verbose_name_plural = 'Документы'
+
+
+class ManualDocs(Docs):
+    device = models.ForeignKey(Devices, blank=True, null=True, on_delete=models.CASCADE,
+                               verbose_name='Относится к устройству')
+
+    def __str__(self):
+        return str(self.name)
+
+    class Meta:
+        verbose_name = 'Мануал'
+        verbose_name_plural = 'Мануалы'

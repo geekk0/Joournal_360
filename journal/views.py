@@ -28,7 +28,7 @@ from operator import *
 
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
-    ScheduledTasks, RecordTags, Tiles, Docs
+    ScheduledTasks, RecordTags, Tiles, Docs, Devices, ManualDocs
 from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm
 from django_python3_ldap.utils import format_search_filters
 
@@ -1295,14 +1295,29 @@ def show_docs(request, tile_name):
 
     tile_id = tile.id
 
+    devices = Devices.objects.all()
+
     docs = Docs.objects.filter(tile_category=tile_id)
 
-    context = {'docs': docs, 'tile_name': tile_name}
+    context = {'docs': docs, 'tile_name': tile_name, 'devices': devices}
 
     return render(request, 'documents.html', context)
 
 
 ldap_dict = {}
+
+
+def show_device_manuals(request, device_name):
+
+    device = Devices.objects.get(name=device_name)
+
+    manuals = ManualDocs.objects.filter(device=device)
+
+    print(manuals)
+
+    context = {'manuals': manuals}
+
+    return render(request, 'documents.html', context)
 
 
 def ldap_password(action, username, password=None):

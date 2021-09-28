@@ -91,20 +91,40 @@
 
             {% if tile_name == 'Мануалы' %}
 
-                <div class="manuals">
-                    {% for doc in docs %}
-                                <div class="manuals_layout">
-                                    <img src="{{ doc.image.url }}" alt="{{ doc.name }}">
-                                    <figcaption><a href="{{ doc.file.url }}" target="_blank"><i class=""></i>{{ doc.name }}</a></figcaption>
-                                </div>
-                    {% endfor %}
-                </div>
+                    <div class="devices">
+
+                        {% for device in devices %}
+
+                            <div class="devices_layout">
+
+                                <a href={% url 'мануалы к устройству' device.name %}><img src="{{ device.image.url }}" alt="{{ device.name }}"></a>
+                                <figcaption>{{ device.name }}</figcaption>
+
+                            </div>
+
+                        {% endfor %}
+
+                    </div>
             {% endif %}
 
+            <div class="manuals">
 
+                <div class="manuals_layout">
+                    <ul>
+                        {% for manual in manuals %}
+                            <li><a href="{{ manual.file.url }}" target="_blank"><i class=""></i>{{ manual.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+
+
+            </div>
 
 
     </div>
+
+
 
 
 {%  endblock %}
