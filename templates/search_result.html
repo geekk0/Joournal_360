@@ -343,7 +343,7 @@
                             action="{% url 'добавить задачу' %}" method="get">
                     <label for="input_name"></label>
                     <textarea style="border-radius: 15px;height:140px;display: inline-block" id="input_name" name="new_objective_name"
-                            placeholder="Что надо сделать..." style="border: 2px solid white;width:30%;"></textarea>
+                            placeholder="Что надо сделать..." style="border: 2px solid white;width:60%;"></textarea>
                     {% if multirole == True %}
                         <label for="department_select">Задание для:</label>
                         <select size="3" multiple="multiple" name="department" id="department_select" style="display:inline;visibility: hidden">
@@ -371,7 +371,7 @@
 
 
                 {% for objective in objectives_sliced %}
-                <div class = "objectives_layout" style="width:15%;height:100%;overflow: hidden;
+                <div class = "objectives_layout" style="width:13%;height:100%;overflow: hidden;
                  word-wrap: break-word;white-space: nowrap;">
                     <p style="display:none"{{ objective.get_author_names }}></p>
 
@@ -426,7 +426,7 @@
             {% else %}
 
                 {% for objective in objectives %}
-                <div class = "objectives_layout" style="width:15%;height:100%;overflow: hidden;
+                <div class = "objectives_layout" style="width:13%;height:100%;overflow: hidden;
                  word-wrap: break-word;white-space: nowrap;">
                     <p style="display:none"{{ objective.get_author_names }}></p>
 
@@ -480,17 +480,7 @@
 
         </div>
 
-        {% if user_is_admin == False %}
-            <div id="add_report">
-                    <p style="font-size: 20pt">Добавить отчет +</p>
-                    <form name="new_report" style="width:60%"
-                                action="{% url 'добавить отчет' %}" method="get">
-                        <textarea oninput="send_report()" style="" id="report_text" name="new_report"
-                                placeholder="Текст отчета..." style="resize:vertical;border: 2px solid white;width:30%;">{{ notes.message }}</textarea>
-                    </form>
 
-            </div>
-        {% endif %}
 
         <script type="text/javascript">
 
@@ -596,7 +586,7 @@
                     e.target.classList.add('objectives_layout');
                     let other_stickers = document.getElementsByClassName('objectives_layout')
                     for (let i = 0; i < other_stickers.length; i++) {
-                        other_stickers[i].style.width = '15%';
+                        other_stickers[i].style.width = '13%';
                         other_stickers[i].style.marginLeft = '3%';
                     }
                     e.target.style.height = '100%';
@@ -610,7 +600,7 @@
                         <a class="authorization" href="{% url 'добавить заметку' %}">Добавить отчет +</a>
                     </div>-->
 
-        <div class="searched_records">
+        <div class="searched_records" style="margin-top:3%">
                 {% for recs in search_query %}
                     <div class="record_layout" style="border: 2px solid green;">
                          <p class="author_name">{{ recs.report_date }}&nbsp{{ recs.author_name }}</p>
@@ -646,7 +636,7 @@
         </div>
 
 
-        <div class="records">
+        <div class="records" style="margin-top:2%">
                 {% for recs in all_records %}
                     <div class="record_layout" style="border: 2px solid white;">
                          <p class="author_name">{{ recs.report_date }}&nbsp{{ recs.author_name }}</p>

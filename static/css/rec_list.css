@@ -425,9 +425,7 @@ display: none;
 }
 
 .objectives_layout{
-    word-wrap: break-word;
     margin-left: 3%;
-    text-overflow: fade;
     display: inline-block;
     border: 2px solid red;
     border-radius: 15px;
@@ -438,6 +436,17 @@ display: none;
     vertical-align: top;
     min-height: 100%;
     box-sizing: content-box;
+    padding: 1%;
+    width:13%;
+
+}
+
+.objectives_layout p{
+    white-space:nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+
+
 }
 
 .objectives_layout .status_layout{
@@ -513,7 +522,7 @@ display: none;
     border-radius: 15px;
     background: #28425d;
     width: 10%;
-    height: 139px;
+    height: 174px;
     opacity : 0.7;
 
 }
@@ -548,15 +557,19 @@ display: none;
     top: 14%;
     right: 20px;
     visibility: visible;
-    width: 20%;
+    width: 19%;
     height: 160px;
     background: #28425d;
     color: white;
     display: inline-block;
     opacity : 0.9;
-
+    box-sizing: content-box;
+    padding: 0.5%;
 }
 
+.add_object_active textarea{
+    background:red;
+}
 
 #add_objective_button{
     width:5%;
@@ -665,7 +678,7 @@ display: none;
 
 #add_report {
 
-    margin-top:1%;
+    margin-top:2%;
     width: 77.5%;
     margin-left: 19.2%;
     margin-right: auto;
@@ -691,8 +704,9 @@ display: none;
 
 #add_report, input:focus, textarea:focus {
     outline: none !important;
-    border:none;
 }
+
+
 
 #add_report ::-webkit-resizer {
   color: red;
@@ -773,7 +787,7 @@ display: none;
 
 .tile_layout{
     display: inline-block;
-    width:32%;
+    width:37%;
     border: solid white 1px;
     border-radius: 15px;
     margin-left: 12%;
@@ -781,7 +795,7 @@ display: none;
 }
 
 .tile_layout img{
-    width: 85%;
+    width: 75%;
     display: block;
     margin-left: auto;
     margin-right: auto;
@@ -796,29 +810,75 @@ display: none;
 
 .documents{
     display: block;
-    width: 80%;
+    width: 90%;
     margin-left: auto;
     margin-right: auto;
-    margin-top: 10%;
+    margin-top: 5%;
 }
 
-.docs_layout {
-    display: inline-block;
-    width:20%;
-    border: solid white 1px;
-    border-radius: 15px;
-    vertical-align: top;
-    margin-left:5%;
-}
-
-.docs_layout figcaption {
-    text-align: center;
+.documents a{
     color: white;
 }
 
-.docs_layout img {
-    width: 100%;
+.documents a:hover{
+    color: red;
+}
+
+.cameras_layout {
     display: inline-block;
+    vertical-align: top;
+    margin-left: 6%;
+    height: 55%;
+    width: 40%;
+    margin-top: 5%;
+}
+
+.cameras_layout figcaption {
+    text-align: center;
+    color: white;
+    font-size: 18pt;
+}
+
+.cameras_layout img {
+    display: block;
+    max-height: 100%;
     margin-left: auto;
     margin-right: auto;
+}
+
+.schemes_layout {
+    font-size:16pt;
+    text-align: center;
+    margin-top: 2%;
+}
+
+.schemes_layout ul{
+    padding-top:4%;
+    list-style: none;
+    line-height: 1.8em;
+}
+
+.manuals {
+    margin-top:6%;
+    width:90%;
+    display: inline-block;
+}
+
+.manuals_layout {
+    width:15%;
+    display: inline-block;
+    margin-left: 4%;
+    vertical-align: top;
+    box-sizing: border-box;
+
+}
+
+.manuals_layout figcaption{
+    text-align: center;
+    font-size: 15pt;
+
+}
+
+.manuals_layout img{
+    width:100%;
 }

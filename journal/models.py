@@ -281,6 +281,8 @@ class Docs(models.Model):
                                       verbose_name='Относится к категории документов')
     image = models.ImageField(blank=True, null=True, upload_to='images/',
                               verbose_name='Изображение документа')
+    file = models.FileField(blank=True, null=True, upload_to='files/',
+                              verbose_name='Файл')
 
     def __str__(self):
         return str(self.name)

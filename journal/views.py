@@ -484,7 +484,6 @@ def comments_count(request, record_id):
 
 def convert_date(date):
 
-
     set_year = date[:4]
     month = int(date[5:7])
     set_month = str(month - 1)
@@ -538,6 +537,7 @@ def find_by_date(request):
         exclude(name__in=admin_groups).order_by('id')
 
     if date:
+        print(type(date))
         date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
 
     else:
@@ -1291,11 +1291,13 @@ def show_docs(request, tile_name):
 
     tile = Tiles.objects.get(name=tile_name)
 
+    print(type(tile_name))
+
     tile_id = tile.id
 
     docs = Docs.objects.filter(tile_category=tile_id)
 
-    context = {'docs': docs}
+    context = {'docs': docs, 'tile_name': tile_name}
 
     return render(request, 'documents.html', context)
 

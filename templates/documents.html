@@ -68,13 +68,41 @@
 
     <div class="documents">
 
-        {% for doc in docs %}
-            <div class="docs_layout">
-                <img src="{{ doc.image.url }}" alt="{{ doc.name }}">
-                <figcaption>{{ doc.name }}</figcaption>
 
-            </div>
-        {% endfor %}
+            {% if tile_name == 'Расстановка камер' %}
+                {% for doc in docs %}
+                    <div class="cameras_layout">
+                        <img src="{{ doc.image.url }}" alt="{{ doc.name }}">
+                        <figcaption>{{ doc.name }}</figcaption>
+                    </div>
+                {% endfor %}
+            {% endif %}
+
+            {% if tile_name == 'Схемы' %}
+                <div class="schemes_layout">
+                    <ul>
+                        {% for doc in docs %}
+                            <li><a href="{{ doc.file.url }}" target="_blank"><i class=""></i>{{ doc.name }}</a></li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+            {% endif %}
+
+            {% if tile_name == 'Мануалы' %}
+
+                <div class="manuals">
+                    {% for doc in docs %}
+                                <div class="manuals_layout">
+                                    <img src="{{ doc.image.url }}" alt="{{ doc.name }}">
+                                    <figcaption><a href="{{ doc.file.url }}" target="_blank"><i class=""></i>{{ doc.name }}</a></figcaption>
+                                </div>
+                    {% endfor %}
+                </div>
+            {% endif %}
+
+
+
 
     </div>
 

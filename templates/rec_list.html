@@ -181,7 +181,7 @@
                     {% for tile in tiles %}
                         <div class="tile_layout">
                             <a href={% url 'Документы' tile.name %}><img src="{{ tile.image.url }}" alt="{{ tile.name }}"></a>
-                            <figcaption>{{ tile.name }}</figcaption>
+                            <!--<figcaption>{{ tile.name }}</figcaption>-->
                         </div>
                     {% endfor %}
                 </div>
@@ -389,14 +389,13 @@
 
 
                     {% for objective in objectives_sliced %}
-                    <div class = "objectives_layout" style="width:15%;height:100%;overflow: hidden;
-                     word-wrap: break-word;white-space: nowrap;">
+                    <div class = "objectives_layout" style="width:calc(13%);height:50px">
                         <p style="display:none"{{ objective.get_author_names }}></p>
 
 
 
                         <div class="objective_author">
-                            <p>{{ objective.created_date }}&nbsp{{ objective.author_name }}:</p>
+                            <p>{{ objective.created_date }}<br>{{ objective.author_name }}:</p>
                         </div>
 
                         {% if user_is_admin == True %}
@@ -444,14 +443,14 @@
                 {% else %}
 
                     {% for objective in objectives %}
-                    <div class = "objectives_layout" style="width:15%;height:100%;overflow: hidden;
+                    <div class = "objectives_layout" style="width:13%;height:100%;overflow: hidden;
                      word-wrap: break-word;white-space: nowrap;">
                         <p style="display:none"{{ objective.get_author_names }}></p>
 
 
 
                         <div class="objective_author">
-                            <p>{{ objective.created_date }}&nbsp{{ objective.author_name }}:</p>
+                            <p>{{ objective.author_name }},&nbsp{{ objective.created_date }}:</p>
                         </div>
 
                         {% if user_is_admin == True %}
@@ -477,7 +476,7 @@
                                     <div class="status_layout" style="">
                                         <p style="display: none" {{ status.get_author_names }}></p>
 
-                                        <p id="">{{ status.created }}&nbsp{{ status.author_name }}:</p>
+                                        <p id="">{{ status.author_name }},&nbsp{{ status.created }}:</p>
                                         <p id="">{{ status.status | linebreaks }}</p>
                                     </div>
 
@@ -668,7 +667,7 @@
                     e.target.classList.add('objectives_layout');
                     let other_stickers = document.getElementsByClassName('objectives_layout')
                     for (let i = 0; i < other_stickers.length; i++) {
-                        other_stickers[i].style.width = '15%';
+                        other_stickers[i].style.width = '13%';
                         other_stickers[i].style.marginLeft = '3%';
                     }
                     e.target.style.height = '100%';
