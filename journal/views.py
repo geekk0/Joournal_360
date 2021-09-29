@@ -405,7 +405,7 @@ def rec_list(request, *device):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
 
-    records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+    records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')[:14]
 
     notes = prepare_note(request)
 
@@ -551,7 +551,7 @@ def find_by_date(request):
 
     task_date = date
 
-    all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+    all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')[:7]
 
     search_query = records.filter(report_date=date)
 
@@ -656,8 +656,7 @@ def sort_by_group(request, group_name):
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
         exclude(name__in=admin_groups).order_by('id')
 
-
-    all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
+    all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')[:7]
 
     single_group = Group.objects.get(name=group_name)
     single_group_authors = User.objects.filter(groups__name=single_group)
@@ -788,7 +787,7 @@ def find_by_text(request, *args, **kwargs):
 
     search_query = records.filter(text__icontains=input_text).order_by('-created_date')
 
-    all_records = records
+    all_records = records[:7]
 
     comments = Comments.objects.all().order_by('-created')
 
@@ -859,7 +858,7 @@ def sort_by_department(request, department_name):
 
     authors_list = User.objects.filter(groups__in=author_groups_list)
 
-    records = Record.objects.filter(author__in=authors_list)
+    records = Record.objects.filter(author__in=authors_list).order_by('-created_date')[:7]
 
     user_groups = request.user.groups.all()
 
