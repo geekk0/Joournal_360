@@ -442,7 +442,7 @@ def rec_list(request, *device):
     if len(objectives) > 5:
         objectives_full = True
 
-    tiles = Tiles.objects.filter(departments__in=user_departments)
+    tiles = Tiles.objects.filter(departments__in=user_departments).order_by('name')
 
     if request.user.has_perm('journal.change_record'):
         user_is_admin = True
@@ -578,6 +578,7 @@ def find_by_date(request):
     else:
         device = 'pc'
 
+
     scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments).distinct()
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
@@ -596,8 +597,6 @@ def find_by_date(request):
     else:
         user_is_admin = False
 
-
-
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'set_date': set_date, 'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
@@ -615,10 +614,9 @@ def find_by_date(request):
     return render(request, 'search_result.html', context)
 
 
-def sort_by_group(request, group_id):
+def sort_by_group(request, group_name):
 
     shifts_dates = shifts_match()
-
 
     admin_groups = detect_admin_groups()
 
@@ -627,7 +625,7 @@ def sort_by_group(request, group_id):
     roles = str(get_roles(request))
     user_groups = request.user.groups.all()
 
-    selected_group = Group.objects.get(id=group_id)
+    selected_group = Group.objects.get(name=group_name)
 
     user_departments_list = []
 
@@ -661,11 +659,13 @@ def sort_by_group(request, group_id):
 
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
-    single_group = Group.objects.get(id=group_id)
+    single_group = Group.objects.get(name=group_name)
     single_group_authors = User.objects.filter(groups__name=single_group)
     search_query = records.filter(author__in=single_group_authors).order_by('-created_date')
 
     comments = Comments.objects.all()
+
+    tiles = Tiles.objects.filter(departments=user_departments.first()).order_by('name')
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -687,14 +687,13 @@ def sort_by_group(request, group_id):
 
     objectives = Objectives.objects.filter(departments__in=user_departments).order_by('-created_date')
 
-
     context = {'search_query': search_query, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
                'user_departments_list': user_departments_list, 'all_records': all_records,
                'shifts_dates': json.dumps(shifts_dates), 'device': device, 'task_date': task_date,
-               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives':objectives,
-               'user_is_admin': user_is_admin}
+               'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives': objectives,
+               'user_is_admin': user_is_admin, 'tiles': tiles}
 
     return render(request, 'search_result.html', context)
 
@@ -848,17 +847,15 @@ def find_by_text(request, *args, **kwargs):
     return render(request, 'search_result.html', context)
 
 
-def sort_by_department(request, department_id):
+def sort_by_department(request, department_name):
 
     shifts_dates = shifts_match()
 
     admin_groups = detect_admin_groups()
 
-    author_groups_list = Group.objects.filter(department=department_id)
+    selected_department = Department.objects.get(name=department_name)
 
-    selected_department = department_id
-
-    selected_dep = Department.objects.get(id=selected_department)
+    author_groups_list = Group.objects.filter(department=selected_department.id)
 
     authors_list = User.objects.filter(groups__in=author_groups_list)
 
@@ -898,7 +895,7 @@ def sort_by_department(request, department_id):
 
     comments = Comments.objects.all().order_by('-created')
 
-    tiles = Tiles.objects.filter(departments=selected_dep)
+    tiles = Tiles.objects.filter(departments=selected_department).order_by('name')
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -913,7 +910,7 @@ def sort_by_department(request, department_id):
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
-    objectives = Objectives.objects.filter(departments=selected_dep).distinct().order_by('-created_date')
+    objectives = Objectives.objects.filter(departments=selected_department).distinct().order_by('-created_date')
 
     if request.user.has_perm('journal.change_record'):
         user_is_admin = True
@@ -1299,7 +1296,9 @@ def show_docs(request, tile_name):
 
     docs = Docs.objects.filter(tile_category=tile_id)
 
-    context = {'docs': docs, 'tile_name': tile_name, 'devices': devices}
+    current_user = request.user
+
+    context = {'docs': docs, 'tile_name': tile_name, 'devices': devices, 'current_user': current_user}
 
     return render(request, 'documents.html', context)
 
@@ -1313,9 +1312,9 @@ def show_device_manuals(request, device_name):
 
     manuals = ManualDocs.objects.filter(device=device)
 
-    print(manuals)
+    current_user = request.user
 
-    context = {'manuals': manuals}
+    context = {'manuals': manuals, 'current_user': current_user}
 
     return render(request, 'documents.html', context)
 

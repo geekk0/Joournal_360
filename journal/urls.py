@@ -25,8 +25,8 @@ urlpatterns = [
     path('добавить отчет/', views.new_edit_note, name='добавить отчет'),
     path('мануалы к устройству/<str:device_name>', views.show_device_manuals, name='мануалы к устройству'),
 
-    path('фильтр по отделу/<int:department_id>', views.sort_by_department, name='фильтр по отделу'),
-    path('фильтр по группе/<int:group_id>', views.sort_by_group, name='фильтр по группе'),
+    path('фильтр по отделу/<str:department_name>', views.sort_by_department, name='фильтр по отделу'),
+    path('фильтр по группе/<str:group_name>', views.sort_by_group, name='фильтр по группе'),
     path('сменить пароль/', views.ResetPasswordView.as_view(), name='сменить пароль'),
     path('отправить email/', views.send_email_with_smptlib, name='отправить email'),
     path('Документы/<str:tile_name>', views.show_docs, name='Документы'),
