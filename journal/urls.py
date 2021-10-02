@@ -4,7 +4,6 @@ from Journal_360 import settings
 from django.conf.urls.static import static
 from . import views
 
-
 urlpatterns = [
     path('', views.rec_list, name='rec_list'),
     path('регистрация/', views.RegistrationView.as_view(), name='регистрация'),
