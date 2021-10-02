@@ -102,6 +102,7 @@
                                 {% else %}
                                     <!--<a href="{% url 'отправить email' %}">Отправить Email</a>-->
                                     <span><p id="username">{{ current_user }}</p></span>
+                                    <a href="{% url 'опубликовать тест' %}">опубликовать тест</a>
                                     <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
                                     ></a>
                                 {% endif %}
@@ -185,6 +186,7 @@
                     {% endfor %}
                 </div>
             {% endif %}
+        </div>
     </div>
 
     <script type="application/javascript">
@@ -352,7 +354,7 @@
             </li>
         {% endfor %}
     </ul>
-{% endif %}
+        {% endif %}
 
         {% if device != 'mobile' %}
             <div id="add_objective" style="margin-top: 2%;">
@@ -520,8 +522,20 @@
                                             {% endfor %}
                                         </div>
                                     </div>
+
                             {% endif %}
+                        <div class="note_images">
+
+                            {% for image in notes.noteimages_set.all %}
+                                <div class="note_images_layout" style="width:100%">
+                                    <img src="{{ image.image.url }}" alt="{{ image.name }}">
+                                </div>
+                            {% endfor %}
+
                         </div>
+                        </div>
+
+
                 </div>
 
 
@@ -701,6 +715,16 @@
                 <p style="display: none">{{ recs.get_author_names }}</p>
                  <p class="author_name">{{ recs.report_date }}&nbsp{{ recs.author_name }}</p>
                  <p id="record_text" style="">{{recs.text|linebreaks }}</p>
+                 <div class="record_images">
+
+                            {% for image in recs.recimages_set.all %}
+                                <div class="record_images_layout">
+                                    <img src="{{ image.image.url }}" alt="{{ image.name }}">
+                                </div>
+                            {% endfor %}
+
+                        </div>
+
             <div class="comments">
                      <p style="display:none ">{{ recs.get_comments_count }}</p>
                      {% if recs.comments_count > 0 %}
@@ -729,6 +753,11 @@
         <script type="application/javascript">
             document.addEventListener("DOMContentLoaded", color_author_name)
 
+            document.querySelectorAll(".note_images_layout, .record_images_layout").forEach(item => {
+            item.addEventListener('click', fullsize_image)
+            })
+
+
             function color_author_name() {
                 let author_name = document.getElementsByClassName('author_name')
                 for (let i = 0; i < author_name.length; i++) {
@@ -751,6 +780,9 @@
                 }
             }
 
+            function fullsize_image(item) {
+                item.style.width = "70%"
+            }
         </script>
 
 

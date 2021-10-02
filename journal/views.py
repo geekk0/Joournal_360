@@ -1,10 +1,6 @@
-import itertools
 import datetime
 import json
 import smtplib
-import ssl
-from email.header import Header
-from email.utils import formataddr
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
@@ -23,12 +19,13 @@ from dateutil.relativedelta import MO, TU, WE, TH, FR, SA, SU
 from django.contrib import messages
 from django.core.mail import send_mail
 from email.message import EmailMessage
+from email.mime.image import MIMEImage
 from itertools import *
 from operator import *
 
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
-    ScheduledTasks, RecordTags, Tiles, Docs, Devices, ManualDocs
+    ScheduledTasks, RecordTags, Tiles, Docs, Devices, ManualDocs, NoteImages, RecImages
 from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm
 from django_python3_ldap.utils import format_search_filters
 
@@ -1199,17 +1196,27 @@ def new_edit_note(request):
     return HttpResponse(status=204)
 
 
-def publish_notes_to_records():
+def publish_notes_to_records(request):
+    print('start - publish_notes_to_records')
     all_notes = Notes.objects.all()
     for note in all_notes:
         if (len(note.message) > 34) and (note.status == 'initial'):
+            print(note.message)
             author = note.author
             created_date = note.created_date
             full_text = note.message
             record = Record.objects.create(author=author, created_date=created_date, text=full_text)
+            images = NoteImages.objects.filter(of_note=note)
+            print('обходим изображения '+note.message)
+            for image in images:
+                print(image.name)
+                rec_images = RecImages.objects.create(of_record=record, name=image.name, image=image.image)
+                rec_images.save()
             note.status = 'published'
             note.to_record = record
             note.save()
+
+    return HttpResponseRedirect('/')
 
 
 def update_record_from_note():
@@ -1251,12 +1258,18 @@ def send_email_with_smptlib(request, *args, **kwargs):
         username = record.author.username
         password = ldap_password("recall", username)
 
+        """image = MIMEImage(_imagedata='img_data', name=os.path.basename(record.image))
+        msg.attach(image)"""
+
         msg = EmailMessage()
+
         msg.set_content(record.text + '\n' + '\n')
 
         msg['Subject'] = 'Отчет за ' + date
         msg['From'] = request.user.email
         msg['To'] = ["o.litvinenko@360tv.ru", 'mufasanw@gmail.com']
+
+
 
         server = smtplib.SMTP(hostname, 25)
         server.ehlo()  # Secure the connection

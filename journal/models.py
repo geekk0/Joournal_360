@@ -2,7 +2,6 @@ from django.conf import settings
 from django.db import models
 from django.utils import timezone
 from django.contrib.auth.models import User, Group
-from PIL import Image
 
 
 class Record(models.Model):
@@ -12,8 +11,10 @@ class Record(models.Model):
     text = models.TextField(default='', verbose_name='Текст')
     report_date = models.DateField(blank=True, default=timezone.now,  verbose_name='За какое число')
     comments_count = models.IntegerField(default=0, editable=False, verbose_name='Количество комментов')
-    author_group = models.CharField(blank=True, null=True, editable=False, verbose_name='Группа автора отчета', max_length=64)
-    author_name = models.CharField(blank=True, null=True, editable=False, verbose_name='Имя и фамилия автора отчета', max_length=64)
+    author_group = models.CharField(blank=True, null=True, editable=False, verbose_name='Группа автора отчета',
+                                    max_length=64)
+    author_name = models.CharField(blank=True, null=True, editable=False, verbose_name='Имя и фамилия автора отчета',
+                                   max_length=64)
 
     def publish(self):
         self.created_date = timezone.now()
@@ -49,7 +50,8 @@ class Notes(models.Model):
                                verbose_name='от')
     status = models.CharField(default='initial', null=True, blank=True, verbose_name='Статус (для финализации)',
                               max_length=64)
-    to_record = models.OneToOneField(Record, on_delete=models.CASCADE, null=True, blank=True, verbose_name='Какая запись создана из заметки')
+    to_record = models.OneToOneField(Record, on_delete=models.CASCADE, null=True, blank=True,
+                                     verbose_name='Какая запись создана из заметки')
 
     def publish(self):
         self.created_date = timezone.now()
@@ -61,6 +63,22 @@ class Notes(models.Model):
     class Meta:
         verbose_name = 'Заметка'
         verbose_name_plural = 'Заметки'
+
+
+class Images(models.Model):
+    name = models.CharField(max_length=256, default=None)
+    image = models.ImageField(upload_to='', verbose_name='Загрузить фото', blank=True, null=True)
+
+    def __str__(self):
+        return str(self.name)
+
+
+class RecImages(Images):
+    of_record = models.ForeignKey(Record, on_delete=models.CASCADE, verbose_name='К записи')
+
+
+class NoteImages(Images):
+    of_note = models.ForeignKey(Notes, on_delete=models.CASCADE, verbose_name='К заметке')
 
 
 class Comments(models.Model):
@@ -205,15 +223,6 @@ class ObjectivesDone(models.Model):
         verbose_name_plural = 'Выполненные задачи'
 
 
-class Images(models.Model):
-    record = models.ForeignKey(Record, default=None, on_delete=models.CASCADE)
-    image = models.ImageField(upload_to='', verbose_name='Загрузить фото', blank=True, null=True)
-
-
-def get_images(rec_name):
-    return Images.objects.get(record=rec_name)
-
-
 class ScheduledTasks(models.Model):
     start_date = models.DateField(blank=True, null=True, max_length=64, verbose_name='На какой день(дни) задание')
     REGULARITY_OPTIONS = [
@@ -223,7 +232,8 @@ class ScheduledTasks(models.Model):
         ('on weekends', 'По выходным'),
         ('on workdays', 'По будням'),
         ]
-    regularity = models.CharField(max_length=64, choices=REGULARITY_OPTIONS, default=None, verbose_name='С какой периодичностью выполнять задание')
+    regularity = models.CharField(max_length=64, choices=REGULARITY_OPTIONS, default=None,
+                                  verbose_name='С какой периодичностью выполнять задание')
     date_list = models.TextField(blank=True, null=True, verbose_name='Все даты задания:')
     name = models.CharField(max_length=64, null=True, blank=True, verbose_name='Название задания')
     text = models.TextField(blank=True, null=True, verbose_name='Что сделать(подробно):')
@@ -294,8 +304,7 @@ class Docs(models.Model):
                                       verbose_name='Относится к категории документов')
     image = models.ImageField(blank=True, null=True, upload_to='images/',
                               verbose_name='Изображение документа')
-    file = models.FileField(blank=True, null=True, upload_to='files/',
-                              verbose_name='Файл')
+    file = models.FileField(blank=True, null=True, upload_to='files/', verbose_name='Файл')
 
     def __str__(self):
         return str(self.name)

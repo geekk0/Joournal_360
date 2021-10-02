@@ -33,6 +33,7 @@ urlpatterns = [
 
     path('по дате мобильный/', views.by_date_view, name='по дате мобильный'),
     path('фильтр по отделу мобильный/', views.by_group_view, name='фильтр по отделу мобильный'),
+    path('опубликовать тест/', views.publish_notes_to_records, name='опубликовать тест'),
 
 ]
 

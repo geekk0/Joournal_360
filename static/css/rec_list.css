@@ -931,5 +931,36 @@ display: none;
 
 .manuals_layout li{
 
+}
 
+.note_images{
+    width:100%;
+}
+
+.note_images_layout{
+    width:8%;
+    margin-left:1%;
+    margin-bottom:1%;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+/*.note_images_layout img{
+    width:100%;
+}*/
+
+.record_images{
+    width:100%;
+}
+
+.record_images_layout{
+    width:4%;
+    margin-left:1%;
+    margin-bottom:1%;
+    display: inline-block;
+    vertical-align: bottom;
+}
+
+.record_images_layout img{
+    width:100%;
 }
