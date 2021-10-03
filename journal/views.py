@@ -1291,9 +1291,10 @@ def custom_format_search_filters(ldap_fields):
     # Call the base format callable."""
     search_filters = format_search_filters(ldap_fields)
     # Advanced: apply custom LDAP filter logic.
-    search_filters.append("(|(department=Служба технического обеспечения)(department=Отдел информационных технологий))")
+    search_filters.append("(|(department=Служба технического обеспечения)(department=Отдел информационных технологий)(mail=Journal360@360tv.ru))")
     # All done!
     return search_filters
+
 
 
 def show_docs(request, tile_name):
