@@ -361,11 +361,11 @@ def detect_admin_groups():
 
     group_names = []
 
-
     for user in all_users:
         if user.has_perm('journal.change_record'):
-            group_name = Group.objects.get(user=user.id)
-            group_names.append(group_name)
+            if user.groups.exists():
+                group_name = Group.objects.get(user=user.id)
+                group_names.append(group_name)
     return group_names
 
 
