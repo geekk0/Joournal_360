@@ -1296,7 +1296,6 @@ def custom_format_search_filters(ldap_fields):
     return search_filters
 
 
-
 def show_docs(request, tile_name):
 
     tile = Tiles.objects.get(name=tile_name)
