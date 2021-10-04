@@ -945,9 +945,14 @@ display: none;
     vertical-align: bottom;
 }
 
-/*.note_images_layout img{
+.note_images_layout:hover{
+    width:35%;
+}
+
+
+.note_images_layout img{
     width:100%;
-}*/
+}
 
 .record_images{
     width:100%;
@@ -959,6 +964,10 @@ display: none;
     margin-bottom:1%;
     display: inline-block;
     vertical-align: bottom;
+}
+
+.record_images_layout:hover{
+    width:35%;
 }
 
 .record_images_layout img{

@@ -527,7 +527,7 @@
                         <div class="note_images">
 
                             {% for image in notes.noteimages_set.all %}
-                                <div class="note_images_layout" style="width:100%">
+                                <div class="note_images_layout">
                                     <img src="{{ image.image.url }}" alt="{{ image.name }}">
                                 </div>
                             {% endfor %}
@@ -753,11 +753,6 @@
         <script type="application/javascript">
             document.addEventListener("DOMContentLoaded", color_author_name)
 
-            document.querySelectorAll(".note_images_layout, .record_images_layout").forEach(item => {
-            item.addEventListener('click', fullsize_image)
-            })
-
-
             function color_author_name() {
                 let author_name = document.getElementsByClassName('author_name')
                 for (let i = 0; i < author_name.length; i++) {
@@ -780,9 +775,7 @@
                 }
             }
 
-            function fullsize_image(item) {
-                item.style.width = "70%"
-            }
+
         </script>
 
 
