@@ -943,6 +943,7 @@ display: none;
     margin-bottom:1%;
     display: inline-block;
     vertical-align: bottom;
+    position: relative;
 }
 
 .note_images_layout:hover{
@@ -972,4 +973,34 @@ display: none;
 
 .record_images_layout img{
     width:100%;
+}
+
+#add_note_image{
+    width:12%;
+    margin-left:35%;
+    margin-top: 5%;
+}
+
+#add_note_image input{
+    visibility:hidden;
+    width:0;
+    height:0
+}
+
+.remove_image{
+    display: none;
+    position: absolute;
+    top: 5%;
+    right: 5%;
+    font-size: 16pt;
+    width:4%;
+}
+
+.remove_image a{
+    color:red;
+    text-decoration: none;
+}
+
+.note_images_layout:hover .remove_image{
+    display: inline-block;
 }

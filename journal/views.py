@@ -1,5 +1,6 @@
 import datetime
 import json
+import os
 import smtplib
 
 from django.contrib.auth import authenticate, login, logout
@@ -8,6 +9,7 @@ from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
 from django.utils import timezone
+from django.views.decorators.csrf import csrf_protect
 from django.views.generic import DetailView, View
 from django.views.generic import TemplateView, ListView
 from django.contrib.auth.models import User, Group
@@ -26,7 +28,7 @@ from operator import *
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
     ScheduledTasks, RecordTags, Tiles, Docs, Devices, ManualDocs, NoteImages, RecImages
-from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm
+from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm, UploadFileForm
 from django_python3_ldap.utils import format_search_filters
 
 
@@ -1246,22 +1248,15 @@ def send_email_with_smptlib(request, *args, **kwargs):
 
         date = (datetime.datetime.strptime(str(record.created_date.date()), "%Y-%m-%d").strftime("%d.%m.%Y"))
 
-        """department = Department.objects.filter(groups__in=Group.objects.filter(user=record.author))
-
-        group = Group.objects.get(user=record.author)"""
-
-        """hostname = "smtp.office365.com"
-        username = "journal360@outlook.com"
-        password = "3P4cnprkBzWxB9zK"""""
-
         hostname = "email.mosobltv.ru"
         username = record.author.username
         password = ldap_password("recall", username)
 
-        """image = MIMEImage(_imagedata='img_data', name=os.path.basename(record.image))
-        msg.attach(image)"""
+        image = MIMEImage(_imagedata='img_data', name=os.path.basename(record.image))
 
         msg = EmailMessage()
+
+        msg.attach(image)
 
         msg.set_content(record.text + '\n' + '\n')
 
@@ -1357,3 +1352,29 @@ def check_user_ip(request):
     else:
         return 'internet'
 
+
+@csrf_protect
+def add_photo(request):
+
+    if request.method == 'POST':
+
+        form = UploadFileForm(request.POST, request.FILES)
+
+        print(request.FILES)
+
+        note = Notes.objects.get(author_id=request.user.id)
+
+        for key, value in request.FILES.items():
+            if str(value).endswith(('.png', 'jpg', 'gif', 'svg', 'jpeg')):
+                new_note_image = NoteImages.objects.create(name=str(value), image=value, of_note=note)
+                new_note_image.save()
+
+    return HttpResponseRedirect('/')
+
+
+def remove_photo(request, image_id):
+    photo = NoteImages.objects.get(id=image_id)\
+
+    photo.delete()
+
+    return HttpResponseRedirect('/')

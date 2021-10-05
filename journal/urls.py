@@ -22,6 +22,9 @@ urlpatterns = [
     path('завершить задание/<int:objective_id>', views.finalize_objective, name='завершить задание'),
     path('добавить регулярное задание/', views.AddScheduledTask.as_view(), name='добавить регулярное задание'),
     path('добавить отчет/', views.new_edit_note, name='добавить отчет'),
+    path('добавить фото/', views.add_photo, name='добавить фото'),
+    path('удалить фото/<int:image_id>', views.remove_photo, name='удалить фото'),
+
     path('мануалы к устройству/<str:device_name>', views.show_device_manuals, name='мануалы к устройству'),
 
     path('фильтр по отделу/<str:department_name>', views.sort_by_department, name='фильтр по отделу'),

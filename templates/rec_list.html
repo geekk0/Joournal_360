@@ -100,7 +100,7 @@
                                 {% if device == 'mobile' %}
                                     <span><p id="username">{{ current_user }}</p></span>
                                 {% else %}
-                                    <!--<a href="{% url 'отправить email' %}">Отправить Email</a>-->
+                                    <a href="{% url 'отправить email' %}">Отправить Email</a>
                                     <span><p id="username">{{ current_user }}</p></span>
                                     <a href="{% url 'опубликовать тест' %}">опубликовать тест</a>
                                     <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
@@ -521,7 +521,18 @@
 
                                             {% endfor %}
                                         </div>
+
+                                        <form name="add_photo" style="" enctype="multipart/form-data" id="add_note_image"
+                                                    action="{% url 'добавить фото' %}" method="POST">
+                                            {% csrf_token %}
+                                            <label for="file-selector" >
+                                                <img style="width:100%" src={% static 'images/348334_200_negate.png'%} >
+                                            </label>
+                                            <input type="file" onchange="attach_photo()" id="file-selector" multiple
+                                                   name="images">
+                                        </form>
                                     </div>
+
 
                             {% endif %}
                         <div class="note_images">
@@ -529,6 +540,9 @@
                             {% for image in notes.noteimages_set.all %}
                                 <div class="note_images_layout">
                                     <img src="{{ image.image.url }}" alt="{{ image.name }}">
+                                    <div class="remove_image">
+                                        <a  href={% url 'удалить фото' image.id %}><img style="width:100%" src={% static 'images/supprimerhistorique7.webp'%} ></a>
+                                    </div>
                                 </div>
                             {% endfor %}
 
@@ -544,6 +558,10 @@
 
             function send_report() {
                 document.forms['new_report'].submit()
+            }
+
+            function attach_photo() {
+                document.forms['add_photo'].submit()
             }
 
             function extend_report(text) {

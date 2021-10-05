@@ -180,3 +180,9 @@ class AddScheduledTaskForm(forms.ModelForm):
         fields = ['departments', 'start_date', 'name', 'week_days', 'regularity', 'text']
 
 
+class UploadFileForm(forms.Form):
+    title = forms.CharField(max_length=50)
+    file = forms.FileField()
+
+
+
