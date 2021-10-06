@@ -431,6 +431,7 @@ def rec_list(request, *device):
 
     logger.debug(request.META['REMOTE_ADDR'])
     logger.debug(request.META['X_FORWARDED_FOR'])
+    logger.debug(request.META.get('HTTP_X_REAL_IP'))
     user_agent = request.META['HTTP_USER_AGENT']
 
     if 'Mobile' in user_agent:
