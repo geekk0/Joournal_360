@@ -429,7 +429,7 @@ def rec_list(request, *device):
 
     user_network = check_user_ip(request)
 
-    get_client_ip(request)
+    logger.debug(request.META['REMOTE_ADDR'], request.META['X_FORWARDED_FOR'])
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -1386,11 +1386,3 @@ def remove_photo(request, image_id):
     return HttpResponseRedirect('/')
 
 
-def get_client_ip(request):
-    x_forwarded_for = request.META.get('HTTP_X_FORWARDED_FOR')
-    if x_forwarded_for:
-        ip = x_forwarded_for.split(',')[0]
-    else:
-        ip = request.META.get('REMOTE_ADDR')
-        logger.debug(ip)
-    return ip
