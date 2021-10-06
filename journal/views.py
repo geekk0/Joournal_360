@@ -429,8 +429,8 @@ def rec_list(request, *device):
 
     user_network = check_user_ip(request)
 
-    logger.debug(request.META['REMOTE_ADDR'], request.META['X_FORWARDED_FOR'])
-
+    logger.debug(request.META['REMOTE_ADDR'])
+    logger.debug(request.META['X_FORWARDED_FOR'])
     user_agent = request.META['HTTP_USER_AGENT']
 
     if 'Mobile' in user_agent:
