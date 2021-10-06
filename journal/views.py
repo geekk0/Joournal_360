@@ -2,6 +2,7 @@ import datetime
 import json
 import os
 import smtplib
+import logging
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
@@ -30,6 +31,9 @@ from .models import Notes, Record, Images, Comments, Department, Objectives, Obj
     ScheduledTasks, RecordTags, Tiles, Docs, Devices, ManualDocs, NoteImages, RecImages
 from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm, UploadFileForm
 from django_python3_ldap.utils import format_search_filters
+
+
+logger = logging.getLogger(__name__)
 
 
 class LoginView(View):
@@ -424,6 +428,8 @@ def rec_list(request, *device):
     tags = RecordTags.objects.filter(departments__in=user_departments).distinct()
 
     user_network = check_user_ip(request)
+
+    logger.debug(request.META['HTTP_HOST'])
 
     user_agent = request.META['HTTP_USER_AGENT']
 
