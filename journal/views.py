@@ -429,7 +429,7 @@ def rec_list(request, *device):
 
     user_network = check_user_ip(request)
 
-    logger.debug(request.META['HTTP_HOST'])
+    logger.debug(request.META.get('REMOTE_ADDR'))
 
     user_agent = request.META['HTTP_USER_AGENT']
 
