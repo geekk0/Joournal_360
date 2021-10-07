@@ -674,7 +674,15 @@ display: none;
     border: none;
     padding:10px;
     scrollbar-width: none;
+    -webkit-scroll-snap-type: none;
+    -webkit-border-image: none;
+    -ms-overflow-style: none;
+    overflow: hidden;
+    outline: none;
+}
 
+#department_select ::-webkit-scrollbar {
+    display: none;
 }
 
 #department_select option{
