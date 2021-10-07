@@ -317,7 +317,6 @@ class Docs(models.Model):
 class ManualDocs(Docs):
     device = models.ForeignKey(Devices, blank=True, null=True, on_delete=models.CASCADE,
                                verbose_name='Относится к устройству')
-    file = models.FileField(blank=True, null=True, upload_to='files/', verbose_name='Файл')
 
 
     def __str__(self):
