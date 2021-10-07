@@ -102,7 +102,7 @@
                                 {% else %}
                                     <!--<a href="{% url 'отправить email' %}">Отправить Email</a>
                                     <a href="{% url 'опубликовать тест' %}">опубликовать тест</a>-->
-                                    {% if user_is_admin != True %}
+                                    {% if user_is_admin == True %}
                                         <a href="https://journal.360tv.ru/admin/">Управление</a>
                                     <span><p id="username">{{ current_user }}</p></span>
                                     {% endif %}
