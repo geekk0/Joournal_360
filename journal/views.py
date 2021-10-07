@@ -1258,11 +1258,11 @@ def send_email_with_smptlib(request, *args, **kwargs):
         username = record.author.username
         password = ldap_password("recall", username)
 
-        image = MIMEImage(_imagedata='img_data', name=os.path.basename(record.image))
+        #image = MIMEImage(_imagedata='img_data', name=os.path.basename(record.image))
 
         msg = EmailMessage()
 
-        msg.attach(image)
+        #msg.attach(image)
 
         msg.set_content(record.text + '\n' + '\n')
 
