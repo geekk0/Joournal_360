@@ -429,9 +429,10 @@ def rec_list(request, *device):
 
     user_network = check_user_ip(request)
 
-    logger.debug(request.META['REMOTE_ADDR'])
     logger.debug(request.META.get('HTTP_X_REAL_IP'))
     user_agent = request.META['HTTP_USER_AGENT']
+
+    print(request.META)
 
     if 'Mobile' in user_agent:
         device = 'mobile'
@@ -1351,7 +1352,7 @@ def ldap_password(action, username, password=None):
 
 def check_user_ip(request):
 
-    user_ip = request.META['HTTP_HOST']
+    user_ip = request.META.get('HTTP_X_REAL_IP')
 
     if user_ip.startswith('192.168') or user_ip.startswith('127'):
         return 'local'
