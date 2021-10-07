@@ -86,6 +86,11 @@ class AdminDocs(admin.ModelAdmin):
     list_filter = ['tile_category']
 
 
+class AdminManualDocs(admin.ModelAdmin):
+
+    list_filter = ['device']
+
+
 """admin.site.register(EngNotes, EngNotesAdmin)
 admin.site.register(DirNotes, DirNotesAdmin)
 admin.site.register(EngRec, EngRecAdmin)
@@ -105,6 +110,6 @@ admin.site.register(Docs, AdminDocs)
 admin.site.register(Devices)
 admin.site.register(RecImages)
 admin.site.register(NoteImages)
-
+admin.site.register(ManualDocs, AdminManualDocs)
 
 
