@@ -1354,7 +1354,7 @@ def check_user_ip(request):
 
     user_ip = request.META.get('HTTP_X_REAL_IP')
 
-    if user_ip.startswith('192.168') or user_ip.startswith('127'):
+    if user_ip.startswith('185.18.202') or user_ip.startswith('127'):
         return 'local'
     else:
         return 'internet'
