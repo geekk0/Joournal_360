@@ -324,3 +324,6 @@ class ManualDocs(Docs):
     class Meta:
         verbose_name = 'Мануал'
         verbose_name_plural = 'Мануалы'
+
+
+

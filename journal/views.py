@@ -25,6 +25,7 @@ from email.message import EmailMessage
 from email.mime.image import MIMEImage
 from itertools import *
 from operator import *
+from django.conf import settings
 
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
@@ -427,12 +428,15 @@ def rec_list(request, *device):
 
     tags = RecordTags.objects.filter(departments__in=user_departments).distinct()
 
-    user_network = check_user_ip(request)
+    if '.journal_360.com' in settings.ALLOWED_HOSTS:
+
+        user_network = 'local'
+
+    else:
+        user_network = check_user_ip(request)
 
     logger.debug(request.META.get('HTTP_X_REAL_IP'))
     user_agent = request.META['HTTP_USER_AGENT']
-
-    print(request.META)
 
     if 'Mobile' in user_agent:
         device = 'mobile'
@@ -1353,6 +1357,7 @@ def ldap_password(action, username, password=None):
 def check_user_ip(request):
 
     user_ip = request.META.get('HTTP_X_REAL_IP')
+
 
     if user_ip.startswith('185.18.202') or user_ip.startswith('127'):
         return 'local'
