@@ -183,7 +183,7 @@
         border: 1.5px solid white;
         margin-left: auto;
         margin-right: auto;
-        /*! padding-left: 0.8rem; */
+        overflow-wrap: break-word;
     !important;
         width: 100%;
 
