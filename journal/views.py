@@ -940,12 +940,6 @@ def by_date_view(request):
 
     shifts_dates = shifts_match()
 
-    context = {'shifts_dates': shifts_dates}
-
-    return render(request, 'mobile_by_date.html', context)
-
-
-def by_group_view(request):
     admin_groups = detect_admin_groups()
 
     multirole = False
@@ -969,6 +963,11 @@ def by_group_view(request):
 
     user_departments = Department.objects.filter(groups__in=user_groups)
 
+    if request.user.has_perm('journal.change_record'):
+        user_is_admin = True
+    else:
+        user_is_admin = False
+
     for dep in user_departments:
         for group in Group.objects.filter(department=dep):
             for author in User.objects.filter(groups__name=group):
@@ -978,11 +977,11 @@ def by_group_view(request):
 
     user_agent = request.META['HTTP_USER_AGENT']
 
-
     context = {'groups_authors_list': groups_authors_list, 'current_user': current_user, 'multirole': multirole,
-               'roles': roles, 'user_departments': user_departments}
+               'roles': roles, 'user_departments': user_departments, 'user_is_admin': user_is_admin,
+               'shifts_dates': shifts_dates}
 
-    return render(request, 'mobile_by_group.html', context)
+    return render(request, 'mobile_by_date.html', context)
 
 
 def create_shift_dates(start_date):

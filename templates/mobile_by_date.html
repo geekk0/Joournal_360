@@ -14,13 +14,7 @@
     <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
         <div class="header" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
 
-
-
-                    <div class="add_note">
-                        <a class="authorization" href="{% url 'добавить заметку' %}">Начать запись +</a>
-                    </div>
-
-                    <div class="logo">
+            <div class="logo">
 
                         <a href="/" >
                             <img src={% static 'images/360_International_white.png'%}>
@@ -42,8 +36,7 @@
 
 
                         <ul class="mobile_menu_list">
-                            <li><a href={% url 'по дате мобильный' %}>Найти по дате/тексту</a></li>
-                            <li><a href="{% url 'фильтр по отделу мобильный' %}">Отдел/Группа</a></li>
+                            <li><a href={% url 'поиск мобильный' %}>Найти отчет</a></li>
                             <li><a href="{% url 'logout' %}">Выйти</a></li>
 
                         </ul>
@@ -56,7 +49,7 @@
 
     <div class="find">
 
-        <div>
+        <div class="wrapper">
             <form name='sdate' class="selector-filter" action="{% url 'найти по дате' %}"
                                   id='datepicker' method="get" style="z-index: 2 !important">
 
@@ -69,9 +62,44 @@
 
             </form>
 
+            <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
+                                    <input name="q" type="text" id="textbox" placeholder="В тексте...">
+                                    <br>
+                                    <input id="search_text" type="submit" value="Найти">
+            </form>
         </div>
+    </div>
 
-        <script type="application/javascript">
+
+
+    <!--<div class="group_select">
+            <ul id="group" style="list-style-type:none">
+                {% if user_is_admin == True %}
+                    {% for department in user_departments %}
+                        <li><a href={% url 'фильтр по отделу' department.name %}>{{ department.name }}</a></li>
+                    {% endfor %}
+                {% endif %}
+            </ul>
+        </div>-->
+
+
+    <div class="groups_authors_select">
+
+
+
+        <ul id="group_author" style="list-style-type:none">
+
+            {% for group_author in groups_authors_list %}
+
+                <li><a href={% url 'фильтр по группе' group_author.name %}>{{ group_author.name }}</a></li>
+
+            {% endfor %}
+        </ul>
+
+    </div>
+
+
+    <script type="application/javascript">
 
                     document.addEventListener("DOMContentLoaded", init_colors)
 
@@ -108,43 +136,39 @@
 
                     function color_date(cell, shift) {
                         if (shift === 'shift_4_dates') {
-                                cell.style.background = 'rgb(0, 200, 0)' ;
+                                cell.style.color = 'rgb(0, 200, 0)' ;
                             }
                         if (shift === 'shift_3_dates') {
-                                cell.style.background = 'rgb(200, 0, 0)';
+                                cell.style.color = 'rgb(200, 0, 0)';
                             }
                         if (shift === 'shift_2_dates') {
-                                cell.style.background =  'rgb(0, 160, 255)';
+                                cell.style.color =  'rgb(0, 160, 255)';
                             }
                         if (shift === 'shift_1_dates') {
-                                cell.style.background = 'rgb(200, 200, 0)';
+                                cell.style.color = 'rgb(200, 200, 0)';
                             }
                     }
 
                     function groups_colors() {
-                        let groups = document.querySelectorAll('ul#group_author > li')
+                            let groups = document.querySelectorAll('ul#group_author > li')
 
-                        for (let i = 0; i < groups.length; i++) {
-                            let group_link = groups[i].querySelector('a')
-                            if (group_link.innerText === 'Смена Астахова' || group_link.innerText === 'IT Захаров')  {
-                                group_link.style.color = 'rgb(200, 200, 0)'
-                                console.log('shift found')
+                            for (let i = 0; i < groups.length; i++) {
+                                let group_link = groups[i].querySelector('a')
+                                if (group_link.innerText === 'Астахов и Козлов' || group_link.innerText === 'IT Захаров')  {
+                                    group_link.style.color = 'rgb(200, 200, 0)'
+                                }
+                                if (group_link.innerText === 'Черпаков и Долгов'|| group_link.innerText === 'IT Дмитриевский') {
+                                    group_link.style.color = 'rgb(0, 160, 255)'
+                                }
+                                if (group_link.innerText === 'Рославцев и Сидоренко'|| group_link.innerText === 'IT Деев') {
+                                    group_link.style.color = 'rgb(200, 0, 0)'
+                                }
+                                if (group_link.innerText === 'Бороздин и Литвиненко'|| group_link.innerText === 'IT Крутихин') {
+                                    group_link.style.color = 'rgb(0, 200, 0)'
+                                }
                             }
-                            if (group_link.innerText === 'Смена Черпакова'|| group_link.innerText === 'IT Дмитриевский') {
-                                group_link.style.color = 'rgb(0, 160, 255)'
-                                console.log('shift found')
-                            }
-                            if (group_link.innerText === 'Смена Рославцева'|| group_link.innerText === 'IT Деев') {
-                                group_link.style.color = 'rgb(200, 0, 0)'
-                                console.log('shift found')
-                            }
-                            if (group_link.innerText === 'Смена Бороздина'|| group_link.innerText === 'IT Крутихин') {
-                                group_link.style.color = 'rgb(0, 200, 0)'
-                                console.log('shift found')
-                            }
+
                         }
-
-                    }
 
 
                     window.onload = function() {
@@ -167,15 +191,14 @@
                     function send_date() {
                         document.forms['sdate'].submit()
                     }
-                    </script>
 
-        <div >
-            <form class="selector-filter" action="{% url 'найти по тексту' %}" method="get">
-                                    <input name="q" type="text" id="textbox" placeholder="В тексте...">
-                                    <br>
-                                    <input id="search_text" type="submit" value="Найти">
-            </form>
-        </div>
-    </div>
+
+
+
+    </script>
+
+
+-->
+
 
 {% endblock %}

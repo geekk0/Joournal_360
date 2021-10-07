@@ -33,8 +33,7 @@ urlpatterns = [
     path('отправить email/', views.send_email_with_smptlib, name='отправить email'),
     path('Документы/<str:tile_name>', views.show_docs, name='Документы'),
 
-    path('по дате мобильный/', views.by_date_view, name='по дате мобильный'),
-    path('фильтр по отделу мобильный/', views.by_group_view, name='фильтр по отделу мобильный'),
+    path('поиск мобильный/', views.by_date_view, name='поиск мобильный'),
     path('опубликовать тест/', views.publish_notes_to_records, name='опубликовать тест'),
 
 ]

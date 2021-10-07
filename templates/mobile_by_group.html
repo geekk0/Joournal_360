@@ -16,9 +16,7 @@
 
 
 
-                    <div class="add_note">
-                        <a class="authorization" href="{% url 'добавить заметку' %}">Начать запись +</a>
-                    </div>
+
 
                     <div class="logo">
 
@@ -43,8 +41,7 @@
 
 
                         <ul class="mobile_menu_list">
-                            <li><a href={% url 'по дате мобильный' %}>Найти по дате/тексту</a></li>
-                            <li><a href="{% url 'фильтр по отделу мобильный' %}">Отдел/Группа</a></li>
+                            <li><a href={% url 'поиск мобильный' %}>Найти отчет</a></li>
                             <li><a href="{% url 'logout' %}">Выйти</a></li>
 
                         </ul>
@@ -59,12 +56,11 @@
 
         <div class="group_select">
             <ul id="group" style="list-style-type:none">
-
-                {% for department in user_departments %}
-
-                    <li><a href={% url 'фильтр по отделу' department.name %}>{{ department.name }}</a></li>
-
-                {% endfor %}
+                {% if user_is_admin == True %}
+                    {% for department in user_departments %}
+                        <li><a href={% url 'фильтр по отделу' department.name %}>{{ department.name }}</a></li>
+                    {% endfor %}
+                {% endif %}
             </ul>
         </div>
 
