@@ -62,7 +62,7 @@
 
                 {% for department in user_departments %}
 
-                    <li><a href={% url 'фильтр по отделу' department.id %}>{{ department.name }}</a></li>
+                    <li><a href={% url 'фильтр по отделу' department.name %}>{{ department.name }}</a></li>
 
                 {% endfor %}
             </ul>
@@ -78,7 +78,7 @@
 
                                                         {% for group_author in groups_authors_list %}
 
-                                                            <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
+                                                            <li><a href={% url 'фильтр по группе' group_author.name %}>{{ group_author.name }}</a></li>
 
                                                         {% endfor %}
                                                 </ul>
@@ -92,7 +92,7 @@
 
                                             {% for group_author in groups_authors_list %}
 
-                                                <li><a href={% url 'фильтр по группе' group_author.id %}>{{ group_author.name }}</a></li>
+                                                <li><a href={% url 'фильтр по группе' group_author.name %}>{{ group_author.name }}</a></li>
 
                                             {% endfor %}
                                         </ul>

@@ -334,6 +334,8 @@
 
     <div class="content">
 
+        {% if device != 'mobile' %}
+
         <div id="add_objective" style="margin-top: 2%;">
                 <p id="label">Добавить задачу<br> (максимум 5 задач для отдела)</p>
                 <form name="new_objective" style="visibility: hidden"
@@ -477,7 +479,7 @@
 
         </div>
 
-
+        {% endif %}
 
         <script type="text/javascript">
 
