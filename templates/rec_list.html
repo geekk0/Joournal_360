@@ -100,11 +100,14 @@
                                 {% if device == 'mobile' %}
                                     <span><p id="username">{{ current_user }}</p></span>
                                 {% else %}
-                                    <a href="{% url 'отправить email' %}">Отправить Email</a>
+                                    <!--<a href="{% url 'отправить email' %}">Отправить Email</a>
+                                    <a href="{% url 'опубликовать тест' %}">опубликовать тест</a>-->
+                                    {% if user_is_admin != True %}
+                                        <a href="https://journal.360tv.ru/admin/">Управление</a>
                                     <span><p id="username">{{ current_user }}</p></span>
-                                    <a href="{% url 'опубликовать тест' %}">опубликовать тест</a>
-                                    <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
-                                    ></a>
+                                    {% endif %}
+                                        <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
+                                        ></a>
                                 {% endif %}
 
                             {% endif %}
