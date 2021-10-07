@@ -915,7 +915,7 @@ def sort_by_department(request, department_name):
 
     task_date = str(datetime.date.today())
 
-    scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments).distinct()
+    scheduled_dates_query = ScheduledTasks.objects.filter(departments=selected_department).distinct()
 
     scheduled_dates_dict = create_scheduled_tasks_dict(scheduled_dates_query)
 
