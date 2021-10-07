@@ -304,7 +304,6 @@ class Docs(models.Model):
                                       verbose_name='Относится к категории документов')
     image = models.ImageField(blank=True, null=True, upload_to='images/',
                               verbose_name='Изображение документа')
-    file = models.FileField(blank=True, null=True, upload_to='files/', verbose_name='Файл')
 
     def __str__(self):
         return str(self.name)
@@ -317,6 +316,8 @@ class Docs(models.Model):
 class ManualDocs(Docs):
     device = models.ForeignKey(Devices, blank=True, null=True, on_delete=models.CASCADE,
                                verbose_name='Относится к устройству')
+    file = models.FileField(blank=True, null=True, upload_to='files/', verbose_name='Файл')
+
 
     def __str__(self):
         return str(self.name)

@@ -81,9 +81,10 @@ class AdminRecordTags(admin.ModelAdmin):
     list_filter = ['departments']
 
 
-class AdminManualDocs(admin.ModelAdmin):
+class AdminDocs(admin.ModelAdmin):
 
-    list_filter = ['device']
+    list_filter = ['tile_category']
+
 
 """admin.site.register(EngNotes, EngNotesAdmin)
 admin.site.register(DirNotes, DirNotesAdmin)
@@ -100,9 +101,8 @@ admin.site.register(ObjectivesStatus)
 admin.site.register(ScheduledTasks)
 admin.site.register(RecordTags, AdminRecordTags)
 admin.site.register(Tiles)
-admin.site.register(Docs)
+admin.site.register(Docs, AdminDocs)
 admin.site.register(Devices)
-admin.site.register(ManualDocs, AdminManualDocs)
 admin.site.register(RecImages)
 admin.site.register(NoteImages)
 

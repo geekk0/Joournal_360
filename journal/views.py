@@ -428,7 +428,7 @@ def rec_list(request, *device):
 
     tags = RecordTags.objects.filter(departments__in=user_departments).distinct()
 
-    if '.journal_360.com' in settings.ALLOWED_HOSTS:
+    if '.journal_360.com' in settings.ALLOWED_HOSTS:  #check dev or prod
 
         user_network = 'local'
 
