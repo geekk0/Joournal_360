@@ -133,7 +133,7 @@
             <div class="wrapper">
 
                 <div id="tasks">
-                                <p id="task_area" style="color:red"></p>
+                    <p id="task_area" style="color:red"></p>
 
                 </div>
 
@@ -386,7 +386,18 @@
                     </form>
 
             </div>
+
+        {% else %}
+            <div id="tasks">
+                    <p id="task_area" style="color:red">{{ task_message|linebreaks }}</p>
+
+            </div>
+            <div class="objectives_status_mobile">
+                <a href="">Задач: {{ objectives_count }}, последняя: {{ last_objective_created }}</a>
+            </div>
         {% endif %}
+
+
             <div class = "objectives" id="objectives">
                 {% if objectives_full == True%}
 
@@ -643,7 +654,9 @@
                     let messages = document.getElementsByClassName('messages')
                     if (messages.length > 0) {
                         let add_objective = document.getElementById('add_objective')
-                        add_objective.style.marginTop = '1.2%'
+                        if (add_objective !== null) {
+                            add_objective.style.marginTop = '1.2%'
+                        }
                     }
                 })
 

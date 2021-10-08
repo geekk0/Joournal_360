@@ -30,6 +30,31 @@
         width:25%;
     }
 
+    #tasks{
+        display:inline-block;
+        margin-top: 0;
+        border: solid red 1px;
+        width: 80%;
+        margin-left: 10%;
+    }
+
+    #tasks p{
+        color:red;
+        font-size: 12pt;
+        margin:0;
+    }
+
+
+    .objectives_status_mobile{
+        margin-top:1%;
+        width: 80%;
+        margin-left: 12%;
+    }
+
+    .objectives_status_mobile a{
+        font-size: 12pt;
+    }
+
     .logout a {
 
         display: none;
@@ -101,10 +126,35 @@
 
     }
 
+    #add_note_image{
+        margin-top:3%;
+        margin-left: 40%;
+    }
+
+    #add_note_image label{
+        width:15%;
+    }
+
+    .note_images_layout{
+        width:30%;
+    }
+
+    .note_images_layout:hover{
+        width:30%;
+    }
+
+    .remove_image{
+        width:15%;
+    }
+
     .mobile_menu_list a {
 
         padding: 0px;
         margin: 0px;
+    }
+
+    #calendar{
+        display:none;
     }
 
     .mobile_menu_list li {

@@ -426,6 +426,15 @@ def rec_list(request, *device):
 
     task_date = str(datetime.date.today())
 
+    task_message = ''
+
+    for key, value in scheduled_dates_dict.items():
+        if key == task_date:
+            if task_message == '':
+                task_message = task_message+value
+            else:
+                task_message = task_message+'\n'+value
+
     tags = RecordTags.objects.filter(departments__in=user_departments).distinct()
 
     if '.journal_360.com' in settings.ALLOWED_HOSTS:  #check dev or prod
@@ -444,6 +453,14 @@ def rec_list(request, *device):
         device = 'pc'
 
     objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
+
+    objectives_count = objectives.count()
+
+    print(objectives_count)
+
+    last_objective = objectives.first()
+
+    last_objective_created = last_objective.created_date
 
     objectives_sliced = objectives[:5]
 
@@ -465,7 +482,9 @@ def rec_list(request, *device):
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'device': device, 'objectives': objectives,
                'user_is_admin': user_is_admin, 'task_date': task_date, 'tags': tags, 'objectives_full': objectives_full,
-               'objectives_sliced': objectives_sliced, 'tiles': tiles, 'user_network': user_network}
+               'objectives_sliced': objectives_sliced, 'tiles': tiles, 'user_network': user_network,
+               'task_message': task_message, 'objectives_count': objectives_count,
+               'last_objective_created': last_objective_created}
 
     return render(request, 'rec_list.html', context)
 
