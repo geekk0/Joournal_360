@@ -456,11 +456,11 @@ def rec_list(request, *device):
 
     objectives_count = objectives.count()
 
-    print(objectives_count)
-
     last_objective = objectives.first()
 
     last_objective_created = last_objective.created_date
+
+    logger.debug(objectives_count, last_objective_created, last_objective)
 
     objectives_sliced = objectives[:5]
 
