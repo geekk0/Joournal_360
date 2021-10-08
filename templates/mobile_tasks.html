@@ -7,104 +7,99 @@
 
 {% block content  %}
 
-    <link href="{% static 'css/datepicker.min.css' %}" rel="stylesheet" type="text/css">
-    <script src="{% static 'js/datepicker.min.js' %}"></script>
+
+        <link href="{% static 'css/datepicker.min.css' %}" rel="stylesheet" type="text/css">
+        <script src="{% static 'js/datepicker.min.js' %}"></script>
 
 
-    <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
-        <div class="header" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
+        <div class="template" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
+            <div class="header" style="background-image: url({% static 'images/back+logo_3840х2160-01.jpg'%}); background-size: cover">
 
-            <div class="logo">
+                <div class="logo">
 
-                        <a href="/" >
-                            <img src={% static 'images/360_International_white.png'%}>
-                        </a>
-
-
-                    </div>
-
-                    <div class="logout">
-                            {% if request.user.is_authenticated %}
-
-                                <p>{{ current_user }}</p>
-
-                            {% endif %}
-                    </div>
-
-                    <div class="mobile_menu">
-                        <img class="mobile_menu_image" src="{% static 'images/bm.png'%}">
+                            <a href="/" >
+                                <img src={% static 'images/360_International_white.png'%}>
+                            </a>
 
 
-                        <ul class="mobile_menu_list">
-                            <li><a href={% url 'поиск мобильный' %}>Найти отчет</a></li>
-                            <li><a href="{% url 'logout' %}">Выйти</a></li>
-
-                        </ul>
-                    </div>
-
-            </div>
-
-
-    </div>
-
-    <div class="objectives_mobile">
-
-    {% for objective in objective_sliced %}
-                    <div class = "objectives_mobile_layout" style="">
-                        <p style="display:none"{{ objective.get_author_names }}></p>
-
-
-
-                        <div class="objective_author">
-                            <p>{{ objective.author_name }},&nbsp{{ objective.created_date }}:</p>
                         </div>
 
-                        {% if user_is_admin == True %}
-                            <div id="finalize">
-                                <button  class="btn btn-success" onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
+                        <div class="logout">
+                                {% if request.user.is_authenticated %}
+
+                                    <p>{{ current_user }}</p>
+
+                                {% endif %}
+                        </div>
+
+                        <div class="mobile_menu">
+                            <img class="mobile_menu_image" src="{% static 'images/bm.png'%}">
+
+
+                            <ul class="mobile_menu_list">
+                                <li><a href={% url 'поиск мобильный' %}>Найти отчет</a></li>
+                                <li><a href="{% url 'logout' %}">Выйти</a></li>
+
+                            </ul>
+                        </div>
+
+                </div>
+
+
+        </div>
+
+        <div class="objectives_mobile">
+
+        {% for objective in objective_sliced %}
+                        <div class = "objectives_mobile_layout" style="">
+                            <p style="display:none"{{ objective.get_author_names }}></p>
+
+
+
+                            <div class="objective_author">
+                                <p>{{ objective.author_name }},&nbsp{{ objective.created_date }}:</p>
                             </div>
-                        {% endif %}
-                        <div class="objective_name">
-                            <p style="display:none ">{{ objective.get_status_count }}</p>
-                            {% if objective.status_count > 0 %}
-                                <p id="status_counter">Отчеты:{{ objective.status_count }}</p>
+
+                            {% if user_is_admin == True %}
+                                <div id="finalize">
+                                    <button  class="btn btn-success" onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
+                                </div>
                             {% endif %}
-                            <p style="text-overflow: ellipsis">{{ objective.name | linebreaks}}</p>
+                            <div class="objective_name">
+                                <p style="display:none ">{{ objective.get_status_count }}</p>
+                                {% if objective.status_count > 0 %}
+                                    <p id="status_counter">Отчеты:{{ objective.status_count }}</p>
+                                {% endif %}
+                                <p style="text-overflow: ellipsis">{{ objective.name | linebreaks}}</p>
 
+                            </div>
+
+
+
+                            <div id="status" style="display: none">
+                                <hr>
+                                {% for status in objective.objectivesstatus_set.all %}
+
+                                        <div class="status_layout" style="">
+                                            <p style="display: none" {{ status.get_author_names }}></p>
+
+                                            <p id="">{{ status.author_name }},&nbsp{{ status.created }}:</p>
+                                            <p id="">{{ status.status | linebreaks }}</p>
+                                        </div>
+
+                                {% endfor %}
+                            </div>
+
+
+                            <form id="add_status" style="display: none" action="{% url 'добавить статус' objective.id %}">
+                                <textarea name="input_text" type="text" id="status_box" placeholder="Добавить отчет..."></textarea>
+                                <br>
+                                <input name="status_text" id="send_button" class="btn btn-success" type="submit" value="Отправить">
+                            </form>
                         </div>
+        {% endfor %}
 
-
-
-                        <div id="status" style="display: none">
-                            <hr>
-                            {% for status in objective.objectivesstatus_set.all %}
-
-                                    <div class="status_layout" style="">
-                                        <p style="display: none" {{ status.get_author_names }}></p>
-
-                                        <p id="">{{ status.author_name }},&nbsp{{ status.created }}:</p>
-                                        <p id="">{{ status.status | linebreaks }}</p>
-                                    </div>
-
-                            {% endfor %}
-                        </div>
-
-
-                        <form id="add_status" style="display: none" action="{% url 'добавить статус' objective.id %}">
-                            <textarea name="input_text" type="text" id="status_box" placeholder="Добавить отчет..."></textarea>
-                            <br>
-                            <input name="status_text" id="send_button" class="btn btn-success" type="submit" value="Отправить">
-                        </form>
-                    </div>
-    {% endfor %}
-
-
-
-            </div>
-
-    </div>
-
-
+        </div>
 
 
 
