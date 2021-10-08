@@ -44,16 +44,11 @@
         margin:0;
     }
 
-
-    .objectives_status_mobile{
-        margin-top:1%;
-        width: 80%;
-        margin-left: 12%;
+    #tasks a{
+        font-size:12pt;
+        text-decoration: none;
     }
 
-    .objectives_status_mobile a{
-        font-size: 12pt;
-    }
 
     .logout a {
 

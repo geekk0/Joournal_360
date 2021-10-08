@@ -390,10 +390,10 @@
         {% else %}
             <div id="tasks">
                     <p id="task_area" style="color:red">{{ task_message|linebreaks }}</p>
-
+                    <a href="">Задач: {{ objectives_count }}, последняя: {{ last_objective_created }}</a>
             </div>
             <div class="objectives_status_mobile">
-                <a href="">Задач: {{ objectives_count }}, последняя: {{ last_objective_created }}</a>
+
             </div>
         {% endif %}
 
