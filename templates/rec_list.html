@@ -120,6 +120,7 @@
 
                         <ul class="mobile_menu_list">
                             <li><a href={% url 'поиск мобильный' %}>Найти отчет</a></li>
+                            <li><a href={% url 'задания' %}>Задания</a></li>
                             <li><a href="{% url 'logout' %}">Выйти</a></li>
 
 
@@ -390,7 +391,7 @@
         {% else %}
             <div id="tasks">
                     <p id="task_area" style="color:red">{{ task_message|linebreaks }}</p>
-                    <a href="">Задач: {{ objectives_count }}, последняя: {{ last_objective_created }}</a>
+                    <a href={% url 'задания' %}>Задач: {{ objectives_count }}, последняя: {{ last_objective_created }}</a>
             </div>
             <div class="objectives_status_mobile">
 

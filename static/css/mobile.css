@@ -34,8 +34,9 @@
         display:inline-block;
         margin-top: 0;
         border: solid red 1px;
-        width: 80%;
-        margin-left: 10%;
+        border-radius: 14px;
+        width: 90%;
+        margin-left: 5%;
     }
 
     #tasks p{
@@ -49,6 +50,52 @@
         text-decoration: none;
     }
 
+
+    .objectives_mobile{
+        width:80%;
+        margin-top:25%;
+        margin-left:10%;
+        color:white;
+        overflow-wrap: break-word;
+
+
+    }
+
+    .objectives_mobile a p{
+        font-size:12pt;
+    }
+
+    .objectives_mobile_layout{
+        margin-top: 5%;
+        display: block;
+        border: 2px solid red;
+        border-radius: 15px;
+        background: #28425d;
+        text-align: center;
+        opacity : 0.7;
+        transition: 0.5s;
+        vertical-align: top;
+        min-height: 100%;
+        box-sizing: content-box;
+        padding: 1%;
+        width:100%;
+    }
+
+    .objective_layout_mobile_active{
+        word-wrap: break-word;
+        text-overflow: fade;
+        display: inline-block;
+        border: 2px solid red;
+        border-radius: 30px;
+        background: #28425d;
+        text-align: start;
+        box-sizing: content-box;
+    }
+
+
+    #add_status {
+        width:80%;
+}
 
     .logout a {
 

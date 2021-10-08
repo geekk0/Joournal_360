@@ -388,14 +388,12 @@ def rec_list(request, *device):
 
     user_departments_list = []
 
-
     for group in user_groups:
 
         deps = Department.objects.filter(groups=group)
 
         for dep_objects in deps:
             user_departments_list.append(dep_objects.name)
-
 
     if len(user_departments_list) > 1:
         multirole = True
@@ -1113,6 +1111,9 @@ def add_status(request, objective_id):
     status.status = status_text
     status.save()
 
+    if 'Mobile' in request.META['HTTP_USER_AGENT']:
+        return HttpResponseRedirect('/задания/')
+
     return HttpResponseRedirect('/')
 
 
@@ -1410,3 +1411,15 @@ def remove_photo(request, image_id):
     return HttpResponseRedirect('/')
 
 
+def tasks_mobile(request):
+    user_groups = request.user.groups.all()
+
+    user_departments = Department.objects.filter(groups__in=user_groups)
+
+    objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
+
+    objectives_sliced = objectives[:5]
+
+    context = {'objective_sliced': objectives_sliced}
+
+    return render(request, 'mobile_tasks.html', context)

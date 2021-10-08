@@ -34,6 +34,7 @@ urlpatterns = [
     path('Документы/<str:tile_name>', views.show_docs, name='Документы'),
 
     path('поиск мобильный/', views.by_date_view, name='поиск мобильный'),
+    path('задания/', views.tasks_mobile, name='задания'),
     path('опубликовать тест/', views.publish_notes_to_records, name='опубликовать тест'),
 
 ]
