@@ -332,159 +332,161 @@
 
 
     <div class="content">
+       {% if device != 'mobile' %}
 
-
-        <div id="add_objective" style="margin-top: 2%;">
-                <p id="label">Добавить задачу<br> (максимум 5 задач для отдела)</p>
-                <form name="new_objective" style="visibility: hidden"
-                            action="{% url 'добавить задачу' %}" method="get">
-                    <label for="input_name"></label>
-                    <textarea style="border-radius: 15px;height:140px;display: inline-block" id="input_name" name="new_objective_name"
-                            placeholder="Что надо сделать..." style="border: 2px solid white;width:60%;"></textarea>
-                    {% if multirole == True %}
-                        <label for="department_select">Задание для:</label>
-                        <select size="3" multiple="multiple" name="department" id="department_select" style="display:inline;visibility: hidden">
-                            {% for department in user_departments %}
-                                <option name="department" value="{{ department.id }}">{{ department.name }}</option>
-                            {% endfor %}
-                        </select>
-                    {% else %}
-                        <select size="3" multiple="multiple" name="department" id="department_select" style="display:none;visibility: hidden">
-                            {% for department in user_departments %}
-                                <option name="department" value="{{ department.id }}">{{ department.name }}</option>
-                            {% endfor %}
-                        </select>
-                    {% endif %}
-                    <input id="button_add_obj" type="image" alt="Прикрепить задачу"
-                           title="Прикрепить задачу" style="visibility: hidden;" src="{% static 'images/arrow400.png'%}">
-                </form>
-
-        </div>
-
-        <div class = "objectives" id="objectives">
-
-            {% if objectives_full == True%}
-
-
-
-                {% for objective in objectives_sliced %}
-                <div class = "objectives_layout" style="width:13%;height:100%;overflow: hidden;
-                 word-wrap: break-word;white-space: nowrap;">
-                    <p style="display:none"{{ objective.get_author_names }}></p>
-
-
-
-                    <div class="objective_author">
-                        <p>{{ objective.author_name }}<br>{{ objective.created_date }}:</p>
-                    </div>
-
-                    {% if user_is_admin == True %}
-                        <div id="finalize">
-                            <button  class="btn btn-success" onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
-                        </div>
-                    {% endif %}
-
-                    <div class="objective_name">
-                        <p style="display:none ">{{ objective.get_status_count }}</p>
-                        {% if objective.status_count > 0 %}
-                            <p id="status_counter">Отчеты:{{ objective.status_count }}</p>
+            <div id="add_objective" style="margin-top: 2%;">
+                    <p id="label">Добавить задачу<br> (максимум 5 задач для отдела)</p>
+                    <form name="new_objective" style="visibility: hidden"
+                                action="{% url 'добавить задачу' %}" method="get">
+                        <label for="input_name"></label>
+                        <textarea style="border-radius: 15px;height:140px;display: inline-block" id="input_name" name="new_objective_name"
+                                placeholder="Что надо сделать..." style="border: 2px solid white;width:60%;"></textarea>
+                        {% if multirole == True %}
+                            <label for="department_select">Задание для:</label>
+                            <select size="3" multiple="multiple" name="department" id="department_select" style="display:inline;visibility: hidden">
+                                {% for department in user_departments %}
+                                    <option name="department" value="{{ department.id }}">{{ department.name }}</option>
+                                {% endfor %}
+                            </select>
+                        {% else %}
+                            <select size="3" multiple="multiple" name="department" id="department_select" style="display:none;visibility: hidden">
+                                {% for department in user_departments %}
+                                    <option name="department" value="{{ department.id }}">{{ department.name }}</option>
+                                {% endfor %}
+                            </select>
                         {% endif %}
-                        <p style="text-overflow: ellipsis">{{ objective.name | linebreaks}}</p>
-
-                    </div>
-
-
-
-                    <div class="status">
-                        <hr>
-                        {% for status in objective.objectivesstatus_set.all %}
-
-                                <div class="status_layout" style="">
-                                    <p style="display: none" {{ status.get_author_names }}></p>
-
-                                    <p id="">{{ status.created }}&nbsp{{ status.author_name }}:</p>
-                                    <p id="">{{ status.status | linebreaks }}</p>
-                                </div>
-
-                        {% endfor %}
-                    </div>
-
-
-                    <form class="add_status" style="" action="{% url 'добавить статус' objective.id %}">
-                        <textarea name="input_text" type="text" id="status_box" placeholder="Добавить отчет..."></textarea>
-                        <br>
-                        <input name="status_text" id="send_button" class="btn btn-success" type="submit" value="Отправить">
+                        <input id="button_add_obj" type="image" alt="Прикрепить задачу"
+                               title="Прикрепить задачу" style="visibility: hidden;" src="{% static 'images/arrow400.png'%}">
                     </form>
-                </div>
-            {% endfor %}
 
-                <span style="padding-left:1%;padding-top:20px;display:inline-block;width:1%;color:red;font-size: 32pt">...</span>
+            </div>
 
-            {% else %}
+            <div class = "objectives" id="objectives">
 
-                {% for objective in objectives %}
-                <div class = "objectives_layout" style="width:13%;height:100%;overflow: hidden;
-                 word-wrap: break-word;white-space: nowrap;">
-                    <p style="display:none"{{ objective.get_author_names }}></p>
+                {% if objectives_full == True%}
 
 
 
-                    <div class="objective_author">
-                        <p>{{ objective.created_date }}<br>{{ objective.author_name }}:</p>
-                    </div>
+                    {% for objective in objectives_sliced %}
+                    <div class = "objectives_layout" style="width:13%;height:100%;overflow: hidden;
+                     word-wrap: break-word;white-space: nowrap;">
+                        <p style="display:none"{{ objective.get_author_names }}></p>
 
-                    {% if user_is_admin == True %}
-                        <div id="finalize">
-                            <button  class="btn btn-success" onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
+
+
+                        <div class="objective_author">
+                            <p>{{ objective.author_name }}<br>{{ objective.created_date }}:</p>
                         </div>
-                    {% endif %}
-                    <div class="objective_name">
-                        <p style="display:none ">{{ objective.get_status_count }}</p>
-                        {% if objective.status_count > 0 %}
-                            <p id="status_counter">Отчеты:{{ objective.status_count }}</p>
+
+                        {% if user_is_admin == True %}
+                            <div id="finalize">
+                                <button  class="btn btn-success" onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
+                            </div>
                         {% endif %}
-                        <p style="text-overflow: ellipsis">{{ objective.name | linebreaks}}</p>
 
+                        <div class="objective_name">
+                            <p style="display:none ">{{ objective.get_status_count }}</p>
+                            {% if objective.status_count > 0 %}
+                                <p id="status_counter">Отчеты:{{ objective.status_count }}</p>
+                            {% endif %}
+                            <p style="text-overflow: ellipsis">{{ objective.name | linebreaks}}</p>
+
+                        </div>
+
+
+
+                        <div class="status">
+                            <hr>
+                            {% for status in objective.objectivesstatus_set.all %}
+
+                                    <div class="status_layout" style="">
+                                        <p style="display: none" {{ status.get_author_names }}></p>
+
+                                        <p id="">{{ status.created }}&nbsp{{ status.author_name }}:</p>
+                                        <p id="">{{ status.status | linebreaks }}</p>
+                                    </div>
+
+                            {% endfor %}
+                        </div>
+
+
+                        <form class="add_status" style="" action="{% url 'добавить статус' objective.id %}">
+                            <textarea name="input_text" type="text" id="status_box" placeholder="Добавить отчет..."></textarea>
+                            <br>
+                            <input name="status_text" id="send_button" class="btn btn-success" type="submit" value="Отправить">
+                        </form>
                     </div>
+                {% endfor %}
+
+                    <span style="padding-left:1%;padding-top:20px;display:inline-block;width:1%;color:red;font-size: 32pt">...</span>
+
+                {% else %}
+
+                    {% for objective in objectives %}
+                    <div class = "objectives_layout" style="width:13%;height:100%;overflow: hidden;
+                     word-wrap: break-word;white-space: nowrap;">
+                        <p style="display:none"{{ objective.get_author_names }}></p>
 
 
 
-                    <div class="status">
-                        <hr>
-                        {% for status in objective.objectivesstatus_set.all %}
+                        <div class="objective_author">
+                            <p>{{ objective.created_date }}<br>{{ objective.author_name }}:</p>
+                        </div>
 
-                                <div class="status_layout" style="">
-                                    <p style="display: none" {{ status.get_author_names }}></p>
+                        {% if user_is_admin == True %}
+                            <div id="finalize">
+                                <button  class="btn btn-success" onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
+                            </div>
+                        {% endif %}
+                        <div class="objective_name">
+                            <p style="display:none ">{{ objective.get_status_count }}</p>
+                            {% if objective.status_count > 0 %}
+                                <p id="status_counter">Отчеты:{{ objective.status_count }}</p>
+                            {% endif %}
+                            <p style="text-overflow: ellipsis">{{ objective.name | linebreaks}}</p>
 
-                                    <p id="">{{ status.created }}&nbsp{{ status.author_name }}:</p>
-                                    <p id="">{{ status.status | linebreaks }}</p>
-                                </div>
+                        </div>
 
-                        {% endfor %}
+
+
+                        <div class="status">
+                            <hr>
+                            {% for status in objective.objectivesstatus_set.all %}
+
+                                    <div class="status_layout" style="">
+                                        <p style="display: none" {{ status.get_author_names }}></p>
+
+                                        <p id="">{{ status.created }}&nbsp{{ status.author_name }}:</p>
+                                        <p id="">{{ status.status | linebreaks }}</p>
+                                    </div>
+
+                            {% endfor %}
+                        </div>
+
+
+                        <form class="add_status" style="" action="{% url 'добавить статус' objective.id %}">
+                            <textarea name="input_text" type="text" id="status_box" placeholder="Добавить отчет..."></textarea>
+                            <br>
+                            <input name="status_text" id="send_button" class="btn btn-success" type="submit" value="Отправить">
+                        </form>
                     </div>
+                {% endfor %}
 
 
-                    <form class="add_status" style="" action="{% url 'добавить статус' objective.id %}">
-                        <textarea name="input_text" type="text" id="status_box" placeholder="Добавить отчет..."></textarea>
-                        <br>
-                        <input name="status_text" id="send_button" class="btn btn-success" type="submit" value="Отправить">
-                    </form>
-                </div>
-            {% endfor %}
+                {% endif %}
 
+            </div>
 
-            {% endif %}
-
-        </div>
-
-
+       {% endif %}
         <script type="text/javascript">
 
 
             document.addEventListener("DOMContentLoaded", () => {
                 let add_obj = document.getElementById('add_objective')
-                add_obj.addEventListener("mouseenter", add_objective)
-                add_obj.addEventListener("mouseleave", esc_add_objective)
+                if (add_obj !== null) {
+                    add_obj.addEventListener("mouseenter", add_objective)
+                    add_obj.addEventListener("mouseleave", esc_add_objective)
+                }
             })
 
             function add_objective(e) {
