@@ -53,7 +53,7 @@
                     <form id="new_objective" name="new_objective" style="display: none;"
                                 action="{% url 'добавить задачу' %}" method="get">
                         <label for="input_name"></label>
-                        <textarea style="border-radius: 7px;margin-top:5%;display: inline-block" id="input_name" name="new_objective_name"
+                        <textarea style="border-radius: 7px;margin-top:5%;display: inline-block;min-height:200px;width:95%" id="input_name" name="new_objective_name"
                                 placeholder="Что надо сделать..." style="border: 2px solid white;width:30%;"></textarea>
                         {% if multirole == True %}
                             <label style="display: none" for="department_select">Задание для:</label>
