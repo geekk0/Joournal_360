@@ -94,6 +94,14 @@
         box-sizing: content-box;
     }
 
+    #box {
+        width:120%;
+        margin-left:20%;
+    }
+
+    .record_images_layout{
+        width:20%;
+    }
 
     #add_status {
         width:80%;
@@ -341,16 +349,15 @@
 
     .comments_layout {
         display: block;
-        line-height: 0.5;
     }
 
 
     #comments_author {
-        width: 50%;
+        width: 30%;
     }
 
     #comments_text {
-        width: 100%;
+        width: 60%;
     }
 
     #comments_created {
