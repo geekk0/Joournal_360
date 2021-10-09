@@ -52,20 +52,46 @@
         text-decoration: none;
     }
 
+    #button_add_obj {
+        width: 10%;
+        display: block;
+        margin-left: 45%;
+        margin-top: 2%;
+        position: initial;
+    }
 
+    .objective_author{
+        display:inline-block;
+        width:90%;
+    }
+
+    #finalize{
+        display: inline-block;
+        margin-right:3%;
+        width:5%;
+    }
+
+    #finalize_button{
+        font-size: 14pt;
+        text-decoration: none;
+        color:red;
+        display: inline-block;
+    }
     .objectives_mobile{
         width:80%;
-        margin-top:25%;
         margin-bottom:1rem;
         margin-left:10%;
         color:white;
         overflow-wrap: break-word;
 
-
     }
 
     .objectives_mobile a p{
         font-size:12pt;
+    }
+
+    .add_objective:hover #new_objective{
+        display: inline-block;
     }
 
     .objectives_mobile_layout{
@@ -92,6 +118,13 @@
         background: #28425d;
         text-align: start;
         box-sizing: content-box;
+    }
+
+    #department_select option{
+        display: inline-block;
+        margin-left: 10%;
+        font-size: 14pt;
+
     }
 
     #box {
@@ -121,7 +154,21 @@
     }
 
     #add_objective{
-        display:none;
+        margin-top: 25%;
+        margin-left: 10%;
+        width: 80%;
+        display: block;
+        border: 2px solid white;
+        border-radius: 15px;
+        background: #28425d;
+        text-align: center;
+        opacity : 0.7;
+        transition: 0.5s;
+        vertical-align: top;
+        box-sizing: content-box;
+        padding: 1%;
+        float: none;
+        height: auto;
     }
 
     .objectives{
@@ -138,6 +185,12 @@
 
     #user_department {
         display: none;
+    }
+
+    #label{
+        margin:0;
+        color: white;
+        font-size: 14;
     }
 
     .logout {
@@ -215,6 +268,9 @@
         text-align: center;
     }
 
+    #input_name{
+         border-radius: 7px;
+    }
 
     .mobile_menu_list a:hover {
         color: white;
@@ -311,6 +367,19 @@
 
     .note_controls img {
         width: 100%;
+    }
+
+    #department_select {
+      position: unset;
+      display: inline-block;
+      width: 60%;
+        text-align: center;
+        height: 50px;
+    }
+
+    #department_select {
+        display: inline-block;
+        visibility: visible;
     }
 
     .records {
@@ -502,6 +571,20 @@
         display: none;
     }
 
+
+
+
+
+    #department_select {
+        display: inline-block;
+        visibility: visible;
+    }
+
+    #department_select option{
+        display: inline-block;
+        margin-left: 10%;
+    }
+
     .authorization {
         font-size: 12pt;
     }
@@ -509,6 +592,10 @@
     .group_select {
         width: 80%;
         margin-left: auto;
+    }
+
+    .select{
+        color:white;
     }
 
     .groups_authors_select {

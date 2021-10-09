@@ -1104,6 +1104,9 @@ def add_objective(request):
             messages.warning(request, "Задание не было создано - превышено количество заданий для отдела: "+str(dep))
             return HttpResponseRedirect('/')
 
+    if 'Mobile' in request.META['HTTP_USER_AGENT']:
+        return HttpResponseRedirect('/задания/')
+
     return HttpResponseRedirect('/')
 
 
@@ -1148,6 +1151,9 @@ def finalize_objective(request, objective_id):
     objective_done.save()
 
     Objectives.objects.get(id=objective_id).delete()
+
+    if 'Mobile' in request.META['HTTP_USER_AGENT']:
+        return HttpResponseRedirect('/задания/')
 
     return HttpResponseRedirect('/')
 
@@ -1425,8 +1431,26 @@ def tasks_mobile(request):
 
     objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
 
-    objectives_sliced = objectives[:5]
+    user_departments_list = []
 
-    context = {'objective_sliced': objectives_sliced}
+    multirole = False
+
+    for group in user_groups:
+
+        deps = Department.objects.filter(groups=group)
+
+        for dep_objects in deps:
+            user_departments_list.append(dep_objects.name)
+
+    if len(user_departments_list) > 1:
+        multirole = True
+
+    if request.user.has_perm('journal.change_record'):
+        user_is_admin = True
+    else:
+        user_is_admin = False
+
+    context = {'objectives': objectives, 'user_departments': user_departments, 'multirole': multirole,
+               'user_is_admin': user_is_admin}
 
     return render(request, 'mobile_tasks.html', context)

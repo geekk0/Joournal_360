@@ -48,9 +48,29 @@
 
         </div>
 
-        <div class="objectives_mobile">
+        <div id="add_objective" style="">
+                    <p id="label">Добавить задачу<br> (максимум 5 задач для отдела)</p>
+                    <form id="new_objective" name="new_objective" style="display: none;"
+                                action="{% url 'добавить задачу' %}" method="get">
+                        <label for="input_name"></label>
+                        <textarea style="border-radius: 7px;margin-top:5%;display: inline-block" id="input_name" name="new_objective_name"
+                                placeholder="Что надо сделать..." style="border: 2px solid white;width:30%;"></textarea>
+                        {% if multirole == True %}
+                            <label style="display: none" for="department_select">Задание для:</label>
+                            <select size="3" multiple="multiple" name="department" id="department_select" style="">
+                                {% for department in user_departments %}
+                                    <option name="department" value="{{ department.id }}">{{ department.name }}</option>
+                                {% endfor %}
+                            </select>
+                        {% endif %}
+                        <input id="button_add_obj" type="image" alt="Прикрепить задачу"
+                               title="Прикрепить задачу" style="" src="{% static 'images/arrow_down.png'%}">
+                    </form>
 
-        {% for objective in objective_sliced %}
+        </div>
+        <div class="objectives_mobile" id="objectives_mobile" style="margin-top: 35%;">
+
+        {% for objective in objectives %}
                         <div class = "objectives_mobile_layout" style="">
                             <p style="display:none"{{ objective.get_author_names }}></p>
 
@@ -59,10 +79,9 @@
                             <div class="objective_author">
                                 <p>{{ objective.author_name }},&nbsp{{ objective.created_date }}:</p>
                             </div>
-
                             {% if user_is_admin == True %}
-                                <div id="finalize">
-                                    <button  class="btn btn-success" onclick="window.location.href = '{% url 'завершить задание' objective.id %}';">Завершить</button>
+                                <div id="finalize" style="display: none">
+                                    <a  id="finalize_button" href='{% url 'завершить задание' objective.id %}'>x</a>
                                 </div>
                             {% endif %}
                             <div class="objective_name">
@@ -121,6 +140,8 @@
                         let status = e.target.querySelector('#status')
                         let add_status = e.target.querySelector('#add_status')
                         let status_counter = e.target.querySelector('#status_counter')
+                        let finalize = e.target.querySelector('#finalize')
+                        finalize.style.display = 'inline-block';
                         status.style.display = 'inline-block';
                         add_status.style.display = 'inline-block';
                         if (status_counter !== null) {
@@ -133,6 +154,8 @@
                         let status = e.target.querySelector('#status')
                         let add_status = e.target.querySelector('#add_status')
                         let status_counter = e.target.querySelector('#status_counter')
+                        let finalize = e.target.querySelector('#finalize')
+                        finalize.style.display = 'none';
                         if (status_counter !== null) {
                             status_counter.style.display = 'inline-block';
                         }
@@ -142,6 +165,38 @@
                     }
 
 
+                    document.addEventListener("DOMContentLoaded", replace_objectives_block)
+
+                    function replace_objectives_block() {
+                    let add_objective = document.querySelector('#add_objective')
+                        if (add_objective != null) {
+                            let objectives_block = document.querySelector('.objectives_mobile')
+                            if (objectives_block != null) {
+                                objectives_block.style.marginTop = '0'
+                            }
+                        }
+                    }
+
+
+                    let add_objective = document.querySelector('#add_objective')
+                    add_objective.addEventListener('mouseenter', add_objective_active)
+                    add_objective.addEventListener('mouseleave', add_objective_inactive)
+
+                    function add_objective_active(e) {
+                        let add_obj = e.target
+                        let form = add_obj.querySelector('#new_objective')
+                        if (form != null) {
+                            form.style.display = 'inline-block';
+                        }
+                    }
+
+                    function add_objective_inactive(e) {
+                        let add_obj = e.target
+                        let form = add_obj.querySelector('#new_objective')
+                        if (form != null) {
+                            form.style.display = 'none';
+                        }
+                    }
 
     </script>
 
