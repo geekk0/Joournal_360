@@ -57,7 +57,8 @@
                                 placeholder="Что надо сделать..." style="border: 2px solid white;width:30%;"></textarea>
                         {% if multirole == True %}
                             <label style="display: none" for="department_select">Задание для:</label>
-                            <select size="3" multiple="multiple" name="department" id="department_select" style="">
+                            <select size="3" multiple="multiple" name="department" id="department_select"
+                                    style="font-size: 12pt;color:white">
                                 {% for department in user_departments %}
                                     <option name="department" value="{{ department.id }}">{{ department.name }}</option>
                                 {% endfor %}
