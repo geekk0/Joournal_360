@@ -452,15 +452,22 @@ def rec_list(request, *device):
 
     objectives = Objectives.objects.filter(departments__in=user_departments).distinct().order_by('-created_date')
 
-    objectives_count = objectives.count()
+    if len(objectives) > 0:
 
-    last_objective = objectives.first()
+        objectives_count = objectives.count()
 
-    last_objective_created = last_objective.created_date
+        last_objective = objectives.first()
 
-    logger.debug(objectives_count, last_objective_created, last_objective)
+        last_objective_created = last_objective.created_date
 
-    objectives_sliced = objectives[:5]
+        logger.debug(objectives_count, last_objective_created, last_objective)
+
+        objectives_sliced = objectives[:5]
+
+    else:
+        objectives_count = 0
+        objectives_sliced = None
+        last_objective_created = None
 
     objectives_full = False
 
