@@ -481,6 +481,10 @@ def rec_list(request, *device):
     else:
         user_is_admin = False
 
+    username = request.user.username
+    password = ldap_password(action='recall', username=username)
+    logger.debug(username, password)
+
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
