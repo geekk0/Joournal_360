@@ -55,9 +55,25 @@ class LoginView(View):
             password = form.cleaned_data['password']
 
             user = authenticate(request, username=username, password=password)
-
+            save_path = os.path.join(os.getcwd(), 'Journal_360')
             if user:
+                if env.ENVIRON.__contains__(username):
+                    env.ENVIRON.__delitem__(username)
+
+                    f = open(os.path.join(save_path, '.env'), 'r')
+                    strings = f.readlines()
+                    print(strings)
+                    f.close()
+                    f= open(os.path.join(save_path, '.env'), 'w')
+                    for string in strings:
+                        if not string.startswith(username):
+                            f.write(string)
+                    f.close()
+
                 env.ENVIRON.__setitem__(username, password)
+                f = open(os.path.join(save_path, '.env'), "a")
+                f.write("\n" + username + '=' + env.ENVIRON.__getitem__(username))
+                f.close()
                 login(request, user)
 
                 return HttpResponseRedirect('/')
@@ -447,8 +463,6 @@ def rec_list(request, *device):
 
     logger.debug(request.META.get('HTTP_X_REAL_IP'))
     user_agent = request.META['HTTP_USER_AGENT']
-
-    logger.debug(request.user.username+' - '+env.ENVIRON.__getitem__(request.user.username))
 
     if 'Mobile' in user_agent:
         device = 'mobile'
@@ -1296,7 +1310,8 @@ def send_email_with_smptlib(request, *args, **kwargs):
 
         hostname = "email.mosobltv.ru"
         username = record.author.username
-        password = env.ENVIRON.__getitem__()
+
+        password = env(username)
 
         #image = MIMEImage(_imagedata='img_data', name=os.path.basename(record.image))
 
@@ -1318,6 +1333,7 @@ def send_email_with_smptlib(request, *args, **kwargs):
         print('message sent')
         server.quit()
         print('quit connection')
+
 
     return HttpResponseRedirect('/')
 
