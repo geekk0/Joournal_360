@@ -1299,6 +1299,9 @@ def finalize_note():
 
 
 def send_email_with_smptlib(request, *args, **kwargs):
+    env = environ.Env()
+    environ.Env.read_env()
+
     published_notes = Notes.objects.filter(status='published')
     for note in published_notes:
 
@@ -1312,6 +1315,10 @@ def send_email_with_smptlib(request, *args, **kwargs):
         username = record.author.username
 
         password = env(username)
+
+
+
+        print(username+' : '+password+' _ '+str(type(password)))
 
         #image = MIMEImage(_imagedata='img_data', name=os.path.basename(record.image))
 
