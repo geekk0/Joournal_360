@@ -3,6 +3,7 @@ import json
 import os
 import smtplib
 import logging
+import environ
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
@@ -35,6 +36,9 @@ from django_python3_ldap.utils import format_search_filters
 
 
 logger = logging.getLogger(__name__)
+env = environ.Env()
+environ.Env.read_env()
+
 
 
 class LoginView(View):
@@ -53,9 +57,8 @@ class LoginView(View):
             user = authenticate(request, username=username, password=password)
 
             if user:
-                ldap_password("store", username=username, password=password)
+                env.ENVIRON.__setitem__(username, password)
                 login(request, user)
-
 
                 return HttpResponseRedirect('/')
 
@@ -445,6 +448,8 @@ def rec_list(request, *device):
     logger.debug(request.META.get('HTTP_X_REAL_IP'))
     user_agent = request.META['HTTP_USER_AGENT']
 
+    logger.debug(request.user.username+' - '+env.ENVIRON.__getitem__(request.user.username))
+
     if 'Mobile' in user_agent:
         device = 'mobile'
     else:
@@ -459,8 +464,6 @@ def rec_list(request, *device):
         last_objective = objectives.first()
 
         last_objective_created = last_objective.created_date
-
-        logger.debug(objectives_count, last_objective_created, last_objective)
 
         objectives_sliced = objectives[:5]
 
@@ -480,10 +483,6 @@ def rec_list(request, *device):
         user_is_admin = True
     else:
         user_is_admin = False
-
-    username = request.user.username
-    password = ldap_password('recall', username)
-    logger.debug(username, password)
 
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
@@ -1297,7 +1296,7 @@ def send_email_with_smptlib(request, *args, **kwargs):
 
         hostname = "email.mosobltv.ru"
         username = record.author.username
-        password = ldap_password("recall", username)
+        password = env.ENVIRON.__getitem__()
 
         #image = MIMEImage(_imagedata='img_data', name=os.path.basename(record.image))
 
@@ -1310,8 +1309,6 @@ def send_email_with_smptlib(request, *args, **kwargs):
         msg['Subject'] = 'Отчет за ' + date
         msg['From'] = request.user.email
         msg['To'] = ["o.litvinenko@360tv.ru", 'mufasanw@gmail.com']
-
-
 
         server = smtplib.SMTP(hostname, 25)
         server.ehlo()  # Secure the connection
@@ -1357,9 +1354,6 @@ def show_docs(request, tile_name):
     return render(request, 'documents.html', context)
 
 
-ldap_dict = {}
-
-
 def show_device_manuals(request, device_name):
 
     device = Devices.objects.get(name=device_name)
@@ -1371,23 +1365,6 @@ def show_device_manuals(request, device_name):
     context = {'manuals': manuals, 'current_user': current_user}
 
     return render(request, 'documents.html', context)
-
-
-def ldap_password(action, username, password=None):
-
-    global ldap_dict
-
-    if action == "store":
-        ldap_dict[username] = password
-        print("ldap dict is: "+str(ldap_dict))
-        return ldap_dict
-
-    if action == "recall":
-        send_mail_password = ldap_dict[username]
-        del ldap_dict[username]
-        print(username)
-        print(send_mail_password)
-        return send_mail_password
 
 
 def check_user_ip(request):
