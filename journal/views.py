@@ -28,7 +28,6 @@ from email.mime.image import MIMEImage
 from itertools import *
 from operator import *
 from django.conf import settings
-from simplecrypt import encrypt, decrypt
 
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
