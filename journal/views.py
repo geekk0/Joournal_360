@@ -1,3 +1,4 @@
+import ast
 import datetime
 import json
 import os
@@ -27,13 +28,13 @@ from email.mime.image import MIMEImage
 from itertools import *
 from operator import *
 from django.conf import settings
+from simplecrypt import encrypt, decrypt
 
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
     ScheduledTasks, RecordTags, Tiles, Docs, Devices, ManualDocs, NoteImages, RecImages
 from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm, UploadFileForm
 from django_python3_ldap.utils import format_search_filters
-
 
 logger = logging.getLogger(__name__)
 env = environ.Env()
@@ -55,25 +56,7 @@ class LoginView(View):
             password = form.cleaned_data['password']
 
             user = authenticate(request, username=username, password=password)
-            save_path = os.path.join(os.getcwd(), 'Journal_360')
             if user:
-                if env.ENVIRON.__contains__(username):
-                    env.ENVIRON.__delitem__(username)
-
-                    f = open(os.path.join(save_path, '.env'), 'r')
-                    strings = f.readlines()
-                    print(strings)
-                    f.close()
-                    f= open(os.path.join(save_path, '.env'), 'w')
-                    for string in strings:
-                        if not string.startswith(username):
-                            f.write(string)
-                    f.close()
-
-                env.ENVIRON.__setitem__(username, password)
-                f = open(os.path.join(save_path, '.env'), "a")
-                f.write("\n" + username + '=' + env.ENVIRON.__getitem__(username))
-                f.close()
                 login(request, user)
 
                 return HttpResponseRedirect('/')
@@ -228,8 +211,6 @@ class AddScheduledTask(View):
             new_scheduled_task.save()
 
             return HttpResponseRedirect('/')
-        else:
-            print(form.errors)
 
 
 def get_task_dates(start_date, regularity, week_days):
@@ -588,7 +569,6 @@ def find_by_date(request):
         exclude(name__in=admin_groups).order_by('id')
 
     if date:
-        print(type(date))
         date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
 
     else:
@@ -1238,7 +1218,6 @@ def new_edit_note(request):
 
             note.save()
 
-            print('editing note...')
 
         else:
             messages.warning(request, 'Отчет можно писать только из рабочей сети')
@@ -1252,97 +1231,204 @@ def new_edit_note(request):
 
         note.save()
 
-        print('editing note...')
-
-
     return HttpResponse(status=204)
 
 
-def publish_notes_to_records(request):
-    print('start - publish_notes_to_records')
-    all_notes = Notes.objects.all()
-    for note in all_notes:
+#to refactor:
+    """import inspect
+
+    def bar():
+        current_frame = inspect.currentframe()
+        previous_frame = current_frame.f_back
+        print(previous_frame.f_code.co_name)
+        print(type(previous_frame.f_code.co_name))
+
+    def foo():
+        bar()
+
+    foo()"""
+
+
+def publish_eng_record():
+    eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
+    eng_notes = Notes.objects.filter(author__in=eng_authors)
+    for note in eng_notes:
         if (len(note.message) > 34) and (note.status == 'initial'):
-            print(note.message)
             author = note.author
             created_date = note.created_date
+            print('note created date: '+str(created_date))
             full_text = note.message
-            record = Record.objects.create(author=author, created_date=created_date, text=full_text)
+            record = Record.objects.create(author=author, text=full_text)
+            record.created_date = created_date
+            record.save()
             images = NoteImages.objects.filter(of_note=note)
-            print('обходим изображения '+note.message)
             for image in images:
-                print(image.name)
-                rec_images = RecImages.objects.create(of_record=record, name=image.name, image=image.image)
-                rec_images.save()
+                rec_image = RecImages.objects.create(of_record=record, name=image.name, image=image.image)
+                rec_image.save()
             note.status = 'published'
             note.to_record = record
             note.save()
 
+            current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+
+
     return HttpResponseRedirect('/')
 
 
-def update_record_from_note():
-    published_notes = Notes.objects.filter(status='published')
-    for note in published_notes:
+def update_eng_record():
+    eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
+
+    published_eng_notes = Notes.objects.filter(status='published', author__in=eng_authors)
+    for note in published_eng_notes:
         record = Record.objects.get(notes=note)
+        images = NoteImages.objects.filter(of_note=note)
         record.text = note.message
+        RecImages.objects.filter(of_record=record).delete()
+        for image in images:
+            rec_image = RecImages.objects.create(of_record=record, name=image.name, image=image.image)
+            rec_image.save()
+        print('updated note created date: '+str(record.created_date))
         note.status = 'updated'
         record.save()
         note.save()
 
 
-def finalize_note():
-    updated_notes = Notes.objects.filter(status='updated')
-    for note in updated_notes:
-        note.to_record = None
-    updated_notes.delete()
-
-
-def send_email_with_smptlib(request, *args, **kwargs):
-    env = environ.Env()
+def send_eng_email(*args, **kwargs):
     environ.Env.read_env()
+    eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
 
-    published_notes = Notes.objects.filter(status='published')
+    published_notes = Notes.objects.filter(status='updated', author__in=eng_authors)
+
     for note in published_notes:
+        date = (datetime.datetime.strptime(str(note.created_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
+        print('record created date: ' + str(note.created_date))
+        print('date in mail: ' + str(date))
 
-        record = Record.objects.create(notes=note, author=note.author)
-
-        record.text = note.message
-
-        date = (datetime.datetime.strptime(str(record.created_date.date()), "%Y-%m-%d").strftime("%d.%m.%Y"))
+        department = Department.objects.filter(groups__in=Group.objects.filter(user=note.author))
 
         hostname = "email.mosobltv.ru"
-        username = record.author.username
-
-        password = env(username)
-
-
-
-        print(username+' : '+password+' _ '+str(type(password)))
-
-        #image = MIMEImage(_imagedata='img_data', name=os.path.basename(record.image))
+        username = "Journal360"
+        password = "Ju123456"
 
         msg = EmailMessage()
 
-        #msg.attach(image)
-
-        msg.set_content(record.text + '\n' + '\n')
+        msg.set_content(note.message + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + note.author.first_name + '\n' +
+                        note.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
 
         msg['Subject'] = 'Отчет за ' + date
-        msg['From'] = request.user.email
+        msg['From'] = "Journal360@360tv.ru"
+        msg['To'] = ["o.litvinenko@360tv.ru", 'mufasanw@gmail.com']
+
+        server = smtplib.SMTP(hostname, 25)
+        print('connect to server established')
+        server.ehlo()  # Secure the connection
+        print('echlo is ok')
+        server.login(username, password)
+        print('login success')
+        server.send_message(msg)
+        server.quit()
+
+    return HttpResponseRedirect('/')
+
+
+def publish_it_record():
+    it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
+    it_notes = Notes.objects.filter(author__in=it_authors)
+    for note in it_notes:
+        if (len(note.message) > 34) and (note.status == 'initial'):
+            author = note.author
+            created_date = note.created_date
+            print('note created date: '+str(created_date))
+            full_text = note.message
+            record = Record.objects.create(author=author, text=full_text)
+            record.created_date = created_date
+            record.save()
+            images = NoteImages.objects.filter(of_note=note)
+            for image in images:
+                rec_image = RecImages.objects.create(of_record=record, name=image.name, image=image.image)
+                rec_image.save()
+            note.status = 'published'
+            note.to_record = record
+            note.save()
+
+            current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+
+
+    return HttpResponseRedirect('/')
+
+
+def send_it_email(*args, **kwargs):
+    environ.Env.read_env()
+    it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
+
+    published_notes = Notes.objects.filter(status='published', author__in=it_authors)
+
+    for note in published_notes:
+        date = (datetime.datetime.strptime(str(note.created_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
+        print('record created date: ' + str(note.created_date))
+        print('date in mail: ' + str(date))
+
+        department = Department.objects.filter(groups__in=Group.objects.filter(user=note.author))
+
+        hostname = "email.mosobltv.ru"
+        username = "Journal360"
+        password = "Ju123456"
+
+        msg = EmailMessage()
+
+        msg.set_content(note.message + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + note.author.first_name + '\n' +
+                        note.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
+
+        msg['Subject'] = 'Отчет за ' + date
+        msg['From'] = "Journal360@360tv.ru"
         msg['To'] = ["o.litvinenko@360tv.ru", 'mufasanw@gmail.com']
 
         server = smtplib.SMTP(hostname, 25)
         server.ehlo()  # Secure the connection
         server.login(username, password)
-        print('authorization succeed')
         server.send_message(msg)
-        print('message sent')
         server.quit()
-        print('quit connection')
-
 
     return HttpResponseRedirect('/')
+
+
+def update_it_record():
+    it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
+
+    published_it_notes = Notes.objects.filter(status='published', author__in=it_authors)
+    for note in published_it_notes:
+        record = Record.objects.get(notes=note)
+        images = NoteImages.objects.filter(of_note=note)
+        record.text = note.message
+        RecImages.objects.filter(of_record=record).delete()
+        for image in images:
+            rec_image = RecImages.objects.create(of_record=record, name=image.name, image=image.image)
+            rec_image.save()
+        print('updated note created date: '+str(record.created_date))
+        note.status = 'updated'
+        record.save()
+        note.save()
+
+
+def finalize_eng_note():
+    eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
+    updated_notes = Notes.objects.filter(status='updated', author__in=eng_authors)
+    for note in updated_notes:
+        note.to_record = None
+        updated_notes.delete()
+
+        current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+
+
+def finalize_it_note():
+    it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
+    updated_notes = Notes.objects.filter(status='updated', author__in=it_authors)
+    for note in updated_notes:
+        note.to_record = None
+        updated_notes.delete()
+
+        current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+
 
 
 def custom_format_search_filters(ldap_fields):
@@ -1361,8 +1447,6 @@ def custom_format_search_filters(ldap_fields):
 def show_docs(request, tile_name):
 
     tile = Tiles.objects.get(name=tile_name)
-
-    print(type(tile_name))
 
     tile_id = tile.id
 
@@ -1405,10 +1489,6 @@ def check_user_ip(request):
 def add_photo(request):
 
     if request.method == 'POST':
-
-        form = UploadFileForm(request.POST, request.FILES)
-
-        print(request.FILES)
 
         note = Notes.objects.get(author_id=request.user.id)
 

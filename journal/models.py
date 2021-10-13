@@ -7,7 +7,8 @@ from django.contrib.auth.models import User, Group
 class Record(models.Model):
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                verbose_name='Отчет от')
-    created_date = models.DateTimeField(default=timezone.now, verbose_name='Дата отправки')
+    created_date = models.DateField(default=timezone.now, verbose_name='Дата отправки', auto_now=False,
+                                    auto_now_add=False)
     text = models.TextField(default='', verbose_name='Текст')
     report_date = models.DateField(blank=True, default=timezone.now,  verbose_name='За какое число')
     comments_count = models.IntegerField(default=0, editable=False, verbose_name='Количество комментов')
@@ -45,7 +46,7 @@ class Record(models.Model):
 
 class Notes(models.Model):
     message = models.TextField(default='', null=True, blank=True, verbose_name='Текст заметки')
-    created_date = models.DateField(default=timezone.now, verbose_name='Дата')
+    created_date = models.DateField(default=timezone.now, verbose_name='Дата', auto_now=False)
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                verbose_name='от')
     status = models.CharField(default='initial', null=True, blank=True, verbose_name='Статус (для финализации)',

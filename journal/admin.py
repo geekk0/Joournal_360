@@ -4,6 +4,7 @@ from django.utils.safestring import mark_safe
 from .models import Record, Comments, Department, Notes, Objectives, ObjectivesDone, ObjectivesStatus, ScheduledTasks, \
     RecordTags, Tiles, Docs, Devices, ManualDocs, Images, RecImages, NoteImages
 
+
 """class ImagesInline(admin.TabularInline):
     model = Images
 

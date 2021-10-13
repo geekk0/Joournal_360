@@ -1,48 +1,95 @@
 from datetime import datetime
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from django.http import HttpResponseRedirect
-from django_apscheduler.jobstores import DjangoJobStore, register_events
-from django.utils import timezone
-from django_apscheduler.models import DjangoJobExecution
+from django_apscheduler.jobstores import DjangoJobStore
 import sys
+from journal.views import logger
+from journal.views import publish_eng_record, publish_it_record, update_eng_record, update_it_record, send_eng_email,\
+    send_it_email, finalize_eng_note, finalize_it_note
 
-from journal.views import publish_notes_to_records, update_record_from_note, finalize_note
 
-
-def publisher():
+def eng_publisher():
 
     ...
     # get accounts, expire them, etc.
     ...
-    publish_notes_to_records()
+
+    publish_eng_record()
 
 
-def updater():
+def eng_updater():           #Eng
 
-    update_record_from_note()
+    update_eng_record()
 
 
-def finalizer():
+def eng_email_sender():
 
-    finalize_note()
+    send_eng_email()
+
+
+def eng_finalizer():
+
+    finalize_eng_note()
+
+
+def it_publisher():             #IT
+
+    ...
+    # get accounts, expire them, etc.
+    ...
+
+    publish_it_record()
+
+
+def it_updater():
+
+    update_it_record()
+
+
+def it_email_sender():
+
+    send_it_email()
+
+
+def it_finalizer():
+
+    finalize_it_note()
 
 
 def start():
     scheduler = BackgroundScheduler()
     scheduler.add_jobstore(DjangoJobStore(), "default")
 
-    start_publisher = datetime.strptime('Sep 08 2022  5:28PM', '%b %d %Y %I:%M%p')
-    start_updater = datetime.strptime('Sep 08 2022  5:29PM', '%b %d %Y %I:%M%p')
-    start_finalizer = datetime.strptime('Sep 08 2022  5:30PM', '%b %d %Y %I:%M%p')
+    start_eng_publisher = datetime.strptime('Oct 13 2021  9:50AM', '%b %d %Y %I:%M%p')
+    start_eng_updater = datetime.strptime('Oct 13 2021  9:52AM', '%b %d %Y %I:%M%p')
+    start_eng_email_sender = datetime.strptime('Oct 13 2021  9:53AM', '%b %d %Y %I:%M%p')
+    start_eng_finalizer = datetime.strptime('Oct 13 2021  10:10AM', '%b %d %Y %I:%M%p')
 
-    scheduler.add_job(publisher, 'interval', minutes=50, start_date=start_publisher, name='publish note',
+    start_it_publisher = datetime.strptime('Oct 13 2021  10:00AM', '%b %d %Y %I:%M%p')
+    start_it_updater = datetime.strptime('Oct 13 2021  10:10AM', '%b %d %Y %I:%M%p')
+    start_it_email_sender = datetime.strptime('Oct 13 2021  10:01AM', '%b %d %Y %I:%M%p')
+    start_it_finalizer = datetime.strptime('Oct 13 2021  10:15AM', '%b %d %Y %I:%M%p')
+
+    scheduler.add_job(eng_publisher, 'interval', days=1, start_date=start_eng_publisher, id='eng_publisher',
                       jobstore='default')
-    scheduler.add_job(updater, 'interval', minutes=50, start_date=start_updater, name='update record',
+    scheduler.add_job(eng_updater, 'interval', minutes=5, start_date=start_eng_updater, id='eng_updater',
                       jobstore='default')
-    scheduler.add_job(finalizer, 'interval', minutes=50, start_date=start_finalizer, name='finalize note',
+    scheduler.add_job(eng_email_sender, 'interval', days=1, start_date=start_eng_email_sender,
+                      id='eng_email_sender',
+                      jobstore='default')
+    scheduler.add_job(eng_finalizer, 'interval', days=1, start_date=start_eng_finalizer, id='eng_finalizer',
                       jobstore='default')
 
-    register_events(scheduler)
+    scheduler.add_job(it_publisher, 'interval', days=1, start_date=start_it_publisher, id='it_publisher',
+                      jobstore='default')
+    scheduler.add_job(it_email_sender, 'interval', days=1, start_date=start_it_email_sender,
+                      id='it_email_sender',
+                      jobstore='default')
+    scheduler.add_job(it_updater, 'interval', days=1, start_date=start_it_updater, id='it_updater',
+                      jobstore='default')
+    scheduler.add_job(it_finalizer, 'interval', days=1, start_date=start_it_finalizer, id='it_finalizer',
+                      jobstore='default')
+
+
     scheduler.start()
     print("Scheduler started...", file=sys.stdout)

@@ -30,12 +30,10 @@ urlpatterns = [
     path('фильтр по отделу/<str:department_name>', views.sort_by_department, name='фильтр по отделу'),
     path('фильтр по группе/<str:group_name>', views.sort_by_group, name='фильтр по группе'),
     path('сменить пароль/', views.ResetPasswordView.as_view(), name='сменить пароль'),
-    path('отправить email/', views.send_email_with_smptlib, name='отправить email'),
     path('Документы/<str:tile_name>', views.show_docs, name='Документы'),
 
     path('поиск мобильный/', views.by_date_view, name='поиск мобильный'),
     path('задания/', views.tasks_mobile, name='задания'),
-    path('опубликовать тест/', views.publish_notes_to_records, name='опубликовать тест'),
 
 ]
 

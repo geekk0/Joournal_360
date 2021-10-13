@@ -100,8 +100,6 @@
                                 {% if device == 'mobile' %}
                                     <span><p id="username">{{ current_user }}</p></span>
                                 {% else %}
-                                    <a href="{% url 'отправить email' %}">Отправить Email</a>
-                                    <!--<a href="{% url 'опубликовать тест' %}">опубликовать тест</a>-->
                                     {% if user_is_admin == True %}
                                         <a style="margin-left: 4%" href="https://journal.360tv.ru/admin/" target="_blank">Управление сайтом</a>
                                     {% endif %}
