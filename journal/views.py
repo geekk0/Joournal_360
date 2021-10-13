@@ -4,6 +4,8 @@ import json
 import os
 import smtplib
 import logging
+from email.utils import formataddr
+
 import environ
 
 from django.contrib.auth import authenticate, login, logout
@@ -1251,6 +1253,8 @@ def new_edit_note(request):
 def publish_eng_record():
     eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
     eng_notes = Notes.objects.filter(author__in=eng_authors, status='initial')
+    eng_notes_count = str(eng_notes.count())
+    logger.debug(eng_notes_count)
     for note in eng_notes:
         if len(note.message) > 34:
             author = note.author
@@ -1270,7 +1274,6 @@ def publish_eng_record():
             note.save()
 
             current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
-
 
     return HttpResponseRedirect('/')
 
@@ -1301,8 +1304,6 @@ def send_eng_email(*args, **kwargs):
 
     for note in published_notes:
         date = (datetime.datetime.strptime(str(note.created_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
-        print('record created date: ' + str(note.created_date))
-        print('date in mail: ' + str(date))
 
         department = Department.objects.filter(groups__in=Group.objects.filter(user=note.author))
 
@@ -1315,16 +1316,13 @@ def send_eng_email(*args, **kwargs):
         msg.set_content(note.message + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + note.author.first_name + '\n' +
                         note.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
 
-        msg['Subject'] = 'Отчет за ' + date
-        msg['From'] = "Journal360@360tv.ru"
-        msg['To'] = ["o.litvinenko@360tv.ru", 'mufasanw@gmail.com']
+        msg['Subject'] = 'Отчет по работе эфирного комплекса ' + date
+        msg['From'] = formataddr(('Журнал 360', 'Journal360@360tv.ru'))
+        msg['To'] = ["v.pavlov@360tv.ru", 'm.evzerikhin@360tv.ru', 'dst_support_efir@mosobltv.ru']
 
         server = smtplib.SMTP(hostname, 25)
-        print('connect to server established')
         server.ehlo()  # Secure the connection
-        print('echlo is ok')
         server.login(username, password)
-        print('login success')
         server.send_message(msg)
         server.quit()
 
@@ -1334,6 +1332,8 @@ def send_eng_email(*args, **kwargs):
 def publish_it_record():
     it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
     it_notes = Notes.objects.filter(author__in=it_authors, status='initial')
+    it_notes_count = str(it_notes.count())
+    logger.debug(it_notes_count)
     for note in it_notes:
         if len(note.message) > 34:
             author = note.author
