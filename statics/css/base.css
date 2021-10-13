@@ -1,0 +1,135 @@
+.header {
+    width: 100%;
+    display: block;
+    height: 108px;
+    position:fixed;
+    top:0;
+    z-index: 1;
+
+}
+
+.body a {
+    color:white;
+}
+
+.body p {
+    color:white !important;
+}
+
+.note_controls {
+    width:60%;
+    margin-left:auto;
+    margin-right:28%;
+}
+
+.note_controls img{
+    width:100%;
+}
+
+.add_note {
+    width: 15%;
+    display: block;
+    margin-left: 20%;
+}
+
+.add_note a {
+    display: block;
+    font-size: 20pt;
+    padding-top: 14%;
+    text-decoration: none;
+}
+
+
+.add_note img {
+    display: block;
+    height: 60%;
+}
+
+.add_record {
+    width:20%;
+    display: inline-block;
+    text-align: right;
+}
+
+#id_report_text {
+ width: 130%;
+ height: 50%;
+}
+
+
+.logo {
+    width: 60%;
+    display: inline-block;
+    margin-right: auto;
+    margin-left: auto;
+    text-align: center;
+
+}
+
+.logo img {
+    width: 30%;
+    margin-left: auto;
+    margin-right: 25%;
+}
+
+.label {
+    display:inline-block;
+    padding-top: 2%;
+    width: 20%;
+
+}
+
+.label a {
+    width: 100%;
+    display: block;
+    margin-left: 30%;
+
+}
+
+.label h5 {
+    font-size: 1.75rem;
+
+}
+
+.label img {
+    display: block;
+    height: 80%;
+    padding-left: 70%;
+    padding-top: 3%;
+
+
+}
+
+.register {
+    padding-top: 5%;
+    width: 30%;
+    text-align: center;
+    float: right;
+}
+
+.register a {
+    color: #ff0000;
+    padding-right:15%;
+}
+
+.logout {
+    display: block;
+    float: right;
+    text-align: right;
+    height:10%;
+    margin-right: 3%;
+    width: 25%;
+    padding-top: 2%;
+}
+
+.logout p {
+    display: inline-block;
+    padding-top:4.5%;
+
+}
+
+.logout img {
+    height: 7vh;
+    padding-top:1.5%;
+    padding-left: 3%;
+}

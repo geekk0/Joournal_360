@@ -1,0 +1,53 @@
+.record{
+    display: block;
+    width:100%;
+    margin-top:5%;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.record_label {
+    width: 40%;
+    text-align: center;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.record_label ul{
+    list-style: none;
+    width:100%;
+}
+
+.record_label li{
+    display: inline-block;
+    width:80%;
+}
+
+.record_meta {
+    width:100%;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top:4%;
+}
+
+.record_meta ul {
+    display: block;
+    list-style: none;
+    float:left;
+    width: 11em;
+}
+
+.record_meta li {
+    margin-top: 4%;
+    border: 1.5px solid #da5959;
+    padding-left: 0.8rem; !important;
+}
+
+
+.record_fulltext {
+    width: 70%;
+    display: block;
+    margin-left: auto;
+    margin-right: auto;
+}
