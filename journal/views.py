@@ -1250,9 +1250,9 @@ def new_edit_note(request):
 
 def publish_eng_record():
     eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
-    eng_notes = Notes.objects.filter(author__in=eng_authors)
+    eng_notes = Notes.objects.filter(author__in=eng_authors, status='initial')
     for note in eng_notes:
-        if (len(note.message) > 34) and (note.status == 'initial'):
+        if len(note.message) > 34:
             author = note.author
             created_date = note.created_date
             print('note created date: '+str(created_date))
@@ -1333,9 +1333,9 @@ def send_eng_email(*args, **kwargs):
 
 def publish_it_record():
     it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
-    it_notes = Notes.objects.filter(author__in=it_authors)
+    it_notes = Notes.objects.filter(author__in=it_authors, status='initial')
     for note in it_notes:
-        if (len(note.message) > 34) and (note.status == 'initial'):
+        if len(note.message) > 34:
             author = note.author
             created_date = note.created_date
             print('note created date: '+str(created_date))
