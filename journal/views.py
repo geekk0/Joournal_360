@@ -1259,6 +1259,7 @@ def publish_eng_record():
             full_text = note.message
             record = Record.objects.create(author=author, text=full_text)
             record.created_date = created_date
+            record.report_date = created_date
             record.save()
             images = NoteImages.objects.filter(of_note=note)
             for image in images:
