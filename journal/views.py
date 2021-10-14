@@ -415,7 +415,7 @@ def rec_list(request, *device):
     comments = Comments.objects.all().order_by('-created')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct().\
-        exclude(name__in=admin_groups).order_by('id')
+        exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
 
     shifts_dates = shifts_match()
 
@@ -567,7 +567,7 @@ def find_by_date(request):
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups).order_by('id')
+        exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
 
     if date:
         date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
@@ -598,7 +598,7 @@ def find_by_date(request):
         multirole = False
         try:
             groups_authors_list = Group.objects.filter(department__exact=selected_department).distinct(). \
-            exclude(name__in=admin_groups).order_by('id')
+            exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
         except:
             multirole = True
 
@@ -686,7 +686,7 @@ def sort_by_group(request, group_name):
     comments = Comments.objects.all().order_by('-created')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups).order_by('id')
+        exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
 
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')[:7]
 
@@ -824,7 +824,7 @@ def find_by_text(request, *args, **kwargs):
     comments = Comments.objects.all().order_by('-created')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups).order_by('id')
+        exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
 
     shifts_dates = shifts_match()
 
@@ -843,7 +843,7 @@ def find_by_text(request, *args, **kwargs):
         multirole = False
         try:
             groups_authors_list = Group.objects.filter(department__exact=selected_department).distinct(). \
-                exclude(name__in=admin_groups).order_by('id')
+                exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
         except:
             multirole = True
 
@@ -922,7 +922,7 @@ def sort_by_department(request, department_name):
             user_departments_list.append(dep_objects.name)
 
     groups_authors_list = Group.objects.filter(department=selected_department).distinct(). \
-        exclude(name__in=admin_groups)
+        exclude(name__in=admin_groups).exclude(name='Трудовые резервы')
 
     comments = Comments.objects.all().order_by('-created')
 
@@ -995,7 +995,7 @@ def by_date_view(request):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups)
+        exclude(name__in=admin_groups).exclude(name='Трудовые резервы')
 
     user_agent = request.META['HTTP_USER_AGENT']
 
