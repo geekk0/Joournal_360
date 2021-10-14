@@ -1192,7 +1192,8 @@ def clean_task_format(task):
 def prepare_note(request):
     try:
         note = Notes.objects.get(author_id=request.user.id)
-
+        note.created_date = timezone.now()
+        note.save()
 
     except:
         note = Notes.objects.create(author=request.user)
