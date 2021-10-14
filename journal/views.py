@@ -1197,11 +1197,8 @@ def prepare_note(request):
 
     except:
         note = Notes.objects.create(author=request.user)
-
         note.created_date = timezone.now()
         note.save()
-
-
 
     return note
 
