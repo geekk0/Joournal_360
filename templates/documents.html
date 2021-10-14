@@ -59,30 +59,10 @@
                         </ul>
                     </div>
 
-        </div>
+    </div>
 
     <div class="documents">
 
-
-            {% if tile_name == 'Расстановка камер' %}
-                {% for doc in docs %}
-                    <div class="cameras_layout">
-                        <img src="{{ doc.image.url }}" alt="{{ doc.name }}">
-                        <figcaption>{{ doc.name }}</figcaption>
-                    </div>
-                {% endfor %}
-            {% endif %}
-
-            {% if tile_name == 'Схемы' or tile_name == 'Справка по сайту' %}
-                <div class="schemes_layout">
-                    <ul>
-                        {% for doc in docs %}
-                            <li><a href="{{ doc.file.url }}" target="_blank"><i class=""></i>{{ doc.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-
-            {% endif %}
 
             {% if tile_name == 'Мануалы' %}
 
@@ -100,19 +80,43 @@
                         {% endfor %}
 
                     </div>
+
+
+
+
+            {% else %}
+
+                        {% for doc in docs %}
+
+                            {% if doc.file %}
+                                <div class="schemes_layout">
+                                    <ul>
+                                        <li><a href="{{ doc.file.url }}" target="_blank"><i class=""></i>{{ doc.name }}</a></li>
+                                    </ul>
+                                </div>
+                            {% endif %}
+
+                            {% if doc.image %}
+                                <div class="cameras_layout">
+                                    <img src="{{ doc.image.url }}" alt="{{ doc.name }}">
+                                    <figcaption>{{ doc.name }}</figcaption>
+                                </div>
+                            {% endif %}
+                        {% endfor %}
+
+
             {% endif %}
+
 
             <div class="manuals">
 
-                <div class="manuals_layout">
-                    <ul>
-                        {% for manual in manuals %}
-                            <li><a href="{{ manual.file.url }}" target="_blank"><i class=""></i>{{ manual.name }}</a></li>
-                        {% endfor %}
-                    </ul>
-                </div>
-
-
+                    <div class="manuals_layout">
+                        <ul>
+                            {% for manual in manuals %}
+                                <li><a href="{{ manual.file.url }}" target="_blank"><i class=""></i>{{ manual.name }}</a></li>
+                            {% endfor %}
+                        </ul>
+                    </div>
             </div>
 
 

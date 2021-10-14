@@ -868,13 +868,11 @@ display: none;
 .schemes_layout {
     font-size:16pt;
     text-align: center;
-    margin-top: 2%;
 }
 
-.schemes_layout ul{
-    padding-top:4%;
+.schemes_layout li{
     list-style: none;
-    line-height: 1.8em;
+    line-height: 0.4em;
 }
 
 .manuals {
