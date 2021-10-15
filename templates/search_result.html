@@ -603,6 +603,16 @@
                     <div class="record_layout" style="border: 2px solid green;">
                          <p class="author_name">{{ recs.report_date }}&nbsp{{ recs.author_name }}</p>
                          <p style="">{{recs.text|linebreaks }}</p>
+                         <div class="record_images">
+
+                            {% for image in recs.recimages_set.all %}
+                                <div class="record_images_layout">
+                                    <img src="{{ image.image.url }}" alt="{{ image.name }}">
+                                </div>
+                            {% endfor %}
+
+                 </div>
+
 
                         <div class="comments">
                              <p style="display:none ">{{ recs.get_comments_count }}</p>
@@ -639,6 +649,15 @@
                     <div class="record_layout" style="border: 2px solid white;">
                          <p class="author_name">{{ recs.report_date }}&nbsp{{ recs.author_name }}</p>
                          <p style="">{{recs.text|linebreaks }}</p>
+                         <div class="record_images">
+
+                            {% for image in recs.recimages_set.all %}
+                                <div class="record_images_layout">
+                                    <img src="{{ image.image.url }}" alt="{{ image.name }}">
+                                </div>
+                            {% endfor %}
+
+                 </div>
 
                          <div class="comments">
                      <p style="display:none ">{{ recs.get_comments_count }}</p>
