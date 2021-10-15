@@ -819,11 +819,12 @@
                     console.log(e.currentTarget.style.width)
 
                     if (e.currentTarget.style.width === '30%') {
-                        e.currentTarget.style.width = '95%';
+                        e.currentTarget.style.width = '70%';
                         e.currentTarget.removeAttribute('mode');
                         e.currentTarget.style.position = 'absolute';
-                        e.currentTarget.style.left = '0';
-                        e.currentTarget.style.top = '0';
+                        e.currentTarget.style.left = '15%';
+                        e.currentTarget.style.top = '9%';
+                        e.currentTarget.style.zIndex = '3';
 
 
                         return;
@@ -831,6 +832,11 @@
                     else {
 
                         e.currentTarget.style.width = '30%';
+                        e.currentTarget.style.position = 'relative'
+                        e.currentTarget.style.zIndex = '1';
+                        e.currentTarget.style.left = '0';
+                        e.currentTarget.style.top = '0';
+
 
                         return;
                     }
