@@ -959,6 +959,7 @@ display: none;
 }
 
 
+
 .note_images_layout img{
     width:100%;
 }
@@ -974,9 +975,7 @@ display: none;
     vertical-align: bottom;
 }
 
-.record_images_layout:hover{
-    width:45%;
-}
+
 
 .record_images_layout img{
     width:100%;
