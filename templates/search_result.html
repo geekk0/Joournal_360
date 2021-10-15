@@ -652,7 +652,7 @@
                          <div class="record_images">
 
                             {% for image in recs.recimages_set.all %}
-                                <div class="record_images_layout">
+                                <div class="record_images_layout" style="width:8%">
                                     <img src="{{ image.image.url }}" alt="{{ image.name }}">
                                 </div>
                             {% endfor %}
@@ -727,6 +727,70 @@
                 logout.style.display = 'block';
                 add_task.style.display = 'block';
                 }
+            }
+
+            document.querySelectorAll('.note_images_layout').forEach(item => {
+                    if (item !== null) {
+                        item.addEventListener('click', note_photo_view)
+                    }
+                })
+
+            document.querySelectorAll('.record_images_layout').forEach(item => {
+                    if (item !== null) {
+                        item.addEventListener('click', record_photo_view)
+                    }
+                })
+
+
+            function note_photo_view(e) {
+
+
+                    if (e.currentTarget.style.width === '30%') {
+                        e.currentTarget.style.width = '70%';
+                        e.currentTarget.style.position = 'absolute';
+                        e.currentTarget.style.left = '15%';
+                        e.currentTarget.style.top = '9%';
+                        e.currentTarget.style.zIndex = '3';
+
+
+                        return;
+                    }
+                    else {
+
+                        e.currentTarget.style.width = '30%';
+                        e.currentTarget.style.position = 'relative'
+                        e.currentTarget.style.zIndex = '1';
+                        e.currentTarget.style.left = '0';
+                        e.currentTarget.style.top = '0';
+
+
+                        return;
+                    }
+            }
+
+            function record_photo_view(e) {
+
+
+                    if (e.currentTarget.style.width === '8%') {
+                        e.currentTarget.style.width = '70%';
+                        e.currentTarget.style.position = 'fixed';
+                        e.currentTarget.style.left = '15%';
+                        e.currentTarget.style.top = '5%';
+                        e.currentTarget.style.zIndex = '3';
+                    }
+
+
+
+                    else {
+
+                        e.currentTarget.style.width = '8%';
+                        e.currentTarget.style.position = 'relative'
+                        e.currentTarget.style.zIndex = '1';
+                        e.currentTarget.style.left = '0';
+                        e.currentTarget.style.top = '0';
+
+
+                    }
             }
 
         </script>
