@@ -808,6 +808,32 @@
                 }
             }
 
+            document.querySelectorAll('.note_images_layout').forEach(item => {
+                    if (item !== null) {
+                        item.addEventListener('click', photo_view)
+                        item.addEventListener('mouseleave', quit_photo_view)
+                    }
+                })
+
+            function quit_photo_view(e){
+
+                    console.log(e.currentTarget.hasAttribute('fullscreen'))
+                    e.currentTarget.style.width = '8%';
+                    e.currentTarget.removeAttribute('fullscreen');
+                    e.currentTarget.style.position = 'relative';
+
+            }
+
+
+            function photo_view(e) {
+
+                if (!e.currentTarget.hasAttribute('fullscreen')) {
+                   e.currentTarget.style.width = '95%';
+                   e.currentTarget.setAttribute('mode', 'fullscreen');
+                   e.currentTarget.style.positionAlign = 'line-left';
+                   e.currentTarget.style.left = '1%';
+                }
+            }
 
         </script>
 

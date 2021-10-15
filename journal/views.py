@@ -1255,6 +1255,10 @@ def publish_eng_record():
     logger.debug(eng_notes_count)
     for note in eng_notes:
         if len(note.message) > 34:
+
+            delta = datetime.timedelta(days=1)
+            note.created_date = note.created_date - delta
+
             author = note.author
             created_date = note.created_date
             print('note created date: '+str(created_date))
@@ -1269,6 +1273,7 @@ def publish_eng_record():
                 rec_image.save()
             note.status = 'published'
             note.to_record = record
+            print(note.created_date)
             note.save()
 
             current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
