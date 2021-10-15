@@ -1261,7 +1261,6 @@ def publish_eng_record():
 
             author = note.author
             created_date = note.created_date
-            print('note created date: '+str(created_date))
             full_text = note.message
             record = Record.objects.create(author=author, text=full_text)
             record.created_date = created_date
@@ -1339,9 +1338,12 @@ def publish_it_record():
     logger.debug(it_notes_count)
     for note in it_notes:
         if len(note.message) > 34:
+
+            delta = datetime.timedelta(days=1)
+            note.created_date = note.created_date - delta
+
             author = note.author
             created_date = note.created_date
-            print('note created date: '+str(created_date))
             full_text = note.message
             record = Record.objects.create(author=author, text=full_text)
             record.created_date = created_date
