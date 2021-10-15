@@ -1387,7 +1387,7 @@ def send_it_email(*args, **kwargs):
 
         msg['Subject'] = 'Отчет за ' + date
         msg['From'] = "Journal360@360tv.ru"
-        msg['To'] = ["o.litvinenko@360tv.ru", 'mufasanw@gmail.com']
+        msg['To'] = ["v.pavlov@360tv.ru", 'm.evzerikhin@360tv.ru', 'dst_support_efir@mosobltv.ru']
 
         server = smtplib.SMTP(hostname, 25)
         server.ehlo()  # Secure the connection

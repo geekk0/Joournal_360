@@ -551,7 +551,7 @@
                         <div class="note_images">
 
                             {% for image in notes.noteimages_set.all %}
-                                <div class="note_images_layout">
+                                <div class="note_images_layout" style="width: 30%">
                                     <img src="{{ image.image.url }}" alt="{{ image.name }}">
                                     <div class="remove_image">
                                         <a  href={% url 'удалить фото' image.id %}><img style="width:100%" src={% static 'images/supprimerhistorique7.webp'%} ></a>
@@ -811,29 +811,31 @@
             document.querySelectorAll('.note_images_layout').forEach(item => {
                     if (item !== null) {
                         item.addEventListener('click', photo_view)
-                        item.addEventListener('mouseleave', quit_photo_view)
                     }
                 })
 
-            function quit_photo_view(e){
-
-                    console.log(e.currentTarget.hasAttribute('fullscreen'))
-                    e.currentTarget.style.width = '8%';
-                    e.currentTarget.removeAttribute('fullscreen');
-                    e.currentTarget.style.position = 'relative';
-
-            }
-
-
             function photo_view(e) {
 
-                if (!e.currentTarget.hasAttribute('fullscreen')) {
-                   e.currentTarget.style.width = '95%';
-                   e.currentTarget.setAttribute('mode', 'fullscreen');
-                   e.currentTarget.style.positionAlign = 'line-left';
-                   e.currentTarget.style.left = '1%';
-                }
+                    console.log(e.currentTarget.style.width)
+
+                    if (e.currentTarget.style.width === '30%') {
+                        e.currentTarget.style.width = '95%';
+                        e.currentTarget.removeAttribute('mode');
+                        e.currentTarget.style.position = 'absolute';
+                        e.currentTarget.style.left = '0';
+                        e.currentTarget.style.top = '0';
+
+
+                        return;
+                    }
+                    else {
+
+                        e.currentTarget.style.width = '30%';
+
+                        return;
+                    }
             }
+
 
         </script>
 
