@@ -1248,7 +1248,7 @@ def new_edit_note(request):
     foo()"""
 
 
-def publish_eng_record():
+def publish_eng_record(*request):
     eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
     eng_notes = Notes.objects.filter(author__in=eng_authors, status='initial')
     eng_notes_count = str(eng_notes.count())
@@ -1257,7 +1257,9 @@ def publish_eng_record():
         if len(note.message) > 34:
 
             delta = datetime.timedelta(days=1)
-            note.created_date = note.created_date - delta
+            note.created_date = datetime.date.today() - delta
+
+
 
             author = note.author
             created_date = note.created_date
@@ -1340,7 +1342,7 @@ def publish_it_record():
         if len(note.message) > 34:
 
             delta = datetime.timedelta(days=1)
-            note.created_date = note.created_date - delta
+            note.created_date = datetime.date.today() - delta
 
             author = note.author
             created_date = note.created_date
@@ -1385,7 +1387,7 @@ def send_it_email(*args, **kwargs):
         msg.set_content(note.message + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + note.author.first_name + '\n' +
                         note.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
 
-        msg['Subject'] = 'Отчет за ' + date
+        msg['Subject'] = 'Отчет по работе эфирного комплекса ' + date
         msg['From'] = "Journal360@360tv.ru"
         msg['To'] = ["v.pavlov@360tv.ru", 'm.evzerikhin@360tv.ru', 'dst_support_efir@mosobltv.ru']
 

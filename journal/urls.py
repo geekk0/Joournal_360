@@ -34,7 +34,6 @@ urlpatterns = [
 
     path('поиск мобильный/', views.by_date_view, name='поиск мобильный'),
     path('задания/', views.tasks_mobile, name='задания'),
-
 ]
 
 if settings.DEBUG:
