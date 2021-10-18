@@ -667,7 +667,7 @@
                          <div class="record_images">
 
                             {% for image in recs.recimages_set.all %}
-                                <div class="record_images_layout">
+                                <div class="record_images_layout" style="width:8%">
                                     <img src="{{ image.image.url }}" alt="{{ image.name }}">
                                 </div>
                             {% endfor %}
