@@ -193,6 +193,10 @@
 
     <script type="application/javascript">
 
+                        $(document).ready(function(){
+                            $('[data-toggle="tooltip"]').tooltip();
+                        });
+
                         document.addEventListener("DOMContentLoaded", init_colors)
 
                         function init_colors() {
@@ -245,19 +249,31 @@
                         }
 
                         function color_date(cell, shift) {
+
                             if (shift === 'shift_4_dates') {
                                     cell.style.color = 'rgb(0, 200, 0)' ;
+                                    cell.title = 'Бороздин и Литвиненко\n Крутихин'
                                 }
                             if (shift === 'shift_3_dates') {
                                     cell.style.color = 'rgb(200, 0, 0)';
+                                    cell.title = 'Рославцев и Сидоренко\n Деев'
+
                                 }
                             if (shift === 'shift_2_dates') {
                                     cell.style.color =  'rgb(0, 160, 255)';
+                                    cell.title = 'Черпаков и Долгов\n Дмитриевский'
+
                                 }
                             if (shift === 'shift_1_dates') {
                                     cell.style.color = 'rgb(200, 200, 0)';
+                                    cell.title = 'Астахов и Козлов\n Захаров'
+
                                 }
+
+                            $(cell).attr("data-toggle", "tooltip");
                         }
+
+
 
                         function scheduled_dates(cell) {
                             cell.style.border = '1px solid';

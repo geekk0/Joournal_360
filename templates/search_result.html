@@ -182,6 +182,10 @@
 
     <script type="application/javascript">
 
+                        $(document).ready(function(){
+                            $('[data-toggle="tooltip"]').tooltip();
+                        });
+
                         document.addEventListener("DOMContentLoaded", init_colors)
 
                         function init_colors() {
@@ -232,18 +236,56 @@
                         }
 
                         function color_date(cell, shift) {
+
+                            let selected_department = '{{ selected_department }}'
+                            console.log(selected_department)
+                            console.log(typeof selected_department)
+
                             if (shift === 'shift_4_dates') {
-                                    cell.style.color = 'rgb(0, 200, 0)' ;
+                                    cell.style.color = 'rgb(0, 200, 0)';
+                                    if (selected_department  === 'Инженеры') {
+                                        cell.title = 'Бороздин и Литвиненко'
+                                    }
+
+                                    if (selected_department === 'IT') {
+                                        cell.title = 'Крутихин'
+                                    }
                                 }
                             if (shift === 'shift_3_dates') {
                                     cell.style.color = 'rgb(200, 0, 0)';
+                                     if (selected_department  === 'Инженеры') {
+                                        cell.title = 'Рославцев и Сидоренко'
+                                    }
+
+                                    if (selected_department === 'IT') {
+                                        cell.title = 'Деев'
+                                    }
+
                                 }
                             if (shift === 'shift_2_dates') {
                                     cell.style.color =  'rgb(0, 160, 255)';
+                                    if (selected_department  === 'Инженеры') {
+                                        cell.title = 'Черпаков и Долгов'
+                                    }
+
+                                    if (selected_department === 'IT') {
+                                        cell.title = 'Дмитриевский'
+                                    }
+
                                 }
                             if (shift === 'shift_1_dates') {
                                     cell.style.color = 'rgb(200, 200, 0)';
+                                    if (selected_department  === 'Инженеры') {
+                                        cell.title = 'Астахов и Козлов'
+                                    }
+
+                                    if (selected_department === 'IT') {
+                                        cell.title = 'Захаров'
+                                    }
+
                                 }
+
+                            $(cell).attr("data-toggle", "tooltip");
                         }
 
                         function scheduled_dates(cell) {
