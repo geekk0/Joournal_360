@@ -33,6 +33,7 @@ urlpatterns = [
     path('Документы/<str:tile_name>', views.show_docs, name='Документы'),
 
 
+    path('отправить письмо инж/', views.send_eng_email, name='отправить письмо инж'),
 
     path('поиск мобильный/', views.by_date_view, name='поиск мобильный'),
     path('задания/', views.tasks_mobile, name='задания'),

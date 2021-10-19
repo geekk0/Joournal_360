@@ -105,6 +105,7 @@
                                     {% endif %}
 
                                     <span><p id="username">{{ current_user }}</p></span>
+                                    <a href="{% url 'отправить письмо инж' %}">Отправить письмо инж</a>
                                     <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
                                         ></a>
                                 {% endif %}
