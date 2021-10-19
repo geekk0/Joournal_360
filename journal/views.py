@@ -1322,8 +1322,7 @@ def send_eng_email(*args, **kwargs):
 
         msg['Subject'] = 'Отчет по работе эфирного комплекса (ENG) за ' + date
         msg['From'] = formataddr(('Журнал 360', 'Journal360@360tv.ru'))
-        msg['To'] = ["v.pavlov@360tv.ru", 'm.evzerikhin@360tv.ru', 'dst_support_efir@mosobltv.ru']
-
+        msg['To'] = settings.DEFAULT_TO_EMAIL
         server = smtplib.SMTP(hostname, 25)
         server.ehlo()  # Secure the connection
         server.login(username, password)
@@ -1389,7 +1388,7 @@ def send_it_email(*args, **kwargs):
 
         msg['Subject'] = 'Отчет по работе эфирного комплекса (IT) за ' + date
         msg['From'] = "Journal360@360tv.ru"
-        msg['To'] = ["v.pavlov@360tv.ru", 'm.evzerikhin@360tv.ru', 'dst_support_efir@mosobltv.ru']
+        msg['To'] = settings.DEFAULT_TO_EMAIL
 
         server = smtplib.SMTP(hostname, 25)
         server.ehlo()  # Secure the connection

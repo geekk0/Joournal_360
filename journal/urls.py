@@ -32,6 +32,8 @@ urlpatterns = [
     path('сменить пароль/', views.ResetPasswordView.as_view(), name='сменить пароль'),
     path('Документы/<str:tile_name>', views.show_docs, name='Документы'),
 
+
+
     path('поиск мобильный/', views.by_date_view, name='поиск мобильный'),
     path('задания/', views.tasks_mobile, name='задания'),
 ]
