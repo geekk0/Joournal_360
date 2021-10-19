@@ -1320,7 +1320,7 @@ def send_eng_email(*args, **kwargs):
         msg.set_content(note.message + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + note.author.first_name + '\n' +
                         note.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
 
-        msg['Subject'] = 'Отчет по работе эфирного комплекса ' + date
+        msg['Subject'] = 'Отчет по работе эфирного комплекса (ENG) за ' + date
         msg['From'] = formataddr(('Журнал 360', 'Journal360@360tv.ru'))
         msg['To'] = ["v.pavlov@360tv.ru", 'm.evzerikhin@360tv.ru', 'dst_support_efir@mosobltv.ru']
 
@@ -1387,7 +1387,7 @@ def send_it_email(*args, **kwargs):
         msg.set_content(note.message + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + note.author.first_name + '\n' +
                         note.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
 
-        msg['Subject'] = 'Отчет по работе эфирного комплекса ' + date
+        msg['Subject'] = 'Отчет по работе эфирного комплекса (IT) за ' + date
         msg['From'] = "Journal360@360tv.ru"
         msg['To'] = ["v.pavlov@360tv.ru", 'm.evzerikhin@360tv.ru', 'dst_support_efir@mosobltv.ru']
 
