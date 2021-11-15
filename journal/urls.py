@@ -24,6 +24,8 @@ urlpatterns = [
     path('добавить отчет/', views.new_edit_note, name='добавить отчет'),
     path('добавить фото/', views.add_photo, name='добавить фото'),
     path('удалить фото/<int:image_id>', views.remove_photo, name='удалить фото'),
+    path('опубликовать отчет/<int:note_id>', views.publish_it_record, name='опубликовать отчет'),
+
 
     path('мануалы к устройству/<str:device_name>', views.show_device_manuals, name='мануалы к устройству'),
 
@@ -31,9 +33,6 @@ urlpatterns = [
     path('фильтр по группе/<str:group_name>', views.sort_by_group, name='фильтр по группе'),
     path('сменить пароль/', views.ResetPasswordView.as_view(), name='сменить пароль'),
     path('Документы/<str:tile_name>', views.show_docs, name='Документы'),
-
-
-    path('отправить письмо инж/', views.send_eng_email, name='отправить письмо инж'),
 
     path('поиск мобильный/', views.by_date_view, name='поиск мобильный'),
     path('задания/', views.tasks_mobile, name='задания'),

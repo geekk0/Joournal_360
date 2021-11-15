@@ -1217,7 +1217,6 @@ def new_edit_note(request):
 
             note.save()
 
-
         else:
             messages.warning(request, 'Отчет можно писать только из рабочей сети')
             return HttpResponseRedirect('/')
@@ -1332,69 +1331,60 @@ def send_eng_email(*args, **kwargs):
     return HttpResponseRedirect('/')
 
 
-def publish_it_record():
-    it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
-    it_notes = Notes.objects.filter(author__in=it_authors, status='initial')
-    it_notes_count = str(it_notes.count())
-    logger.debug(it_notes_count)
-    for note in it_notes:
-        if len(note.message) > 34:
+def publish_it_record(request, note_id):
 
-            delta = datetime.timedelta(days=1)
-            note.created_date = datetime.date.today() - delta
+    delta = datetime.timedelta(days=1)
 
-            author = note.author
-            created_date = note.created_date
-            full_text = note.message
-            record = Record.objects.create(author=author, text=full_text)
-            record.created_date = created_date
-            record.report_date = created_date
-            record.save()
-            images = NoteImages.objects.filter(of_note=note)
-            for image in images:
-                rec_image = RecImages.objects.create(of_record=record, name=image.name, image=image.image)
-                rec_image.save()
-            note.status = 'published'
-            note.to_record = record
-            note.save()
+    note = Notes.objects.get(id=note_id)
 
-            current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
+    note.created_date = datetime.date.today() - delta
 
+    author = note.author
+    created_date = note.created_date
+    full_text = note.message
+    record = Record.objects.create(author=author, text=full_text)
+    record.created_date = created_date
+    record.report_date = created_date
+    record.save()
+    images = NoteImages.objects.filter(of_note=note)
+    for image in images:
+        rec_image = RecImages.objects.create(of_record=record, name=image.name, image=image.image)
+        rec_image.save()
+    note.to_record = record
+    note.save()
+
+    note.delete()
+
+    send_it_email(record_id=record.id)
 
     return HttpResponseRedirect('/')
 
 
-def send_it_email(*args, **kwargs):
+def send_it_email(record_id):
     environ.Env.read_env()
-    it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
 
-    published_notes = Notes.objects.filter(status='published', author__in=it_authors)
+    record = Record.objects.get(id=record_id)
 
-    for note in published_notes:
-        date = (datetime.datetime.strptime(str(note.created_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
-        print('record created date: ' + str(note.created_date))
-        print('date in mail: ' + str(date))
+    date = (datetime.datetime.strptime(str(record.created_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
 
-        department = Department.objects.filter(groups__in=Group.objects.filter(user=note.author))
+    hostname = "email.mosobltv.ru"
+    username = "Journal360"
+    password = "Ju123456"
 
-        hostname = "email.mosobltv.ru"
-        username = "Journal360"
-        password = "Ju123456"
+    msg = EmailMessage()
 
-        msg = EmailMessage()
+    msg.set_content(record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
+                    record.author.last_name + '.' + '\n' + 'IT' + '\n')
 
-        msg.set_content(note.message + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + note.author.first_name + '\n' +
-                        note.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
+    msg['Subject'] = 'Отчет по работе эфирного комплекса (IT) за ' + date
+    msg['From'] = "Journal360@360tv.ru"
+    msg['To'] = settings.DEFAULT_TO_EMAIL
 
-        msg['Subject'] = 'Отчет по работе эфирного комплекса (IT) за ' + date
-        msg['From'] = "Journal360@360tv.ru"
-        msg['To'] = settings.DEFAULT_TO_EMAIL
-
-        server = smtplib.SMTP(hostname, 25)
-        server.ehlo()  # Secure the connection
-        server.login(username, password)
-        server.send_message(msg)
-        server.quit()
+    server = smtplib.SMTP(hostname, 25)
+    server.ehlo()  # Secure the connection
+    server.login(username, password)
+    server.send_message(msg)
+    server.quit()
 
     return HttpResponseRedirect('/')
 
@@ -1483,13 +1473,14 @@ def show_device_manuals(request, device_name):
 
 def check_user_ip(request):
 
-    user_ip = request.META.get('HTTP_X_REAL_IP')
+    user_ip = str(request.META.get('HTTP_X_REAL_IP'))
 
+    if user_ip:
+        if user_ip.startswith('185.18.202') or user_ip.startswith('127'):
+            return 'local'
+        else:
+            return 'internet'
 
-    if user_ip.startswith('185.18.202') or user_ip.startswith('127'):
-        return 'local'
-    else:
-        return 'internet'
 
 
 @csrf_protect

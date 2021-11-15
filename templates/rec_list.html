@@ -105,7 +105,6 @@
                                     {% endif %}
 
                                     <span><p id="username">{{ current_user }}</p></span>
-                                    <a href="{% url 'отправить письмо инж' %}">Отправить письмо инж</a>
                                     <a href="{% url 'logout' %}"><img src="{% static 'images/quit_white.png'%}" title="Выйти"
                                         ></a>
                                 {% endif %}
@@ -565,19 +564,29 @@
 
 
                             {% endif %}
-                        <div class="note_images">
+                            <div class="note_images">
 
-                            {% for image in notes.noteimages_set.all %}
-                                <div class="note_images_layout" style="width: 30%">
-                                    <img src="{{ image.image.url }}" alt="{{ image.name }}">
-                                    <div class="remove_image">
-                                        <a  href={% url 'удалить фото' image.id %}><img style="width:100%" src={% static 'images/supprimerhistorique7.webp'%} ></a>
+                                {% for image in notes.noteimages_set.all %}
+                                    <div class="note_images_layout" style="width: 30%">
+                                        <img src="{{ image.image.url }}" alt="{{ image.name }}">
+                                        <div class="remove_image">
+                                            <a  href={% url 'удалить фото' image.id %}><img style="width:100%" src={% static 'images/supprimerhistorique7.webp'%} ></a>
+                                        </div>
                                     </div>
-                                </div>
-                            {% endfor %}
+                                {% endfor %}
 
+                            </div>
+
+                            {% for department in user_departments %}
+                                {% if department.name == 'IT'%}
+                                    <a href="{% url 'опубликовать отчет' notes.id %}" class="btn btn-success" style="margin-bottom:1%;margin-left:35%;
+                                display:inline-block; width:10%" role="button">Отправить</a>
+                                {% endif %}
+                            {% endfor %}
                         </div>
-                        </div>
+
+
+
 
 
                 </div>
