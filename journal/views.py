@@ -1209,7 +1209,8 @@ def new_edit_note(request):
 
     if note.status == 'initial':
 
-        if check_user_ip(request=request) == 'local':
+        if check_user_ip(request=request) == 'local' or \
+                request.user.groups.get(user=request.user) in Group.objects.filter(department__name="IT"):
 
             text = request.GET.get("new_report")
 
@@ -1220,6 +1221,7 @@ def new_edit_note(request):
         else:
             messages.warning(request, 'Отчет можно писать только из рабочей сети')
             return HttpResponseRedirect('/')
+
 
     else:
 
