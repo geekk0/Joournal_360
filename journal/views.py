@@ -408,7 +408,7 @@ def rec_list(request, *device):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
 
-    records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')[:14]
+    records = Record.objects.filter(author__in=match_authors_list).order_by('-report_date')[:14]
 
     notes = prepare_note(request)
 
@@ -1255,12 +1255,10 @@ def publish_eng_record(*request):
     eng_notes_count = str(eng_notes.count())
     logger.debug(eng_notes_count)
     for note in eng_notes:
-        if len(note.message) > 34:
+        if len(note.message) > 20:
 
             delta = datetime.timedelta(days=1)
             note.created_date = datetime.date.today() - delta
-
-
 
             author = note.author
             created_date = note.created_date
@@ -1342,11 +1340,10 @@ def publish_it_record(request, note_id):
     note.created_date = datetime.date.today() - delta
 
     author = note.author
-    created_date = note.created_date
     full_text = note.message
     record = Record.objects.create(author=author, text=full_text)
-    record.created_date = created_date
-    record.report_date = created_date
+    record.created_date = timezone.now()
+    record.report_date = note.created_date
     record.save()
     images = NoteImages.objects.filter(of_note=note)
     for image in images:
@@ -1368,7 +1365,6 @@ def send_it_email(record_id):
     record = Record.objects.get(id=record_id)
 
     date = (datetime.datetime.strptime(str(record.created_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
-
     hostname = "email.mosobltv.ru"
     username = "Journal360"
     password = "Ju123456"
@@ -1380,7 +1376,10 @@ def send_it_email(record_id):
 
     msg['Subject'] = 'Отчет по работе эфирного комплекса (IT) за ' + date
     msg['From'] = "Journal360@360tv.ru"
-    msg['To'] = settings.DEFAULT_TO_EMAIL
+    if settings.DEBUG == "True":
+        msg['To'] = ['litvinenkostudy@gmail.com', 'o.litvinenko@360tv.ru']
+    else:
+        msg['To'] = settings.DEFAULT_TO_EMAIL
 
     server = smtplib.SMTP(hostname, 25)
     server.ehlo()  # Secure the connection
@@ -1478,7 +1477,8 @@ def check_user_ip(request):
     user_ip = str(request.META.get('HTTP_X_REAL_IP'))
 
     if user_ip:
-        if user_ip.startswith('185.18.202') or user_ip.startswith('127'):
+        if user_ip.startswith('185.18.202') or user_ip.startswith('127')or \
+                request.user.groups.get(user=request.user) in Group.objects.filter(department__name="IT"):
             return 'local'
         else:
             return 'internet'
