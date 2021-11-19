@@ -1306,7 +1306,7 @@ def send_eng_email(*args, **kwargs):
     published_notes = Notes.objects.filter(status='updated', author__in=eng_authors)
 
     for note in published_notes:
-        date = (datetime.datetime.strptime(str(note.created_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
+        date = (datetime.datetime.strptime(str(note.created_date)[:10], "%Y-%m-%d").strftime("%d.%m.%Y"))
 
         department = Department.objects.filter(groups__in=Group.objects.filter(user=note.author))
 
@@ -1363,7 +1363,6 @@ def send_it_email(record_id):
     environ.Env.read_env()
 
     record = Record.objects.get(id=record_id)
-
     date = (datetime.datetime.strptime(str(record.created_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
     hostname = "email.mosobltv.ru"
     username = "Journal360"
