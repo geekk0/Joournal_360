@@ -1375,10 +1375,7 @@ def send_it_email(record_id):
 
     msg['Subject'] = 'Отчет по работе эфирного комплекса (IT) за ' + date
     msg['From'] = "Journal360@360tv.ru"
-    if settings.DEBUG:
-        msg['To'] = ['litvinenkostudy@gmail.com', 'o.litvinenko@360tv.ru']
-    else:
-        msg['To'] = settings.DEFAULT_TO_EMAIL
+    msg['To'] = settings.DEFAULT_TO_EMAIL
 
     server = smtplib.SMTP(hostname, 25)
     server.ehlo()  # Secure the connection
