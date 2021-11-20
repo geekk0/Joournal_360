@@ -244,7 +244,7 @@
                             if (shift === 'shift_4_dates') {
                                     cell.style.color = 'rgb(0, 200, 0)';
                                     if (selected_department  === 'Инженеры') {
-                                        cell.title = 'Бороздин и Литвиненко'
+                                        cell.title = 'Литвиненко и Мех'
                                     }
 
                                     if (selected_department === 'IT') {
@@ -252,7 +252,7 @@
                                     }
 
                                     if (selected_department === 'None') {
-                                    cell.title = 'Бороздин и Литвиненко\n Крутихин'
+                                    cell.title = 'Литвиненко и Мех\n Крутихин'
                                     }
                                 }
                             if (shift === 'shift_3_dates') {
@@ -274,7 +274,7 @@
                             if (shift === 'shift_2_dates') {
                                     cell.style.color =  'rgb(0, 160, 255)';
                                     if (selected_department  === 'Инженеры') {
-                                        cell.title = 'Черпаков и Долгов'
+                                        cell.title = 'Бороздин и Долгов'
                                     }
 
                                     if (selected_department === 'IT') {
@@ -282,7 +282,7 @@
                                     }
 
                                     if (selected_department === 'None') {
-                                        cell.title = 'Черпаков и Долгов\n Дмитриевский'
+                                        cell.title = 'Бороздин и Долгов\n Дмитриевский'
 
                                     }
 
@@ -329,13 +329,13 @@
                                 if (group_link.innerText === 'Астахов и Козлов' || group_link.innerText === 'IT Захаров')  {
                                     group_link.style.color = 'rgb(200, 200, 0)'
                                 }
-                                if (group_link.innerText === 'Черпаков и Долгов'|| group_link.innerText === 'IT Дмитриевский') {
+                                if (group_link.innerText === 'Бороздин и Долгов'|| group_link.innerText === 'IT Дмитриевский') {
                                     group_link.style.color = 'rgb(0, 160, 255)'
                                 }
                                 if (group_link.innerText === 'Рославцев и Сидоренко'|| group_link.innerText === 'IT Деев') {
                                     group_link.style.color = 'rgb(200, 0, 0)'
                                 }
-                                if (group_link.innerText === 'Бороздин и Литвиненко'|| group_link.innerText === 'IT Крутихин') {
+                                if (group_link.innerText === 'Литвиненко и Мех'|| group_link.innerText === 'IT Крутихин') {
                                     group_link.style.color = 'rgb(0, 200, 0)'
                                 }
                             }
@@ -751,11 +751,11 @@
                 let author_name = document.getElementsByClassName('author_name')
                 for (let i = 0; i < author_name.length; i++) {
                     for (let i = 0; i < author_name.length; i++) {
-                    if (author_name[i].innerText.includes('Литвиненко') || author_name[i].innerText.includes('Бороздин')
+                    if (author_name[i].innerText.includes('Литвиненко') || author_name[i].innerText.includes('Мех')
                     || author_name[i].innerText.includes('Крутихин')) {
                         author_name[i].style.color = 'rgb(0, 200, 0)'
                     }
-                    if (author_name[i].innerText.includes('Черпаков') || author_name[i].innerText.includes("Долгов")
+                    if (author_name[i].innerText.includes('Бороздин') || author_name[i].innerText.includes("Долгов")
                     || author_name[i].innerText.includes('Дмитриевский')) {
                         author_name[i].style.color = 'rgb(0, 160, 255)'
                     }
