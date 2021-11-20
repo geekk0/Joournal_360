@@ -1258,14 +1258,12 @@ def publish_eng_record(*request):
         if len(note.message) > 20:
 
             delta = datetime.timedelta(days=1)
-            note.created_date = datetime.date.today() - delta
 
             author = note.author
-            created_date = note.created_date
             full_text = note.message
             record = Record.objects.create(author=author, text=full_text)
-            record.created_date = created_date
-            record.report_date = created_date
+            record.created_date = note.created_date
+            record.report_date = datetime.date.today() - delta
             record.save()
             images = NoteImages.objects.filter(of_note=note)
             for image in images:
@@ -1293,7 +1291,6 @@ def update_eng_record():
         for image in images:
             rec_image = RecImages.objects.create(of_record=record, name=image.name, image=image.image)
             rec_image.save()
-        print('updated note created date: '+str(record.created_date))
         note.status = 'updated'
         record.save()
         note.save()
@@ -1303,12 +1300,12 @@ def send_eng_email(*args, **kwargs):
     environ.Env.read_env()
     eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
 
-    published_notes = Notes.objects.filter(status='updated', author__in=eng_authors)
+    records = Record.objects.filter(author__in=eng_authors)
 
-    for note in published_notes:
-        date = (datetime.datetime.strptime(str(note.created_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
+    for record in records:
+        date = (datetime.datetime.strptime(str(record.report_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
 
-        department = Department.objects.filter(groups__in=Group.objects.filter(user=note.author))
+        department = Department.objects.filter(groups__in=Group.objects.filter(user=record.author))
 
         hostname = "email.mosobltv.ru"
         username = "Journal360"
@@ -1316,8 +1313,8 @@ def send_eng_email(*args, **kwargs):
 
         msg = EmailMessage()
 
-        msg.set_content(note.message + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + note.author.first_name + '\n' +
-                        note.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
+        msg.set_content(record.message + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
+                        record.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
 
         msg['Subject'] = 'Отчет по работе эфирного комплекса (ENG) за ' + date
         msg['From'] = formataddr(('Журнал 360', 'Journal360@360tv.ru'))
