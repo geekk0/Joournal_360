@@ -47,6 +47,7 @@ class Record(models.Model):
 class Notes(models.Model):
     message = models.TextField(default='', null=True, blank=True, verbose_name='Текст заметки')
     created_date = models.DateField(default=timezone.now, verbose_name='Дата', auto_now=False)
+
     author = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE,
                                verbose_name='от')
     status = models.CharField(default='initial', null=True, blank=True, verbose_name='Статус (для финализации)',

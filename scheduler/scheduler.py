@@ -5,9 +5,11 @@ from datetime import datetime
 from apscheduler.schedulers.background import BackgroundScheduler
 from django_apscheduler.jobstores import DjangoJobStore
 import sys
+
+from Journal_360 import settings
 from journal.views import logger
-from journal.views import publish_eng_record, publish_it_record, update_eng_record, update_it_record, send_eng_email,\
-    send_it_email, finalize_eng_note, finalize_it_note
+from journal.views import publish_eng_record, publish_it_record, update_eng_record, send_eng_email,\
+    send_it_email, finalize_eng_note
 
 
 def eng_publisher():
@@ -34,7 +36,7 @@ def eng_finalizer():
     finalize_eng_note()
 
 
-def it_publisher():             #IT
+"""def it_publisher():             #IT
 
     ...
     # get accounts, expire them, etc.
@@ -55,7 +57,7 @@ def it_email_sender():
 
 def it_finalizer():
 
-    finalize_it_note()
+    finalize_it_note()"""
 
 
 def start():
@@ -69,10 +71,16 @@ def start():
         scheduler = BackgroundScheduler()
         scheduler.add_jobstore(DjangoJobStore(), "default")
 
-        start_eng_publisher = datetime.strptime('Oct 15 2021  9:10AM', '%b %d %Y %I:%M%p')
-        start_eng_updater = datetime.strptime('Oct 15 2021  9:23AM', '%b %d %Y %I:%M%p')
-        start_eng_email_sender = datetime.strptime('Oct 15 2021  11:00AM', '%b %d %Y %I:%M%p')
-        start_eng_finalizer = datetime.strptime('Oct 15 2021  8:01PM', '%b %d %Y %I:%M%p')
+        if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
+            start_eng_publisher = datetime.strptime('Oct 15 2021  9:10AM', '%b %d %Y %I:%M%p')
+            start_eng_updater = datetime.strptime('Oct 15 2021  9:23AM', '%b %d %Y %I:%M%p')
+            start_eng_email_sender = datetime.strptime('Oct 15 2021  11:00AM', '%b %d %Y %I:%M%p')
+            start_eng_finalizer = datetime.strptime('Oct 15 2021  8:01PM', '%b %d %Y %I:%M%p')
+        else:
+            start_eng_publisher = datetime.strptime('Oct 15 2021  12:33PM', '%b %d %Y %I:%M%p')
+            start_eng_updater = datetime.strptime('Oct 15 2021  12:35PM', '%b %d %Y %I:%M%p')
+            start_eng_email_sender = datetime.strptime('Oct 15 2021  12:37PM', '%b %d %Y %I:%M%p')
+            start_eng_finalizer = datetime.strptime('Oct 15 2021  12:39PM', '%b %d %Y %I:%M%p')
 
         """start_it_publisher = datetime.strptime('Oct 15 2021  10:30AM', '%b %d %Y %I:%M%p')
         start_it_updater = datetime.strptime('Oct 15 2021  10:43AM', '%b %d %Y %I:%M%p')

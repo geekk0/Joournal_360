@@ -1210,7 +1210,7 @@ def new_edit_note(request):
     if note.status == 'initial':
 
         if check_user_ip(request=request) == 'local' or \
-                request.user.groups.get(user=request.user) in Group.objects.filter(department__name="IT"):
+                request.user.groups.get(user=request.user) in Group.objects.filter(department__name="IT") or not 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
 
             text = request.GET.get("new_report")
 
@@ -1262,7 +1262,7 @@ def publish_eng_record(*request):
             author = note.author
             full_text = note.message
             record = Record.objects.create(author=author, text=full_text)
-            record.created_date = note.created_date
+            record.created_date = datetime.date.today()
             record.report_date = datetime.date.today() - delta
             record.save()
             images = NoteImages.objects.filter(of_note=note)
@@ -1271,7 +1271,6 @@ def publish_eng_record(*request):
                 rec_image.save()
             note.status = 'published'
             note.to_record = record
-            print(note.created_date)
             note.save()
 
             current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
@@ -1300,7 +1299,7 @@ def send_eng_email(*args, **kwargs):
     environ.Env.read_env()
     eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
 
-    records = Record.objects.filter(author__in=eng_authors)
+    records = Record.objects.filter(author__in=eng_authors, created_date=datetime.date.today())
 
     for record in records:
         date = (datetime.datetime.strptime(str(record.report_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
@@ -1313,12 +1312,15 @@ def send_eng_email(*args, **kwargs):
 
         msg = EmailMessage()
 
-        msg.set_content(record.message + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
+        msg.set_content(record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
                         record.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
 
         msg['Subject'] = 'Отчет по работе эфирного комплекса (ENG) за ' + date
         msg['From'] = formataddr(('Журнал 360', 'Journal360@360tv.ru'))
-        msg['To'] = settings.DEFAULT_TO_EMAIL
+        if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
+            msg['To'] = settings.DEFAULT_TO_EMAIL
+        else:
+            msg['To'] = ['o.litvinenko@360tv.ru']
         server = smtplib.SMTP(hostname, 25)
         server.ehlo()  # Secure the connection
         server.login(username, password)
@@ -1326,6 +1328,16 @@ def send_eng_email(*args, **kwargs):
         server.quit()
 
     return HttpResponseRedirect('/')
+
+
+def finalize_eng_note():
+    eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
+    updated_notes = Notes.objects.filter(status='updated', author__in=eng_authors)
+    for note in updated_notes:
+        note.to_record = None
+    updated_notes.delete()
+
+    current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
 
 
 def publish_it_record(request, note_id):
@@ -1372,7 +1384,12 @@ def send_it_email(record_id):
 
     msg['Subject'] = 'Отчет по работе эфирного комплекса (IT) за ' + date
     msg['From'] = "Journal360@360tv.ru"
-    msg['To'] = settings.DEFAULT_TO_EMAIL
+
+    if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
+        msg['To'] = settings.DEFAULT_TO_EMAIL
+    else:
+        msg['To'] = ['o.litvinenko@360tv.ru']
+
 
     server = smtplib.SMTP(hostname, 25)
     server.ehlo()  # Secure the connection
@@ -1383,7 +1400,7 @@ def send_it_email(record_id):
     return HttpResponseRedirect('/')
 
 
-def update_it_record():
+"""def update_it_record():
     it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
 
     published_it_notes = Notes.objects.filter(status='published', author__in=it_authors)
@@ -1401,16 +1418,6 @@ def update_it_record():
         note.save()
 
 
-def finalize_eng_note():
-    eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
-    updated_notes = Notes.objects.filter(status='updated', author__in=eng_authors)
-    for note in updated_notes:
-        note.to_record = None
-        updated_notes.delete()
-
-        current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
-
-
 def finalize_it_note():
     it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
     updated_notes = Notes.objects.filter(status='updated', author__in=it_authors)
@@ -1418,8 +1425,7 @@ def finalize_it_note():
         note.to_record = None
         updated_notes.delete()
 
-        current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))
-
+        current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))"""
 
 
 def custom_format_search_filters(ldap_fields):

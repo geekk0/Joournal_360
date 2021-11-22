@@ -607,6 +607,7 @@
 
                 let current_note = document.getElementById('report_text')
                     current_note.value = String(current_note.value+text)
+                send_report()
 
             }
 
@@ -690,6 +691,8 @@
                 record_text.style.display = 'inline-block';
                 let new_report_area = document.getElementById('new_report_area')
                 new_report_area.style.display = 'inline-block';
+                let report_input = document.getElementById('report_text')
+                report_input.focus()
                 let tags = document.getElementById('tags')
                 tags.style.display = 'inline-block'
             }
