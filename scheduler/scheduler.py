@@ -72,10 +72,10 @@ def start():
         scheduler.add_jobstore(DjangoJobStore(), "default")
 
         if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
-            start_eng_publisher = datetime.strptime('Oct 15 2021  9:10AM', '%b %d %Y %I:%M%p')
-            start_eng_updater = datetime.strptime('Oct 15 2021  9:23AM', '%b %d %Y %I:%M%p')
-            start_eng_email_sender = datetime.strptime('Oct 15 2021  11:00AM', '%b %d %Y %I:%M%p')
-            start_eng_finalizer = datetime.strptime('Oct 15 2021  8:01PM', '%b %d %Y %I:%M%p')
+            start_eng_publisher = datetime.strptime('Oct 15 2021  12:54PM', '%b %d %Y %I:%M%p')
+            start_eng_updater = datetime.strptime('Oct 15 2021  12:56PM', '%b %d %Y %I:%M%p')
+            start_eng_email_sender = datetime.strptime('Oct 15 2021  12:57PM', '%b %d %Y %I:%M%p')
+            start_eng_finalizer = datetime.strptime('Oct 15 2021  12:59PM', '%b %d %Y %I:%M%p')
         else:
             start_eng_publisher = datetime.strptime('Oct 15 2021  12:51PM', '%b %d %Y %I:%M%p')
             start_eng_updater = datetime.strptime('Oct 15 2021  12:53PM', '%b %d %Y %I:%M%p')
