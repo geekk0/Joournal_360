@@ -4,6 +4,8 @@ import json
 import os
 import smtplib
 import logging
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 from email.utils import formataddr
 
 import environ
@@ -1310,21 +1312,32 @@ def send_eng_email(*args, **kwargs):
         username = "Journal360"
         password = "Ju123456"
 
-        msg = EmailMessage()
-
-        msg.set_content(record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
-                        record.author.last_name + '.' + '\n' + str(department[0].name) + '\n')
-
+        msg = MIMEMultipart()
         msg['Subject'] = 'Отчет по работе эфирного комплекса (ENG) за ' + date
-        msg['From'] = formataddr(('Журнал 360', 'Journal360@360tv.ru'))
+        msg['From'] = "Journal360@360tv.ru"
+
         if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
-            msg['To'] = settings.DEFAULT_TO_EMAIL
+            msg['To'] = 'o.litvinenko@360tv.ru'
         else:
-            msg['To'] = ['o.litvinenko@360tv.ru']
+            msg['To'] = ', '.join(settings.DEFAULT_TO_EMAIL)
+
+        text = MIMEText((record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
+                         record.author.last_name + '.' + '\n' + 'Инженеры' + '\n'))
+        msg.attach(text)
+
+        images = RecImages.objects.filter(of_record=record)
+        for img in images:
+            with open(os.path.join(settings.BASE_DIR, 'media/' + str(img.image)), 'rb') as f:
+                img_data = f.read()
+
+                image = MIMEImage(img_data, name=os.path.basename(img.name))
+                msg.attach(image)
+
         server = smtplib.SMTP(hostname, 25)
-        server.ehlo()  # Secure the connection
+        server.ehlo()
+        server.ehlo()
         server.login(username, password)
-        server.send_message(msg)
+        server.sendmail(msg['From'], settings.DEFAULT_TO_EMAIL, msg.as_string())
         server.quit()
 
     return HttpResponseRedirect('/')
@@ -1377,7 +1390,7 @@ def send_it_email(record_id):
     username = "Journal360"
     password = "Ju123456"
 
-    msg = EmailMessage()
+    """msg = EmailMessage()
 
     msg.set_content(record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
                     record.author.last_name + '.' + '\n' + 'IT' + '\n')
@@ -1390,11 +1403,38 @@ def send_it_email(record_id):
     else:
         msg['To'] = ['o.litvinenko@360tv.ru']
 
-
     server = smtplib.SMTP(hostname, 25)
     server.ehlo()  # Secure the connection
     server.login(username, password)
     server.send_message(msg)
+    server.quit()"""
+
+    msg = MIMEMultipart()
+    msg['Subject'] = 'Отчет по работе эфирного комплекса (IT) за ' + date
+    msg['From'] = "Journal360@360tv.ru"
+
+    if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
+        msg['To'] = 'o.litvinenko@360tv.ru'
+    else:
+        msg['To'] = ', '.join(settings.DEFAULT_TO_EMAIL)
+
+    text = MIMEText((record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
+                    record.author.last_name + '.' + '\n' + 'IT' + '\n'))
+    msg.attach(text)
+
+    images = RecImages.objects.filter(of_record=record)
+    for img in images:
+      with open(os.path.join(settings.BASE_DIR, 'media/'+str(img.image)), 'rb') as f:
+        img_data = f.read()
+
+        image = MIMEImage(img_data, name=os.path.basename(img.name))
+        msg.attach(image)
+
+    server = smtplib.SMTP(hostname, 25)
+    server.ehlo()
+    server.ehlo()
+    server.login(username, password)
+    server.sendmail(msg['From'], settings.DEFAULT_TO_EMAIL, msg.as_string())
     server.quit()
 
     return HttpResponseRedirect('/')
