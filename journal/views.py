@@ -1317,9 +1317,9 @@ def send_eng_email(*args, **kwargs):
         msg['From'] = "Journal360@360tv.ru"
 
         if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
-            msg['To'] = 'o.litvinenko@360tv.ru'
-        else:
             msg['To'] = ', '.join(settings.DEFAULT_TO_EMAIL)
+        else:
+            msg['To'] = 'o.litvinenko@360tv.ru'
 
         text = MIMEText((record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
                          record.author.last_name + '.' + '\n' + 'Инженеры' + '\n'))
@@ -1414,9 +1414,9 @@ def send_it_email(record_id):
     msg['From'] = "Journal360@360tv.ru"
 
     if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
-        msg['To'] = 'o.litvinenko@360tv.ru'
-    else:
         msg['To'] = ', '.join(settings.DEFAULT_TO_EMAIL)
+    else:
+        msg['To'] = 'o.litvinenko@360tv.ru'
 
     text = MIMEText((record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
                     record.author.last_name + '.' + '\n' + 'IT' + '\n'))
