@@ -7,11 +7,13 @@ import logging
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 from email.utils import formataddr
+from PIL import Image, ImageOps
 
 import environ
 
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.password_validation import validate_password
+from django.core.files.base import ContentFile
 from django.forms import modelformset_factory
 from django.http import HttpResponseRedirect, HttpResponse
 from django.shortcuts import render, redirect
@@ -32,6 +34,7 @@ from email.mime.image import MIMEImage
 from itertools import *
 from operator import *
 from django.conf import settings
+from io import BytesIO, StringIO
 
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
@@ -1533,8 +1536,21 @@ def add_photo(request):
 
         for key, value in request.FILES.items():
             if str(value).endswith(('.png', 'jpg', 'gif', 'svg', 'jpeg')):
-                new_note_image = NoteImages.objects.create(name=str(value), image=value, of_note=note)
+                img_io = BytesIO()
+                optimized_image = Image.open(value)
+                optimized_image = ImageOps.exif_transpose(optimized_image)
+                optimized_image.save(img_io, format='JPEG', quality=60, optimized=True)
+                img_content = ContentFile(img_io.getvalue(), str(value))
+
+                new_note_image = NoteImages.objects.create(name=str(value), image=img_content, of_note=note)
                 new_note_image.save()
+
+                """optimized_image = Image.open(new_note_image.image.path)
+                optimized_image.save(new_note_image.image.path, quality=20, optimize=True)
+                print(type(new_note_image.image))
+                print(type(optimized_image))
+                new_note_image.image = optimized_image
+                """
 
     return HttpResponseRedirect('/')
 
