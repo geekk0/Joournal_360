@@ -1288,7 +1288,7 @@ def update_eng_record():
 
     published_eng_notes = Notes.objects.filter(status='published', author__in=eng_authors)
     for note in published_eng_notes:
-        record = Record.objects.get(notes=note)
+        record = Record.objects.get(id=note.to_record.id)
         images = NoteImages.objects.filter(of_note=note)
         record.text = note.message
         RecImages.objects.filter(of_record=record).delete()
