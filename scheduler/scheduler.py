@@ -77,10 +77,10 @@ def start():
             start_eng_email_sender = datetime.strptime('Oct 15 2021  11:00AM', '%b %d %Y %I:%M%p')
             start_eng_finalizer = datetime.strptime('Oct 15 2021  8:01PM', '%b %d %Y %I:%M%p')
         else:
-            start_eng_publisher = datetime.strptime('Oct 15 2021  6:37PM', '%b %d %Y %I:%M%p')
-            start_eng_updater = datetime.strptime('Oct 15 2021  6:39PM', '%b %d %Y %I:%M%p')
-            start_eng_email_sender = datetime.strptime('Oct 15 2021  6:41PM', '%b %d %Y %I:%M%p')
-            start_eng_finalizer = datetime.strptime('Oct 15 2021  6:43PM', '%b %d %Y %I:%M%p')
+            start_eng_publisher = datetime.strptime('Oct 15 2021  8:08AM', '%b %d %Y %I:%M%p')
+            start_eng_updater = datetime.strptime('Oct 15 2021  8:10AM', '%b %d %Y %I:%M%p')
+            start_eng_email_sender = datetime.strptime('Oct 15 2021  8:20AM', '%b %d %Y %I:%M%p')
+            start_eng_finalizer = datetime.strptime('Oct 15 2021  8:25AM', '%b %d %Y %I:%M%p')
 
         """start_it_publisher = datetime.strptime('Oct 15 2021  10:30AM', '%b %d %Y %I:%M%p')
         start_it_updater = datetime.strptime('Oct 15 2021  10:43AM', '%b %d %Y %I:%M%p')
@@ -89,7 +89,7 @@ def start():
 
         scheduler.add_job(eng_publisher, 'interval', days=1, start_date=start_eng_publisher, id='eng_publisher',
                           jobstore='default', replace_existing=True, max_instances=1, coalesce=True)
-        scheduler.add_job(eng_updater, 'interval', minutes=30, start_date=start_eng_updater, id='eng_updater',
+        scheduler.add_job(eng_updater, 'interval', minutes=10, start_date=start_eng_updater, id='eng_updater',
                           jobstore='default', replace_existing=True)
         scheduler.add_job(eng_email_sender, 'interval', days=1, start_date=start_eng_email_sender,
                           id='eng_email_sender',

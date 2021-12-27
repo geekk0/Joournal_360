@@ -1286,7 +1286,7 @@ def publish_eng_record(*request):
 def update_eng_record():
     eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
 
-    published_eng_notes = Notes.objects.filter(status='published', author__in=eng_authors)
+    published_eng_notes = Notes.objects.filter(status__in=['published', 'updated'], author__in=eng_authors)
     for note in published_eng_notes:
         record = Record.objects.get(id=note.to_record.id)
         images = NoteImages.objects.filter(of_note=note)
