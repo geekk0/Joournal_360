@@ -76,11 +76,11 @@ class Images(models.Model):
 
 
 class RecImages(Images):
-    of_record = models.ForeignKey(Record, on_delete=models.CASCADE, verbose_name='К записи')
+    of_record = models.ForeignKey(Record, on_delete=models.CASCADE, verbose_name='К записи', blank=True, null=True)
 
 
 class NoteImages(Images):
-    of_note = models.ForeignKey(Notes, on_delete=models.CASCADE, verbose_name='К заметке')
+    of_note = models.ForeignKey(Notes, on_delete=models.CASCADE, verbose_name='К заметке', blank=True, null=True)
 
 
 class Comments(models.Model):
