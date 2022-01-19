@@ -15,7 +15,7 @@ class Record(models.Model):
     author_group = models.CharField(blank=True, null=True, editable=False, verbose_name='Группа автора отчета',
                                     max_length=64)
     author_name = models.CharField(blank=True, null=True, editable=False, verbose_name='Имя и фамилия автора отчета',
-                                   max_length=64)
+                                   max_length=128)
 
     def publish(self):
         self.created_date = timezone.now()
