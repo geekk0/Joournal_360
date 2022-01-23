@@ -16,7 +16,7 @@ class RecordViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         days = self.request.query_params.get('days')
         print(days)
-        queryset = Record.objects.order_by('-created_date')[:days]
+        queryset = Record.objects.order_by('-created_date')[:int(days)]
         return queryset
 
     def get_serializer_class(self):
