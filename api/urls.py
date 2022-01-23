@@ -3,5 +3,5 @@ from rest_framework import routers
 from api import views
 
 urlpatterns = [
-    path('', views.RecordsViewSet.as_view(),  name='последние-отчеты'),
+    path('last_records/', views.RecordViewSet.as_view({'get': 'list'}),  name='последние_отчеты'),
 ]
