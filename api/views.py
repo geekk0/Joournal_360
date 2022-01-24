@@ -4,6 +4,7 @@ from journal.models import Record
 from rest_framework import viewsets
 from rest_framework import permissions
 from api.serializer import RecordSerializer
+from django.contrib.auth.models import User, Group
 
 
 """class RecordsViewSet(ListCreateAPIView):
@@ -31,5 +32,5 @@ class RecordViewSet(viewsets.ModelViewSet):
 class CheckRequestedUser(viewsets.ModelViewSet):
     def get_queryset(self):
         user = self.request.user
-        user_group = self.request.user.group
+        user_group = Group.objects.get(user=user)
         print(user, user_group)
