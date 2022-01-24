@@ -26,3 +26,10 @@ class RecordViewSet(viewsets.ModelViewSet):
     def get_permissions(self):
         permission_classes = [permissions.IsAuthenticated()]
         return permission_classes
+
+
+class CheckRequestedUser(viewsets.ModelViewSet):
+    def get_queryset(self):
+        user = self.request.user
+        user_group = self.request.user.group
+        print(user, user_group)
