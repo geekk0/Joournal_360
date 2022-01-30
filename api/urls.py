@@ -4,5 +4,5 @@ from api import views
 
 urlpatterns = [
     path('last_records/', views.RecordViewSet.as_view({'get': 'list'}),  name='последние_отчеты'),
-    path('auth', views.CheckRequestedUser.as_view({'get': 'list'})),
+    path('auth/', views.Subscribe.as_view({'get': 'list'})),
 ]

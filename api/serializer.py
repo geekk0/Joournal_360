@@ -7,3 +7,10 @@ class RecordSerializer(serializers.ModelSerializer):
     class Meta:
         model = Record
         fields = ['author_name', 'text', 'report_date']
+
+
+class AuthSerializer(serializers.Serializer):
+    user_switch_date = serializers.DateField
+    sub_type = serializers.CharField
+
+
