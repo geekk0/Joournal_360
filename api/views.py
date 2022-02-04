@@ -1,5 +1,3 @@
-from rest_framework.generics import ListAPIView, ListCreateAPIView
-
 from journal.models import Record
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -7,17 +5,14 @@ from api.serializer import RecordSerializer, AuthSerializer
 from django.contrib.auth.models import User, Group
 
 
-"""class RecordsViewSet(ListCreateAPIView):
-        queryset = Record.objects.order_by('-created_date')[:days]
-        serializer_class = RecordSerializer
-        permission_classes = [permissions.IsAuthenticated]"""
-
-
 class RecordViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         days = self.request.query_params.get('days')
-        print(days)
-        queryset = Record.objects.order_by('-created_date')[:int(days)]
+        if days != 1:                                                          # Подписка сменных инженеров
+            authors = User.objects.filter(groups__department=1)
+            queryset = Record.objects.filter(author__in=authors).order_by('-created_date')[:int(days)]
+        else:                                                                  # Подписка каждый день
+            queryset = Record.objects.order_by('-created_date')[:int(days)]
         return queryset
 
     def get_serializer_class(self):
