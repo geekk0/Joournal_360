@@ -71,7 +71,7 @@ def start():
         scheduler = BackgroundScheduler()
         scheduler.add_jobstore(DjangoJobStore(), "default")
 
-        scheduler.remove_executor(alias='*')
+        #scheduler.remove_executor(alias='*')
 
         if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
             start_eng_publisher = datetime.strptime('Oct 15 2021  9:10AM', '%b %d %Y %I:%M%p')
