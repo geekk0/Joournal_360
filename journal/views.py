@@ -1309,20 +1309,26 @@ def send_eng_email(*args, **kwargs):
     for record in records:
         date = (datetime.datetime.strptime(str(record.report_date), "%Y-%m-%d").strftime("%d.%m.%Y"))
 
-        department = Department.objects.filter(groups__in=Group.objects.filter(user=record.author))
-
-        hostname = "email.mosobltv.ru"
-        username = "Journal360"
-        password = "Ju123456"
+        hostname = settings.EMAIL_HOST
+        username = settings.EMAIL_HOST_USER
+        password = settings.EMAIL_HOST_PASSWORD
 
         msg = MIMEMultipart()
         msg['Subject'] = 'Отчет по работе эфирного комплекса (ENG) за ' + date
-        msg['From'] = "Journal360@360tv.ru"
+        msg['From'] = settings.DEFAULT_FROM_EMAIL
 
         if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
             msg['To'] = ', '.join(settings.DEFAULT_TO_EMAIL)
+            send_to = settings.DEFAULT_TO_EMAIL
         else:
-            msg['To'] = 'o.litvinenko@360tv.ru'
+            engs = User.objects.filter(groups__department__name="Инженеры")
+            recipients = []
+
+            for eng in engs:
+                recipients.append(eng.email)
+
+            msg["To"] = ', '.join(recipients)
+            send_to = recipients
 
         text = MIMEText((record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
                          record.author.last_name + '.' + '\n' + 'Инженеры' + '\n'))
@@ -1336,11 +1342,12 @@ def send_eng_email(*args, **kwargs):
                 image = MIMEImage(img_data, name=os.path.basename(img.name))
                 msg.attach(image)
 
-        server = smtplib.SMTP(hostname, 25)
+        server = smtplib.SMTP(hostname, settings.EMAIL_PORT)
         server.ehlo()
         server.ehlo()
+        server.starttls()
         server.login(username, password)
-        server.sendmail(msg['From'], settings.DEFAULT_TO_EMAIL, msg.as_string())
+        server.sendmail(msg['From'], send_to, msg.as_string())
         server.quit()
 
     return HttpResponseRedirect('/')
@@ -1389,37 +1396,27 @@ def send_it_email(record_id):
 
     record = Record.objects.get(id=record_id)
     date = (datetime.datetime.strptime(str(record.report_date)[:10], "%Y-%m-%d").strftime("%d.%m.%Y"))
-    hostname = "email.mosobltv.ru"
-    username = "Journal360"
-    password = "Ju123456"
 
-    """msg = EmailMessage()
-
-    msg.set_content(record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
-                    record.author.last_name + '.' + '\n' + 'IT' + '\n')
-
-    msg['Subject'] = 'Отчет по работе эфирного комплекса (IT) за ' + date
-    msg['From'] = "Journal360@360tv.ru"
-
-    if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
-        msg['To'] = settings.DEFAULT_TO_EMAIL
-    else:
-        msg['To'] = ['o.litvinenko@360tv.ru']
-
-    server = smtplib.SMTP(hostname, 25)
-    server.ehlo()  # Secure the connection
-    server.login(username, password)
-    server.send_message(msg)
-    server.quit()"""
+    hostname = settings.EMAIL_HOST
+    username = settings.EMAIL_HOST_USER
+    password = settings.EMAIL_HOST_PASSWORD
 
     msg = MIMEMultipart()
     msg['Subject'] = 'Отчет по работе эфирного комплекса (IT) за ' + date
-    msg['From'] = "Journal360@360tv.ru"
+    msg['From'] = settings.DEFAULT_FROM_EMAIL
 
     if 'journal.360tv.ru' in settings.ALLOWED_HOSTS:
         msg['To'] = ', '.join(settings.DEFAULT_TO_EMAIL)
+        send_to = settings.DEFAULT_TO_EMAIL
     else:
-        msg['To'] = 'o.litvinenko@360tv.ru'
+        it_engs = User.objects.filter(groups__department__name="IT")
+        recipients = []
+
+        for eng in it_engs:
+            recipients.append(eng.email)
+
+        msg["To"] = ', '.join(recipients)
+        send_to = recipients
 
     text = MIMEText((record.text + '\n' + '\n' + '\n' + 'С уважением,' + '\n' + record.author.first_name + '\n' +
                     record.author.last_name + '.' + '\n' + 'IT' + '\n'))
@@ -1433,42 +1430,15 @@ def send_it_email(record_id):
         image = MIMEImage(img_data, name=os.path.basename(img.name))
         msg.attach(image)
 
-    server = smtplib.SMTP(hostname, 25)
+    server = smtplib.SMTP(hostname, settings.EMAIL_PORT)
     server.ehlo()
     server.ehlo()
+    server.starttls()
     server.login(username, password)
-    server.sendmail(msg['From'], settings.DEFAULT_TO_EMAIL, msg.as_string())
+    server.sendmail(msg['From'], send_to, msg.as_string())
     server.quit()
 
     return HttpResponseRedirect('/')
-
-
-"""def update_it_record():
-    it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
-
-    published_it_notes = Notes.objects.filter(status='published', author__in=it_authors)
-    for note in published_it_notes:
-        record = Record.objects.get(notes=note)
-        images = NoteImages.objects.filter(of_note=note)
-        record.text = note.message
-        RecImages.objects.filter(of_record=record).delete()
-        for image in images:
-            rec_image = RecImages.objects.create(of_record=record, name=image.name, image=image.image)
-            rec_image.save()
-        print('updated note created date: '+str(record.created_date))
-        note.status = 'updated'
-        record.save()
-        note.save()
-
-
-def finalize_it_note():
-    it_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='IT'))
-    updated_notes = Notes.objects.filter(status='updated', author__in=it_authors)
-    for note in updated_notes:
-        note.to_record = None
-        updated_notes.delete()
-
-        current_time = str(datetime.datetime.now().strftime("%Y-%m-%d %H:%M"))"""
 
 
 def custom_format_search_filters(ldap_fields):
@@ -1524,7 +1494,6 @@ def check_user_ip(request):
             return 'local'
         else:
             return 'internet'
-
 
 
 @csrf_protect

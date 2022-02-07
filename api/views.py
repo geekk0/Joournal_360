@@ -1,3 +1,5 @@
+from itertools import chain
+
 from journal.models import Record
 from rest_framework import viewsets
 from rest_framework import permissions
@@ -8,11 +10,18 @@ from django.contrib.auth.models import User, Group
 class RecordViewSet(viewsets.ModelViewSet):
     def get_queryset(self):
         days = self.request.query_params.get('days')
+
+        authors = User.objects.filter(groups__department=1)
+        queryset_eng = Record.objects.filter(author__in=authors).order_by('-created_date')[:int(days)]
+        queryset_it = Record.objects.filter(author__in=User.objects.
+                                            filter(groups__department=2)).order_by('-created_date')[:int(days)]
+
         if days != 1:                                                          # Подписка сменных инженеров
-            authors = User.objects.filter(groups__department=1)
-            queryset = Record.objects.filter(author__in=authors).order_by('-created_date')[:int(days)]
+            querysyet = queryset_eng
+
         else:                                                                  # Подписка каждый день
-            queryset = Record.objects.order_by('-created_date')[:int(days)]
+            queryset = chain(queryset_eng, queryset_it)
+
         return queryset
 
     def get_serializer_class(self):
