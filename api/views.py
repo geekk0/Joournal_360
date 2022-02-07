@@ -16,13 +16,14 @@ class RecordViewSet(viewsets.ModelViewSet):
         queryset_it = Record.objects.filter(author__in=User.objects.
                                             filter(groups__department=2)).order_by('-created_date')[:int(days)]
 
-        if days != 1:                                                          # Подписка сменных инженеров
-            querysyet = queryset_eng
+        if int(days) != 1:                                                          # Подписка сменных инженеров
+            queryset = queryset_eng
+            print("eng_qs: "+str(queryset))
+            return queryset
 
         else:                                                                  # Подписка каждый день
             queryset = chain(queryset_eng, queryset_it)
-
-        return queryset
+            return queryset
 
     def get_serializer_class(self):
         serializer_class = RecordSerializer

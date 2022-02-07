@@ -79,7 +79,7 @@ def start():
             start_eng_email_sender = datetime.strptime('Oct 15 2021  11:00AM', '%b %d %Y %I:%M%p')
             start_eng_finalizer = datetime.strptime('Oct 15 2021  8:01PM', '%b %d %Y %I:%M%p')
         else:
-            start_eng_publisher = datetime.strptime('Oct 15 2021  8:08AM', '%b %d %Y %I:%M%p')
+            start_eng_publisher = datetime.strptime('Oct 15 2021  5:51ЗM', '%b %d %Y %I:%M%p')
             start_eng_updater = datetime.strptime('Oct 15 2021  8:10AM', '%b %d %Y %I:%M%p')
             start_eng_email_sender = datetime.strptime('Oct 15 2021  8:20AM', '%b %d %Y %I:%M%p')
             start_eng_finalizer = datetime.strptime('Oct 15 2021  8:25AM', '%b %d %Y %I:%M%p')
