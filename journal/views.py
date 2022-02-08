@@ -1345,7 +1345,8 @@ def send_eng_email(*args, **kwargs):
         server = smtplib.SMTP(hostname, settings.EMAIL_PORT)
         server.ehlo()
         server.ehlo()
-        server.starttls()
+        if 'journal.360tv.ru' not in settings.ALLOWED_HOSTS:
+            server.starttls()
         server.login(username, password)
         server.sendmail(msg['From'], send_to, msg.as_string())
         server.quit()
@@ -1433,7 +1434,8 @@ def send_it_email(record_id):
     server = smtplib.SMTP(hostname, settings.EMAIL_PORT)
     server.ehlo()
     server.ehlo()
-    server.starttls()
+    if 'journal.360tv.ru' not in settings.ALLOWED_HOSTS:
+        server.starttls()
     server.login(username, password)
     server.sendmail(msg['From'], send_to, msg.as_string())
     server.quit()
