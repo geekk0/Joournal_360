@@ -369,23 +369,34 @@ def edit_note(request, note_id):
     return render(request, 'record.html', context)
 
 
-def detect_admin_groups():
+def detect_invisible_groups():                                      # Не отображаются в списке групп - авторов отчетов
     all_users = User.objects.all()
 
     group_names = []
 
-    for user in all_users:
+    for user in all_users:                                          # Группы администраторов
         if user.has_perm('journal.change_record'):
             if user.groups.exists():
                 group_name = Group.objects.get(user=user.id)
                 group_names.append(group_name)
+
+    for group in Group.objects.all():                               # Пустые группы
+        if (User.objects.filter(groups=group)).count() == 0:
+            group_names.append(group.name)
+
+
+    print("invidible groups: "+str(group_names))
+
     return group_names
+
+
+
 
 
 @login_required
 def rec_list(request, *device):
 
-    admin_groups = detect_admin_groups()
+    invisible_groups = detect_invisible_groups()
 
     multirole = False
 
@@ -420,7 +431,7 @@ def rec_list(request, *device):
     comments = Comments.objects.all().order_by('-created')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct().\
-        exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
+        exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
 
     shifts_dates = shifts_match()
 
@@ -541,7 +552,7 @@ def find_by_date(request):
     if request.user.groups.all().count() > 1:
         multirole = True
 
-    admin_groups = detect_admin_groups()
+    invisible_groups = detect_invisible_groups()
 
     multirole = False
 
@@ -572,7 +583,7 @@ def find_by_date(request):
     records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
+        exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
 
     if date:
         date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
@@ -603,7 +614,7 @@ def find_by_date(request):
         multirole = False
         try:
             groups_authors_list = Group.objects.filter(department__exact=selected_department).distinct(). \
-            exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
+            exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
         except:
             multirole = True
 
@@ -655,7 +666,7 @@ def sort_by_group(request, group_name):
 
     shifts_dates = shifts_match()
 
-    admin_groups = detect_admin_groups()
+    invisible_groups = detect_invisible_groups()
 
     multirole = False
 
@@ -691,7 +702,7 @@ def sort_by_group(request, group_name):
     comments = Comments.objects.all().order_by('-created')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
+        exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
 
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')[:7]
 
@@ -791,7 +802,7 @@ def find_by_author(request, author_id):
 
 def find_by_text(request, *args, **kwargs):
 
-    admin_groups = detect_admin_groups()
+    invisible_groups = detect_invisible_groups()
 
     multirole = False
 
@@ -829,7 +840,7 @@ def find_by_text(request, *args, **kwargs):
     comments = Comments.objects.all().order_by('-created')
 
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
+        exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
 
     shifts_dates = shifts_match()
 
@@ -848,7 +859,7 @@ def find_by_text(request, *args, **kwargs):
         multirole = False
         try:
             groups_authors_list = Group.objects.filter(department__exact=selected_department).distinct(). \
-                exclude(name__in=admin_groups).exclude(name='Трудовые резервы').order_by('id')
+                exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
         except:
             multirole = True
 
@@ -887,7 +898,7 @@ def sort_by_department(request, department_name):
 
     shifts_dates = shifts_match()
 
-    admin_groups = detect_admin_groups()
+    invisible_groups = detect_invisible_groups()
 
     selected_department = Department.objects.get(name=department_name)
 
@@ -927,7 +938,7 @@ def sort_by_department(request, department_name):
             user_departments_list.append(dep_objects.name)
 
     groups_authors_list = Group.objects.filter(department=selected_department).distinct(). \
-        exclude(name__in=admin_groups).exclude(name='Трудовые резервы')
+        exclude(name__in=invisible_groups).exclude(name='Трудовые резервы')
 
     comments = Comments.objects.all().order_by('-created')
 
@@ -967,7 +978,7 @@ def by_date_view(request):
 
     shifts_dates = shifts_match()
 
-    admin_groups = detect_admin_groups()
+    invisible_groups = detect_invisible_groups()
 
     multirole = False
 
@@ -1000,7 +1011,7 @@ def by_date_view(request):
             for author in User.objects.filter(groups__name=group):
                 match_authors_list.append(author)
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
-        exclude(name__in=admin_groups).exclude(name='Трудовые резервы')
+        exclude(name__in=invisible_groups).exclude(name='Трудовые резервы')
 
     user_agent = request.META['HTTP_USER_AGENT']
 
