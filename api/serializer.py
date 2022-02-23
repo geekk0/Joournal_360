@@ -13,4 +13,7 @@ class AuthSerializer(serializers.Serializer):
     user_switch_date = serializers.DateField
     sub_type = serializers.CharField
 
+class TestSerializer(serializers.ModelSerializer):
+    auth_attempt = serializers.CharField
+
 

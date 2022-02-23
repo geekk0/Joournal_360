@@ -1,3 +1,4 @@
+import time
 from itertools import chain
 
 from journal.models import Record
@@ -18,12 +19,22 @@ class RecordViewSet(viewsets.ModelViewSet):
 
         if int(days) != 1:                                                          # Подписка сменных инженеров
             queryset = queryset_eng
-            print("eng_qs: "+str(queryset))
+            self.check_record_exists(queryset)
             return queryset
 
         else:                                                                  # Подписка каждый день
             queryset = chain(queryset_eng, queryset_it)
+            self.check_record_exists(queryset)
             return queryset
+
+    def check_record_exists(self, queryset):
+        for record in queryset:
+            if len(record.text) == 0:
+                time.sleep(10)
+                self.get_queryset()
+            else:
+                return True
+
 
     def get_serializer_class(self):
         serializer_class = RecordSerializer
@@ -52,3 +63,5 @@ class Subscribe(viewsets.ModelViewSet):
     def get_serializer_class(self):
         serializer_class = AuthSerializer
         return serializer_class
+
+
