@@ -19,22 +19,11 @@ class RecordViewSet(viewsets.ModelViewSet):
 
         if int(days) != 1:                                                          # Подписка сменных инженеров
             queryset = queryset_eng
-            self.check_record_exists(queryset)
             return queryset
 
         else:                                                                  # Подписка каждый день
             queryset = chain(queryset_eng, queryset_it)
-            self.check_record_exists(queryset)
             return queryset
-
-    def check_record_exists(self, queryset):
-        for record in queryset:
-            if len(record.text) == 0:
-                time.sleep(10)
-                self.get_queryset()
-            else:
-                return True
-
 
     def get_serializer_class(self):
         serializer_class = RecordSerializer
