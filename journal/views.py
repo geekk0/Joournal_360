@@ -1495,14 +1495,18 @@ def show_device_manuals(request, device_name):
 
 def check_user_ip(request):
 
-    user_ip = str(request.META.get('HTTP_X_REAL_IP'))
+    """user_ip = str(request.META.get('HTTP_X_REAL_IP'))
 
     if user_ip:
-        if user_ip.startswith('185.18.202') or user_ip.startswith('127')or \
-                request.user.groups.get(user=request.user) in Group.objects.filter(department__name="IT"):
-            return 'local'
-        else:
-            return 'internet'
+            if user_ip.startswith('185.18.202') or user_ip.startswith('127')or \
+                    request.user.groups.get(user=request.user) in Group.objects.filter(department__name="IT"):
+                return 'local'
+            else:
+                return 'internet'"""
+
+    return 'local'
+
+
 
 
 @csrf_protect
