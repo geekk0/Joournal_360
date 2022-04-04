@@ -449,12 +449,12 @@ def rec_list(request, *device):
 
     tags = RecordTags.objects.filter(departments__in=user_departments).distinct()
 
-    if '.journal_360.com' in settings.ALLOWED_HOSTS:  #check dev or prod
+    """if '.journal_360.com' in settings.ALLOWED_HOSTS:  #check dev or prod
 
         user_network = 'local'
 
     else:
-        user_network = check_user_ip(request)
+        user_network = check_user_ip(request)"""
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -498,9 +498,8 @@ def rec_list(request, *device):
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'device': device, 'objectives': objectives,
                'user_is_admin': user_is_admin, 'task_date': task_date, 'tags': tags, 'objectives_full': objectives_full,
-               'objectives_sliced': objectives_sliced, 'tiles': tiles, 'user_network': user_network,
-               'task_message': task_message, 'objectives_count': objectives_count,
-               'last_objective_created': last_objective_created}
+               'objectives_sliced': objectives_sliced, 'tiles': tiles, 'task_message': task_message,
+               'objectives_count': objectives_count, 'last_objective_created': last_objective_created}
 
     return render(request, 'rec_list.html', context)
 

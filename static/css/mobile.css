@@ -521,7 +521,7 @@
 
     .logout {
         width: 30%;
-        display: block;
+        display: inline-block;
         float: right;
         padding-top: 3%;
         text-align: right;
