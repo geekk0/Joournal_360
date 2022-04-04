@@ -26,6 +26,7 @@
         width: 30%;
         margin-left: 35%;
         margin-top: 3%;
+        display: inline-block;
     }
 
     .add_task {
