@@ -674,8 +674,8 @@
             document.addEventListener("DOMContentLoaded", () => {
                     let add_obj = document.getElementById('add_report')
                     if (add_obj !== null) {
-                        add_obj.addEventListener("mouseenter", add_report)
-                        add_obj.addEventListener("mouseleave", leave)
+                        add_obj.addEventListener("click", add_report)
+                        /*add_obj.addEventListener("mouseleave", leave)*/
                         }
                     let messages = document.getElementsByClassName('messages')
                     if (messages.length > 0) {
@@ -688,16 +688,29 @@
 
             function add_report(e) {
                 let record_text = document.getElementById('report_text')
-                record_text.style.display = 'inline-block';
                 let new_report_area = document.getElementById('new_report_area')
-                new_report_area.style.display = 'inline-block';
                 let report_input = document.getElementById('report_text')
-                report_input.focus()
                 let tags = document.getElementById('tags')
-                tags.style.display = 'inline-block'
+
+                if (new_report_area.hasAttribute("clicked")) {
+                    record_text.style.display = 'none'
+                    new_report_area.style.display = 'none'
+                    tags.style.display = 'none'
+                    report_input.blur()
+                    new_report_area.removeAttribute("clicked")
+                }
+
+                else {
+                    record_text.style.display = 'inline-block';
+                    new_report_area.style.display = 'inline-block';
+                    tags.style.display = 'inline-block'
+                    report_input.focus()
+                    new_report_area.setAttribute("clicked", "true")
+                }
+
             }
 
-            function leave(e) {
+            /*function leave(e) {
                 let record_text = document.getElementById('report_text')
                 record_text.style.display = 'none';
                 let new_report_area = document.getElementById('new_report_area')
@@ -706,7 +719,7 @@
                 tags.style.display = 'none'
 
 
-            }
+            }*/
 
 
             document.addEventListener("DOMContentLoaded", () => {
