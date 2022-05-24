@@ -528,7 +528,7 @@
             </div>
 
                 <div id="add_report" style="display: inline-block;box-sizing: border-box">
-                        <p style="font-size: 20pt;">Добавить отчет +</p>
+                        <p id="add_report_btn" style="font-size: 20pt;">Добавить отчет +</p>
                         <div id="new_report_area" style="display:none;">
                             <form name="new_report" style="width:60%;display: inline-block;box-sizing: border-box"
                                         action="{% url 'добавить отчет' %}" method="get">
@@ -672,7 +672,7 @@
             }
 
             document.addEventListener("DOMContentLoaded", () => {
-                    let add_obj = document.getElementById('add_report')
+                    let add_obj = document.getElementById('add_report_btn')
                     if (add_obj !== null) {
                         add_obj.addEventListener("click", add_report)
                         /*add_obj.addEventListener("mouseleave", leave)*/
