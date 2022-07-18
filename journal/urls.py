@@ -12,7 +12,6 @@ urlpatterns = [
     path('добавить заметку/', views.AddNoteView.as_view(), name='добавить заметку'),
     path('удалить запись/', views.delete_note, name='удалить запись'),
     path('отправить отчет/', views.send_report, name='отправить отчет'),
-    path('редактировать запись/<int:note_id>', views.edit_note, name='редактировать запись'),
     path('добавить комментарий/<int:record_id>', views.add_comment, name='добавить комментарий'),
     path('найти по дате/', views.find_by_date, name='найти по дате'),
     path('выбор автора/<int:author_id>', views.find_by_author, name='выбор автора'),
@@ -21,13 +20,14 @@ urlpatterns = [
     path('добавить статус/<int:objective_id>', views.add_status, name='добавить статус'),
     path('завершить задание/<int:objective_id>', views.finalize_objective, name='завершить задание'),
     path('добавить регулярное задание/', views.AddScheduledTask.as_view(), name='добавить регулярное задание'),
-    path('добавить отчет/', views.new_edit_note, name='добавить отчет'),
+    path('добавить отчет/', views.edit_note, name='добавить отчет'),
     path('добавить фото/', views.add_photo, name='добавить фото'),
     path('удалить фото/<int:image_id>', views.remove_photo, name='удалить фото'),
     path('опубликовать отчет/<int:note_id>', views.publish_it_record, name='опубликовать отчет'),
 
 
     path('мануалы к устройству/<str:device_name>', views.show_device_manuals, name='мануалы к устройству'),
+    path('обновить данные по конвертеру', views.edit_converter_info, name='обновить данные по конвертеру'),
 
     path('фильтр по отделу/<str:department_name>', views.sort_by_department, name='фильтр по отделу'),
     path('фильтр по группе/<str:group_name>', views.sort_by_group, name='фильтр по группе'),
@@ -36,6 +36,7 @@ urlpatterns = [
 
     path('поиск мобильный/', views.by_date_view, name='поиск мобильный'),
     path('задания/', views.tasks_mobile, name='задания'),
+
 ]
 
 if settings.DEBUG:

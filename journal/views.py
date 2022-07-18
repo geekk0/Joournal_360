@@ -38,7 +38,7 @@ from io import BytesIO, StringIO
 
 
 from .models import Notes, Record, Images, Comments, Department, Objectives, ObjectivesDone, ObjectivesStatus, \
-    ScheduledTasks, RecordTags, Tiles, Docs, Devices, ManualDocs, NoteImages, RecImages
+    ScheduledTasks, RecordTags, Tiles, Docs, Devices, ManualDocs, NoteImages, RecImages, Converters
 from .forms import LoginForm, RegistrationForm, AddNote, AddComment, ResetPassword, AddScheduledTaskForm, UploadFileForm
 from django_python3_ldap.utils import format_search_filters
 
@@ -349,26 +349,6 @@ def send_report(request): # Преобразует заметки в запис�
     return HttpResponseRedirect('/')
 
 
-def edit_note(request, note_id):
-
-    note = Notes.objects.get(id=note_id)
-
-    if request.method != 'POST':
-        form = AddNote(instance=note, initial={'message': note.message})
-        context = {'form': form}
-
-        return render(request, 'edit_note.html', context)
-
-    else:
-        form = AddNote(instance=note, data=request.POST)
-        if form.is_valid():
-            form.save()
-            return HttpResponseRedirect('/')
-
-    context = {'note': note, 'index': index, 'form': form}
-    return render(request, 'record.html', context)
-
-
 def detect_invisible_groups():                                      # Не отображаются в списке групп - авторов отчетов
     all_users = User.objects.all()
 
@@ -492,6 +472,8 @@ def rec_list(request, *device):
     else:
         user_is_admin = False
 
+    converters = Converters.objects.all().order_by("number")
+
     context = {'records': records, 'comments': comments, 'roles': roles, 'current_user': current_user, 'notes': notes,
                'multirole': multirole, 'group_list': user_groups, 'author_list': match_authors_list,
                'user_departments': user_departments, 'groups_authors_list': groups_authors_list,
@@ -499,7 +481,8 @@ def rec_list(request, *device):
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'device': device, 'objectives': objectives,
                'user_is_admin': user_is_admin, 'task_date': task_date, 'tags': tags, 'objectives_full': objectives_full,
                'objectives_sliced': objectives_sliced, 'tiles': tiles, 'task_message': task_message,
-               'objectives_count': objectives_count, 'last_objective_created': last_objective_created}
+               'objectives_count': objectives_count, 'last_objective_created': last_objective_created,
+               "converters": converters}
 
     return render(request, 'rec_list.html', context)
 
@@ -1214,7 +1197,7 @@ def prepare_note(request):
     return note
 
 
-def new_edit_note(request):
+def edit_note(request):
 
     note = Notes.objects.get(author_id=request.user.id)
 
@@ -1574,3 +1557,22 @@ def tasks_mobile(request):
                'user_is_admin': user_is_admin}
 
     return render(request, 'mobile_tasks.html', context)
+
+
+def edit_converter_info(request):
+
+    number = str(request.GET.get("number"))
+
+    location = request.GET.get("current_location")
+
+    description = request.GET.get("description")
+
+    converter_object = Converters.objects.get(number=number)
+
+    converter_object.location = location
+
+    converter_object.description = description
+
+    converter_object.save()
+
+    return HttpResponse(status=204)

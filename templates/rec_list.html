@@ -61,9 +61,82 @@
                 }
              }
 
+    }
 
+    document.addEventListener("DOMContentLoaded", () => {
+        let converters_label = document.getElementById("converter_label")
+        converters_label.addEventListener("click", show_converters_list)
+    })
+
+
+    function show_converters_list(){
+        let label = document.getElementById("converter_label")
+        label.style.fontSize = "1.25rem"
+        label.style.fontWeight = 500
+        let converters_list = document.getElementById("converter_list")
+
+        if (label.hasAttribute("visible_list")) {
+            converters_list.style.display  = "none"
+            label.removeAttribute("visible_list")
+            label.innerText = "+ Конвертеры DAC-70"
+            label.style.fontSize = 20
+        }
+        else {
+            converters_list.style.display = "block"
+            label.setAttribute("visible_list", "true")
+            label.innerText = "- Конвертеры DAC-70"
+            active_textarea_listeners()
+
+        }
 
     }
+
+    function active_textarea_listeners() {
+
+        document.querySelectorAll('.description_plain').forEach(item => {
+            item.addEventListener('click', open_edit_description)
+        })
+
+    }
+
+    function open_edit_description(e) {
+        let desc_plain = e.currentTarget
+        let desc_textarea = e.currentTarget.parentElement.querySelector('.description_textarea')
+        let desc_label = e.currentTarget.parentElement.querySelector('.description_label')
+
+        desc_textarea.style.display = "block"
+        desc_plain.style.display = "none"
+        desc_label.innerHTML = "-> Сохранить примечание <-"
+        desc_label.style.color = "green"
+
+        desc_label.addEventListener('click', quit_edit_description)
+    }
+
+    function quit_edit_description(e){
+        let desc_label = e.currentTarget
+        let desc_plain = e.currentTarget.parentElement.querySelector('.description_plain')
+        let desc_textarea = e.currentTarget.parentElement.querySelector('.description_textarea')
+
+        desc_plain.style.display = "block"
+        desc_textarea.style.display = "none"
+        desc_label.innerHTML = "Примечание:"
+        desc_label.style.color = "white"
+
+        desc_plain.innerHTML = desc_textarea.value.replace(/\r\n/g, '<br/>');
+
+        send_converter_info()
+
+    }
+
+    function auto_grow(element){
+        element.style.height = ""
+        element.style.height = (element.scrollHeight)+"px";
+
+    }
+
+    function send_converter_info() {
+                document.forms['converter'].submit()
+            }
 
     </script>
 
@@ -527,6 +600,34 @@
 
             </div>
 
+                <div class="converters_label container" id="converter_label" style="width:50%;margin-left:50%;margin-top: 3%;color:white">
+                    <h5><span style="font-size: 20pt">+</span> Конвертеры DAC-70</h5>
+                </div>
+
+                <div class="converters_list" id="converter_list" style="display:none;width:76%;
+                margin-left:20%;margin-top:2%;overflow-wrap: break-word;">
+                    {% for conv in converters %}
+                       <div class="conv-layout" style="width:24%;display:inline-block;vertical-align: top;text-align: center;margin-top:1%">
+                           <form name="converter" action="{% url 'обновить данные по конвертеру' %}" method="get">
+                               <p>Конвертер номер: <span style="text-align: end">{{ conv.number }}</span></p>
+                               <input style="display: none" name="number" value={{ conv.number }}>
+                               <label style="color:white" for="current_location">Находится в   :</label>
+                               <select name="current_location" oninput="send_converter_info()">
+                                   <option value="1">Студия 1</option>
+                                   <option value="2">Студия 2</option>
+                                   <option value="3">Студия 3</option>
+                               </select>
+                               <br>
+                               <br>
+                               <label for="description" class="description_label" style="color: white">Примечание:</label>
+                               <p class="description_plain" style="white-space: pre-wrap;line-height: 1.2">{{ conv.description }}</p>
+                               <textarea id="description_textarea" name="description" class="description_textarea" oninput="auto_grow(this)"
+                                         style="display: none;min-height: 100px;resize: none;overflow: hidden;margin:auto;">{{ conv.description }}</textarea>
+                           </form>
+                        </div>
+                    {% endfor %}
+                </div>
+
                 <div id="add_report" style="display: inline-block;box-sizing: border-box">
                         <p id="add_report_btn" style="font-size: 20pt;">Добавить отчет +</p>
                         <div id="new_report_area" style="display:none;">
@@ -596,6 +697,8 @@
         <script type="text/javascript">
 
             function send_report() {
+                let report_text = document.getElementById("report_text")
+                auto_grow(report_text)
                 document.forms['new_report'].submit()
             }
 
@@ -706,6 +809,7 @@
                     tags.style.display = 'inline-block'
                     report_input.focus()
                     new_report_area.setAttribute("clicked", "true")
+                    auto_grow(record_text)
                 }
 
             }
