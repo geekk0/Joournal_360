@@ -71,6 +71,7 @@
 
     function show_converters_list(){
         let label = document.getElementById("converter_label")
+        let converters_div = document.getElementById("converters")
         label.style.fontSize = "1.25rem"
         label.style.fontWeight = 500
         let converters_list = document.getElementById("converter_list")
@@ -78,13 +79,20 @@
         if (label.hasAttribute("visible_list")) {
             converters_list.style.display  = "none"
             label.removeAttribute("visible_list")
-            label.innerText = "+ Конвертеры DAC-70"
+            label.style.opacity = 0.7
             label.style.fontSize = 20
+            label.innerHTML = "+ Конвертеры DAC-70"
+            converters_div.style.border = "none"
         }
         else {
-            converters_list.style.display = "block"
+            converters_list.style.display  = "block"
+
             label.setAttribute("visible_list", "true")
-            label.innerText = "- Конвертеры DAC-70"
+            label.style.opacity = 1
+            label.innerHTML = "- Конвертеры DAC-70"
+            converters_div.style.border = '1px solid';
+            converters_div.style.borderColor = 'white';
+            converters_div.style.borderRadius = '15px';
             active_textarea_listeners()
 
         }
@@ -107,7 +115,9 @@
         desc_textarea.style.display = "block"
         desc_plain.style.display = "none"
         desc_label.innerHTML = "-> Сохранить примечание <-"
-        desc_label.style.color = "green"
+        desc_label.style.color = "cyan"
+
+        auto_grow(desc_textarea)
 
         desc_label.addEventListener('click', quit_edit_description)
     }
@@ -600,36 +610,38 @@
 
             </div>
 
-                <div class="converters_label container" id="converter_label" style="width:50%;margin-left:50%;margin-top: 3%;color:white">
-                    <h5><span style="font-size: 20pt">+</span> Конвертеры DAC-70</h5>
-                </div>
+                <div id="converters" style="width:60%;margin-left:27%;margin-top: 4%">
+                    <div class="converters_label container" id="converter_label" style="width:30%;margin-left:auto;margin-right:auto;color:white;opacity:0.7">
+                        <h5>+ Конвертеры DAC-70</h5>
+                    </div>
 
-                <div class="converters_list" id="converter_list" style="display:none;width:76%;
-                margin-left:20%;margin-top:2%;overflow-wrap: break-word;">
-                    {% for conv in converters %}
-                       <div class="conv-layout" style="width:24%;display:inline-block;vertical-align: top;text-align: center;margin-top:1%">
-                           <form name="converter" action="{% url 'обновить данные по конвертеру' %}" method="get">
-                               <p>Конвертер номер: <span style="text-align: end">{{ conv.number }}</span></p>
-                               <input style="display: none" name="number" value={{ conv.number }}>
-                               <label style="color:white" for="current_location">Находится в   :</label>
-                               <select name="current_location" oninput="send_converter_info()">
-                                   <option value="1">Студия 1</option>
-                                   <option value="2">Студия 2</option>
-                                   <option value="3">Студия 3</option>
-                               </select>
-                               <br>
-                               <br>
-                               <label for="description" class="description_label" style="color: white">Примечание:</label>
-                               <p class="description_plain" style="white-space: pre-wrap;line-height: 1.2">{{ conv.description }}</p>
-                               <textarea id="description_textarea" name="description" class="description_textarea" oninput="auto_grow(this)"
-                                         style="display: none;min-height: 100px;resize: none;overflow: hidden;margin:auto;">{{ conv.description }}</textarea>
-                           </form>
-                        </div>
-                    {% endfor %}
+                    <div class="converters_list" id="converter_list" style="display:none;width:100%;
+                    margin-top:2%;overflow-wrap: break-word;">
+                        {% for conv in converters %}
+                           <div class="conv-layout" style="width:24%;display:inline-block;vertical-align: top;text-align: center;margin-top:1%">
+                               <form name="converter" action="{% url 'обновить данные по конвертеру' %}" method="get">
+                                   <p>Конвертер номер: <span style="text-align: end">{{ conv.number }}</span></p>
+                                   <input style="display: none" name="number" value={{ conv.number }}>
+                                   <label style="color:white" for="current_location">Находится в   :</label>
+                                   <select name="current_location" oninput="send_converter_info()">
+                                       <option value="1">Студия 1</option>
+                                       <option value="2">Студия 2</option>
+                                       <option value="3">Студия 3</option>
+                                   </select>
+                                   <br>
+                                   <br>
+                                   <label for="description" class="description_label" style="color: white">Примечание:</label>
+                                   <p class="description_plain" style="white-space: pre-wrap;line-height: 1.2">{{ conv.description }}</p>
+                                   <textarea id="description_textarea" name="description" class="description_textarea" oninput="auto_grow(this)"
+                                             style="display: none;min-height: 100px;resize: none;overflow: hidden;margin:auto;">{{ conv.description }}</textarea>
+                               </form>
+                            </div>
+                        {% endfor %}
+                    </div>
                 </div>
 
                 <div id="add_report" style="display: inline-block;box-sizing: border-box">
-                        <p id="add_report_btn" style="font-size: 20pt;">Добавить отчет +</p>
+                        <p id="add_report_btn" style="font-size: 20pt;opacity:0.85">Добавить отчет</p>
                         <div id="new_report_area" style="display:none;">
                             <form name="new_report" style="width:60%;display: inline-block;box-sizing: border-box"
                                         action="{% url 'добавить отчет' %}" method="get">
@@ -778,7 +790,6 @@
                     let add_obj = document.getElementById('add_report_btn')
                     if (add_obj !== null) {
                         add_obj.addEventListener("click", add_report)
-                        /*add_obj.addEventListener("mouseleave", leave)*/
                         }
                     let messages = document.getElementsByClassName('messages')
                     if (messages.length > 0) {
@@ -794,6 +805,7 @@
                 let new_report_area = document.getElementById('new_report_area')
                 let report_input = document.getElementById('report_text')
                 let tags = document.getElementById('tags')
+                let add_obj = document.getElementById('add_report_btn')
 
                 if (new_report_area.hasAttribute("clicked")) {
                     record_text.style.display = 'none'
@@ -801,9 +813,11 @@
                     tags.style.display = 'none'
                     report_input.blur()
                     new_report_area.removeAttribute("clicked")
+                    add_obj.style.opacity = "0.7"
                 }
 
                 else {
+                    add_obj.style.opacity = "1"
                     record_text.style.display = 'inline-block';
                     new_report_area.style.display = 'inline-block';
                     tags.style.display = 'inline-block'
