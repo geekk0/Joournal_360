@@ -609,35 +609,36 @@
                 {% endif %}
 
             </div>
+                {% if request.user.is_staff or "Инженеры" in user_departments_list%}
+                    <div id="converters" style="width:60%;margin-left:27%;margin-top: 4%">
+                        <div class="converters_label container" id="converter_label" style="width:30%;margin-left:auto;margin-right:auto;color:white;opacity:0.7">
+                            <h5>+ Конвертеры DAC-70</h5>
+                        </div>
 
-                <div id="converters" style="width:60%;margin-left:27%;margin-top: 4%">
-                    <div class="converters_label container" id="converter_label" style="width:30%;margin-left:auto;margin-right:auto;color:white;opacity:0.7">
-                        <h5>+ Конвертеры DAC-70</h5>
+                        <div class="converters_list" id="converter_list" style="display:none;width:100%;overflow-wrap: break-word">
+                            {% for conv in converters %}
+                               <div class="conv-layout" style="width:24%;display:inline-block;vertical-align: top;text-align: center;margin-top:1%">
+                                   <form name="converter" action="{% url 'обновить данные по конвертеру' %}" method="get">
+                                       <p>Конвертер номер: <span style="text-align: end">{{ conv.number }}</span></p>
+                                       <input style="display: none" name="number" value={{ conv.number }}>
+                                       <label style="color:white" for="current_location">Находится в   :</label>
+                                       <select name="current_location" oninput="send_converter_info()">
+                                           <option value="1">Студия 1</option>
+                                           <option value="2">Студия 2</option>
+                                           <option value="3">Студия 3</option>
+                                       </select>
+                                       <br>
+                                       <br>
+                                       <label for="description" class="description_label" style="color: white">Примечание:</label>
+                                       <p class="description_plain" style="white-space: pre-wrap;line-height: 1.2">{{ conv.description }}</p>
+                                       <textarea id="description_textarea" name="description" class="description_textarea" oninput="auto_grow(this)"
+                                                 style="display: none;min-height: 100px;resize: none;overflow: hidden;margin:auto;">{{ conv.description }}</textarea>
+                                   </form>
+                                </div>
+                            {% endfor %}
+                        </div>
                     </div>
-
-                    <div class="converters_list" id="converter_list" style="display:none;width:100%;overflow-wrap: break-word">
-                        {% for conv in converters %}
-                           <div class="conv-layout" style="width:24%;display:inline-block;vertical-align: top;text-align: center;margin-top:1%">
-                               <form name="converter" action="{% url 'обновить данные по конвертеру' %}" method="get">
-                                   <p>Конвертер номер: <span style="text-align: end">{{ conv.number }}</span></p>
-                                   <input style="display: none" name="number" value={{ conv.number }}>
-                                   <label style="color:white" for="current_location">Находится в   :</label>
-                                   <select name="current_location" oninput="send_converter_info()">
-                                       <option value="1">Студия 1</option>
-                                       <option value="2">Студия 2</option>
-                                       <option value="3">Студия 3</option>
-                                   </select>
-                                   <br>
-                                   <br>
-                                   <label for="description" class="description_label" style="color: white">Примечание:</label>
-                                   <p class="description_plain" style="white-space: pre-wrap;line-height: 1.2">{{ conv.description }}</p>
-                                   <textarea id="description_textarea" name="description" class="description_textarea" oninput="auto_grow(this)"
-                                             style="display: none;min-height: 100px;resize: none;overflow: hidden;margin:auto;">{{ conv.description }}</textarea>
-                               </form>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
+                {% endif %}
 
                 <div id="add_report" style="display: inline-block;box-sizing: border-box">
                         <p id="add_report_btn" style="font-size: 20pt;opacity:0.85">Добавить отчет</p>
