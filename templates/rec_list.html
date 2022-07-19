@@ -619,7 +619,7 @@
                             {% for conv in converters %}
                                <div class="conv-layout" style="width:24%;display:inline-block;vertical-align: top;text-align: center;margin-top:1%">
                                    <form name="converter" action="{% url 'обновить данные по конвертеру' %}" method="get">
-                                       <p>Конвертер номер: <span style="text-align: end">{{ conv.number }}</span></p>
+                                       <p>Конвертер №: <span style="text-align: end">{{ conv.number }}</span></p>
                                        <input style="display: none" name="number" value={{ conv.number }}>
                                        <label style="color:white" for="current_location">Находится в   :</label>
                                        <select name="current_location" oninput="send_converter_info()">
