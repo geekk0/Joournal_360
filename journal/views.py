@@ -47,7 +47,6 @@ env = environ.Env()
 environ.Env.read_env()
 
 
-
 class LoginView(View):
 
     def get(self, request, *args, **kwargs):
@@ -364,9 +363,6 @@ def detect_invisible_groups():                                      # Не от�
         if (User.objects.filter(groups=group)).count() == 0:
             group_names.append(group.name)
 
-
-    print("invidible groups: "+str(group_names))
-
     return group_names
 
 
@@ -410,6 +406,7 @@ def rec_list(request, *device):
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct().\
         exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
 
+
     shifts_dates = shifts_match()
 
     scheduled_dates_query = ScheduledTasks.objects.filter(departments__in=user_departments).distinct()
@@ -437,6 +434,13 @@ def rec_list(request, *device):
         user_network = check_user_ip(request)"""
 
     user_agent = request.META['HTTP_USER_AGENT']
+
+    shift_groups = get_shift_groups(groups_authors_list)
+
+    extended_shift_groups = get_extended_shift_groups(Group.objects.filter(department=1).distinct().
+                                                      exclude(name__in=invisible_groups).order_by('id'), Group.objects.
+                                                      filter(department=2).distinct().exclude(name__in=invisible_groups)
+                                                      .order_by('id'))
 
     if 'Mobile' in user_agent:
         device = 'mobile'
@@ -482,7 +486,8 @@ def rec_list(request, *device):
                'user_is_admin': user_is_admin, 'task_date': task_date, 'tags': tags, 'objectives_full': objectives_full,
                'objectives_sliced': objectives_sliced, 'tiles': tiles, 'task_message': task_message,
                'objectives_count': objectives_count, 'last_objective_created': last_objective_created,
-               "converters": converters}
+               "converters": converters, "shift_groups": json.dumps(shift_groups),
+               "extended_shift_groups": json.dumps(extended_shift_groups)}
 
     return render(request, 'rec_list.html', context)
 
@@ -563,6 +568,13 @@ def find_by_date(request):
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
         exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
 
+    extended_shift_groups = get_extended_shift_groups(Group.objects.filter(department=1).distinct().
+                                                      exclude(name__in=invisible_groups).order_by('id'), Group.objects.
+                                                      filter(department=2).distinct().exclude(name__in=invisible_groups)
+                                                      .order_by('id'))
+
+    shift_groups = get_shift_groups(groups_authors_list)
+
     if date:
         date = datetime.datetime.strptime(date, "%d.%m.%Y").strftime("%Y-%m-%d")
 
@@ -630,7 +642,8 @@ def find_by_date(request):
                'shifts_dates': json.dumps(shifts_dates), 'device': device, 'selected_department': selected_department,
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'task_date': task_date,
                'objectives_full': objectives_full, 'objectives': objectives, 'objectives_sliced': objectives_sliced,
-               'user_is_admin': user_is_admin}
+               'user_is_admin': user_is_admin, "shift_groups": json.dumps(shift_groups),
+               "extended_shift_groups": json.dumps(extended_shift_groups)}
 
     user_agent = request.META['HTTP_USER_AGENT']
 
@@ -682,6 +695,13 @@ def sort_by_group(request, group_name):
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
         exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
 
+    shift_groups = get_shift_groups(groups_authors_list)
+
+    extended_shift_groups = get_extended_shift_groups(Group.objects.filter(department=1).distinct().
+                                                      exclude(name__in=invisible_groups).order_by('id'), Group.objects.
+                                                      filter(department=2).distinct().exclude(name__in=invisible_groups)
+                                                      .order_by('id'))
+
     all_records = Record.objects.filter(author__in=match_authors_list).order_by('-created_date')[:7]
 
     single_group = Group.objects.get(name=group_name)
@@ -718,7 +738,8 @@ def sort_by_group(request, group_name):
                'user_departments_list': user_departments_list, 'all_records': all_records,
                'shifts_dates': json.dumps(shifts_dates), 'device': device, 'task_date': task_date,
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives': objectives,
-               'user_is_admin': user_is_admin, 'tiles': tiles}
+               'user_is_admin': user_is_admin, 'tiles': tiles, "shift_groups": json.dumps(shift_groups),
+               "extended_shift_groups": json.dumps(extended_shift_groups)}
 
     return render(request, 'search_result.html', context)
 
@@ -767,7 +788,6 @@ def find_by_author(request, author_id):
         device = 'mobile'
     else:
         device = 'pc'
-
 
 
     context = {'search_query': search_query,  'role': role, "author_list": author_list,
@@ -820,6 +840,13 @@ def find_by_text(request, *args, **kwargs):
     groups_authors_list = Group.objects.filter(department__in=user_departments).distinct(). \
         exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
 
+    shift_groups = get_shift_groups(groups_authors_list)
+
+    extended_shift_groups = get_extended_shift_groups(Group.objects.filter(department=1).distinct().
+                                                      exclude(name__in=invisible_groups).order_by('id'), Group.objects.
+                                                      filter(department=2).distinct().exclude(name__in=invisible_groups)
+                                                      .order_by('id'))
+
     shifts_dates = shifts_match()
 
     user_departments = Department.objects.filter(groups__in=user_groups)
@@ -867,7 +894,8 @@ def find_by_text(request, *args, **kwargs):
                'groups_authors_list': groups_authors_list, 'device': device, 'user_departments': user_departments,
                'selected_department': selected_department, 'scheduled_dates_dict': json.dumps(scheduled_dates_dict),
                'objectives': objectives, 'objectives_full': objectives_full, 'objectives_sliced': objectives_sliced,
-               'user_is_admin': user_is_admin }
+               'user_is_admin': user_is_admin, "shift_groups": json.dumps(shift_groups),
+               "extended_shift_groups": json.dumps(extended_shift_groups)}
 
     return render(request, 'search_result.html', context)
 
@@ -884,7 +912,7 @@ def sort_by_department(request, department_name):
 
     authors_list = User.objects.filter(groups__in=author_groups_list)
 
-    records = Record.objects.filter(author__in=authors_list).order_by('-created_date')[:7]
+    records = Record.objects.filter(author__in=authors_list).order_by('-report_date')[:7]
 
     user_groups = request.user.groups.all()
 
@@ -916,7 +944,14 @@ def sort_by_department(request, department_name):
             user_departments_list.append(dep_objects.name)
 
     groups_authors_list = Group.objects.filter(department=selected_department).distinct(). \
-        exclude(name__in=invisible_groups).exclude(name='Трудовые резервы')
+        exclude(name__in=invisible_groups).exclude(name='Трудовые резервы').order_by('id')
+
+    shift_groups = get_shift_groups(groups_authors_list)
+
+    extended_shift_groups = get_extended_shift_groups(Group.objects.filter(department=1).distinct().
+                                                      exclude(name__in=invisible_groups).order_by('id'), Group.objects.
+                                                      filter(department=2).distinct().exclude(name__in=invisible_groups)
+                                                      .order_by('id'))
 
     comments = Comments.objects.all().order_by('-created')
 
@@ -947,7 +982,8 @@ def sort_by_department(request, department_name):
                'user_departments_list': user_departments_list, 'shifts_dates': json.dumps(shifts_dates),
                'device': device, 'selected_department': selected_department, 'multirole': multirole,
                'scheduled_dates_dict': json.dumps(scheduled_dates_dict), 'objectives': objectives,
-               'task_date': task_date, 'user_is_admin': user_is_admin, 'tiles': tiles}
+               'task_date': task_date, 'user_is_admin': user_is_admin, 'tiles': tiles,
+               "shift_groups": json.dumps(shift_groups), "extended_shift_groups": json.dumps(extended_shift_groups)}
 
     return render(request, 'search_result.html', context)
 
@@ -1228,21 +1264,6 @@ def edit_note(request):
     return HttpResponse(status=204)
 
 
-#to refactor:
-    """import inspect
-
-    def bar():
-        current_frame = inspect.currentframe()
-        previous_frame = current_frame.f_back
-        print(previous_frame.f_code.co_name)
-        print(type(previous_frame.f_code.co_name))
-
-    def foo():
-        bar()
-
-    foo()"""
-
-
 def publish_eng_record(*request):
     eng_authors = User.objects.filter(groups__in=Group.objects.filter(department__name='Инженеры'))
     eng_notes = Notes.objects.filter(author__in=eng_authors, status='initial')
@@ -1489,8 +1510,6 @@ def check_user_ip(request):
     return 'local'
 
 
-
-
 @csrf_protect
 def add_photo(request):
 
@@ -1508,13 +1527,6 @@ def add_photo(request):
 
                 new_note_image = NoteImages.objects.create(name=str(value), image=img_content, of_note=note)
                 new_note_image.save()
-
-                """optimized_image = Image.open(new_note_image.image.path)
-                optimized_image.save(new_note_image.image.path, quality=20, optimize=True)
-                print(type(new_note_image.image))
-                print(type(optimized_image))
-                new_note_image.image = optimized_image
-                """
 
     return HttpResponseRedirect('/')
 
@@ -1576,3 +1588,24 @@ def edit_converter_info(request):
     converter_object.save()
 
     return HttpResponse(status=204)
+
+
+def get_shift_groups(groups_authors_list):
+    shifts_dictionary = {}
+
+    for i in range(0, groups_authors_list.count()):
+        shifts_dictionary["shift" + str(i+1)] = getattr(groups_authors_list[i], "name")
+
+    return shifts_dictionary
+
+
+def get_extended_shift_groups(eng_list, it_list):
+
+    extended_shifts_dictionary = {}
+
+    for i in range(0, eng_list.count()):
+        extended_shifts_dictionary["shift" + str(i + 1)] = getattr(eng_list[i], "name") + "\n" + getattr(it_list[i],
+                                                                                                        "name")
+    return extended_shifts_dictionary
+
+

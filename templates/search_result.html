@@ -238,69 +238,64 @@
                         function color_date(cell, shift) {
 
                             let selected_department = '{{ selected_department }}'
-                            console.log(selected_department)
-                            console.log(typeof selected_department)
+                            let dict_group_shifts = {{ shift_groups|safe }};
+                            let ext_dict_group_shifts = {{ extended_shift_groups|safe }};
 
                             if (shift === 'shift_4_dates') {
                                     cell.style.color = 'rgb(0, 200, 0)';
-                                    if (selected_department  === 'Инженеры') {
-                                        cell.title = 'Литвиненко и Мех'
+
+                                    if (!selected_department || selected_department === "None") {
+
+                                        cell.title = ext_dict_group_shifts['shift4']
                                     }
 
-                                    if (selected_department === 'IT') {
-                                        cell.title = 'Крутихин'
+                                    else {
+                                        cell.title = dict_group_shifts['shift4']
                                     }
 
-                                    if (selected_department === 'None') {
-                                    cell.title = 'Литвиненко и Мех\n Крутихин'
-                                    }
+
                                 }
                             if (shift === 'shift_3_dates') {
                                     cell.style.color = 'rgb(200, 0, 0)';
-                                     if (selected_department  === 'Инженеры') {
-                                        cell.title = 'Рославцев и Сидоренко'
+
+                                    if (!selected_department || selected_department === "None") {
+
+                                        cell.title = ext_dict_group_shifts['shift3']
                                     }
 
-                                    if (selected_department === 'IT') {
-                                        cell.title = 'Деев'
-                                    }
-
-                                    if (selected_department === 'None') {
-                                    cell.title = 'Рославцев и Сидоренко\n Деев'
-
+                                    else {
+                                        cell.title = dict_group_shifts['shift3']
                                     }
 
                                 }
                             if (shift === 'shift_2_dates') {
                                     cell.style.color =  'rgb(0, 160, 255)';
-                                    if (selected_department  === 'Инженеры') {
-                                        cell.title = 'Бороздин и Долгов'
+
+                                    if (!selected_department || selected_department === "None") {
+
+                                        cell.title = ext_dict_group_shifts['shift2']
                                     }
 
-                                    if (selected_department === 'IT') {
-                                        cell.title = 'Дмитриевский'
+                                    else {
+                                        cell.title = dict_group_shifts['shift2']
                                     }
 
-                                    if (selected_department === 'None') {
-                                        cell.title = 'Бороздин и Долгов\n Дмитриевский'
-
-                                    }
 
                                 }
+
                             if (shift === 'shift_1_dates') {
                                     cell.style.color = 'rgb(200, 200, 0)';
-                                    if (selected_department  === 'Инженеры') {
-                                        cell.title = 'Астахов и Козлов'
+
+                                    if (!selected_department || selected_department === "None") {
+
+                                        cell.title = ext_dict_group_shifts['shift1']
                                     }
 
-                                    if (selected_department === 'IT') {
-                                        cell.title = 'Захаров'
+                                    else {
+                                        cell.title = dict_group_shifts['shift1']
                                     }
 
-                                    if (selected_department === 'None') {
-                                        cell.title = 'Астахов и Козлов\n Захаров'
 
-                                    }
 
                                 }
 
@@ -322,20 +317,24 @@
                         }
 
                         function groups_colors() {
+
+                            let dict_group_shifts = {{ shift_groups|safe }};
+
+
                             let groups = document.querySelectorAll('ul#group_author > li')
 
                             for (let i = 0; i < groups.length; i++) {
                                 let group_link = groups[i].querySelector('a')
-                                if (group_link.innerText === 'Астахов и Козлов' || group_link.innerText === 'IT Захаров')  {
+                                if (group_link.innerText === dict_group_shifts["shift1"]) {
                                     group_link.style.color = 'rgb(200, 200, 0)'
                                 }
-                                if (group_link.innerText === 'Бороздин и Долгов'|| group_link.innerText === 'IT Дмитриевский') {
+                                if (group_link.innerText === dict_group_shifts["shift2"]) {
                                     group_link.style.color = 'rgb(0, 160, 255)'
                                 }
-                                if (group_link.innerText === 'Рославцев и Сидоренко'|| group_link.innerText === 'IT Деев') {
+                                if (group_link.innerText === dict_group_shifts["shift3"]) {
                                     group_link.style.color = 'rgb(200, 0, 0)'
                                 }
-                                if (group_link.innerText === 'Литвиненко и Мех'|| group_link.innerText === 'IT Крутихин') {
+                                if (group_link.innerText === dict_group_shifts["shift4"]) {
                                     group_link.style.color = 'rgb(0, 200, 0)'
                                 }
                             }
@@ -749,25 +748,24 @@
 
             function color_author_name() {
                 let author_name = document.getElementsByClassName('author_name')
+                let dict_group_shifts = {{ extended_shift_groups|safe }};
+
                 for (let i = 0; i < author_name.length; i++) {
                     for (let i = 0; i < author_name.length; i++) {
-                    if (author_name[i].innerText.includes('Литвиненко') || author_name[i].innerText.includes('Мех')
-                    || author_name[i].innerText.includes('Крутихин')) {
-                        author_name[i].style.color = 'rgb(0, 200, 0)'
+
+                        if (dict_group_shifts["shift1"].includes(author_name[i].innerText.split(' ')[4])) {
+                            author_name[i].style.color = 'rgb(200, 200, 0)'
+                        }
+                        if (dict_group_shifts["shift2"].includes(author_name[i].innerText.split(' ')[4])) {
+                            author_name[i].style.color = 'rgb(0, 160, 255)'
+                        }
+                        if (dict_group_shifts["shift3"].includes(author_name[i].innerText.split(' ')[4])) {
+                            author_name[i].style.color = 'rgb(200, 0, 0)'
+                        }
+                        if (dict_group_shifts["shift4"].includes(author_name[i].innerText.split(' ')[4])) {
+                            author_name[i].style.color = 'rgb(0, 200, 0)'
+                        }
                     }
-                    if (author_name[i].innerText.includes('Бороздин') || author_name[i].innerText.includes("Долгов")
-                    || author_name[i].innerText.includes('Дмитриевский')) {
-                        author_name[i].style.color = 'rgb(0, 160, 255)'
-                    }
-                    if (author_name[i].innerText.includes('Рославцев') || author_name[i].innerText.includes("Сидоренко")
-                    || author_name[i].innerText.includes('Деев')) {
-                        author_name[i].style.color = 'rgb(200, 0, 0)'
-                    }
-                    if (author_name[i].innerText.includes('Астахов') || author_name[i].innerText.includes("Козлов")
-                    || author_name[i].innerText.includes('Захаров')) {
-                        author_name[i].style.color = 'rgb(200, 200, 0)'
-                    }
-                }
                 }
             }
 
@@ -783,7 +781,6 @@
                     add_task.style.display = 'none';
                 }
                 let scrollTop = window.scrollY;
-                console.log(scrollTop)
                 if (scrollTop === 0) {
                 logout.style.display = 'block';
                 add_task.style.display = 'block';
