@@ -1575,17 +1575,26 @@ def edit_converter_info(request):
 
     number = str(request.GET.get("number"))
 
+    print(number)
+
     location = request.GET.get("current_location")
 
     description = request.GET.get("description")
 
     converter_object = Converters.objects.get(number=number)
 
+    print(str(converter_object.number) + "/" + str(converter_object.location))
+
     converter_object.location = location
 
     converter_object.description = description
 
     converter_object.save()
+
+    converter_object = Converters.objects.get(number=number)
+
+    print("conv №" + str(converter_object.number))
+    print("new location: " + converter_object.location)
 
     return HttpResponse(status=204)
 

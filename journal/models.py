@@ -319,8 +319,6 @@ class Docs(models.Model):
 class ManualDocs(Docs):
     device = models.ForeignKey(Devices, blank=True, null=True, on_delete=models.CASCADE,
                                verbose_name='Относится к устройству')
-
-
     def __str__(self):
         return str(self.name)
 
@@ -331,8 +329,8 @@ class ManualDocs(Docs):
 
 class Converters(models.Model):
     number = models.IntegerField(verbose_name="Номер конвертера")
-    LOCATIONS = (("Studio_1", "Студия 1"), ("Studio_2", "Студия 2"), ("Studio_3", "Студия 3"))
-    location = models.CharField(max_length=128, verbose_name="Где находится", choices=LOCATIONS, blank=True, null=True)
+    #LOCATIONS = (("Studio_1", "Студия 1"), ("Studio_2", "Студия 2"), ("Studio_3", "Студия 3"))
+    location = models.CharField(max_length=128, verbose_name="Где находится", blank=True, null=True)
     description = models.TextField(max_length=256, verbose_name="Примечание", blank=True, null=True, default="Добавить...")
 
     def __str__(self):

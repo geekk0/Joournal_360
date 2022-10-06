@@ -75,6 +75,7 @@
         label.style.fontSize = "1.25rem"
         label.style.fontWeight = 500
         let converters_list = document.getElementById("converter_list")
+        let device = "{{ device }}"
 
         if (label.hasAttribute("visible_list")) {
             converters_list.style.display  = "none"
@@ -83,6 +84,11 @@
             label.style.fontSize = 20
             label.innerHTML = "+ Конвертеры DAC-70"
             converters_div.style.border = "none"
+            if (device === "mobile"){
+                converters_div.style.width = "60%"
+                converters_div.style.marginLeft = "27%"
+            }
+
         }
         else {
             converters_list.style.display  = "block"
@@ -93,6 +99,10 @@
             converters_div.style.border = '1px solid';
             converters_div.style.borderColor = 'white';
             converters_div.style.borderRadius = '15px';
+            if (device === "mobile"){
+                converters_div.style.width = "95%"
+                converters_div.style.marginLeft = "2%"
+            }
             active_textarea_listeners()
 
         }
@@ -126,6 +136,8 @@
         let desc_label = e.currentTarget
         let desc_plain = e.currentTarget.parentElement.querySelector('.description_plain')
         let desc_textarea = e.currentTarget.parentElement.querySelector('.description_textarea')
+        let form = e.currentTarget.parentElement.parentElement.querySelector('.conv')
+
 
         desc_plain.style.display = "block"
         desc_textarea.style.display = "none"
@@ -134,7 +146,7 @@
 
         desc_plain.innerHTML = desc_textarea.value.replace(/\r\n/g, '<br/>');
 
-        send_converter_info()
+        send_converter_info(form.name)
 
     }
 
@@ -144,8 +156,8 @@
 
     }
 
-    function send_converter_info() {
-                document.forms['converter'].submit()
+    function send_converter_info(converter) {
+                document.forms[converter].submit()
             }
 
     </script>
@@ -658,25 +670,42 @@
             </div>
                 {% if request.user.is_staff  or "Инженеры" in user_departments_list %}
                     <div id="converters" style="width:60%;margin-left:27%;margin-top: 4%">
-                        <div class="converters_label container" id="converter_label" style="width:30%;margin-left:auto;margin-right:auto;color:white;opacity:0.7">
-                            <h5>+ Конвертеры DAC-70</h5>
-                        </div>
+                        {% if device == "mobile" %}
+                                <div class="converters_label container" id="converter_label" style="width:100%;margin-left:auto;margin-right:auto;color:white;opacity:0.7">
+                                    <h5>+ Конвертеры DAC-70</h5>
+                                </div>
+                        {% else %}
+                                <div class="converters_label container" id="converter_label" style="width:30%;margin-left:auto;margin-right:auto;color:white;opacity:0.7">
+                                    <h5>+ Конвертеры DAC-70</h5>
+                                </div>
+                        {% endif %}
+
+
 
                         <div class="converters_list" id="converter_list" style="display:none;width:100%;overflow-wrap: break-word">
                             {% for conv in converters %}
                                <div class="conv-layout" style="width:24%;display:inline-block;vertical-align: top;text-align: center;margin-top:1%">
-                                   <form name="converter" action="{% url 'обновить данные по конвертеру' %}" method="get">
+                                   <form name="converter {{ conv.number }}"{{ conv.number }} action="{% url 'обновить данные по конвертеру' %}" method="get" class="conv">
                                        <p>Конвертер №<span style="text-align: end">{{ conv.number }}</span></p>
-                                       <input style="display: none" name="number" value={{ conv.number }}>
+                                       <input style="display: none" name="number" value="{{ conv.number }}">
                                        <label style="color:white" for="current_location">Находится в   :</label>
-                                       <select name="current_location" oninput="send_converter_info()">
-                                           <option value="1">Студия 1</option>
-                                           <option value="2">Студия 2</option>
-                                           <option value="3">Студия 3</option>
-                                       </select>
+                                       {% if conv.location %}
+                                           <select name="current_location" oninput="send_converter_info('converter ' + {{ conv.number }})">
+                                               <option value={{ conv.location }} hidden selected>{{ conv.location }}</option>
+                                               <option value="Студия_1">Студия_1</option>
+                                               <option value="Студия_2">Студия_2</option>
+                                               <option value="Студия_3">Студия_3</option>
+                                           </select>
+                                       {% else %}
+                                           <select name="current_location" oninput="send_converter_info('converter ' + {{ conv.number }})">
+                                               <option value="Студия_1">Студия_1</option>
+                                               <option value="Студия_2">Студия_2</option>
+                                               <option value="Студия_3">Студия_3</option>
+                                           </select>
+                                       {% endif %}
                                        <br>
                                        <br>
-                                       <label for="description" class="description_label" style="color: white">Примечание:</label>
+                                       <label for="description" class="description_label" style="color: white"></label>
                                        <p class="description_plain" style="white-space: pre-wrap;line-height: 1.2">{{ conv.description }}</p>
                                        <textarea id="description_textarea" name="description" class="description_textarea" oninput="auto_grow(this)"
                                                  style="display: none;min-height: 100px;resize: none;overflow: hidden;margin:auto;">{{ conv.description }}</textarea>
