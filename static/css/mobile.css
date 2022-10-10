@@ -324,6 +324,7 @@
     #add_report textarea{
         min-height: 135px;
         font-size: 12pt;
+        width: 100%;
     }
 
     #tags_layout{
