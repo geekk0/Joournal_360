@@ -882,12 +882,15 @@
                 let report_input = document.getElementById('report_text')
                 let tags = document.getElementById('tags')
                 let add_obj = document.getElementById('add_report_btn')
+                let device = "{{ device }}"
 
                 if (new_report_area.hasAttribute("clicked")) {
                     record_text.style.display = 'none'
                     new_report_area.style.display = 'none'
+                    console.log(new_report_area.children[0].style.width)
+                    console.log(new_report_area)
                     tags.style.display = 'none'
-                    /*report_input.blur()*/
+                    report_input.blur()
                     new_report_area.removeAttribute("clicked")
                     add_obj.style.opacity = "0.7"
                 }
@@ -896,8 +899,13 @@
                     add_obj.style.opacity = "1"
                     record_text.style.display = 'inline-block';
                     new_report_area.style.display = 'inline-block';
+                    if (device === 'mobile') {
+                        new_report_area.children[0].style.width = "100%"
+                        new_report_area.style.width = "100%"
+                        tags.style.width = "100%"
+                    }
                     tags.style.display = 'inline-block'
-                    /*report_input.focus()*/
+                    report_input.focus()
                     new_report_area.setAttribute("clicked", "true")
                     auto_grow(record_text)
                 }
